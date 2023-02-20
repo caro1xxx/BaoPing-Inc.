@@ -4,6 +4,10 @@
 
 **禁止push到主分支**
 
+> 请clone **develop**分支
+>
+> git clone -b develop git@github.com:caro1xxx/BaoPing-Inc..git
+
 ##### 分支命名
 
 * 主分支:main
