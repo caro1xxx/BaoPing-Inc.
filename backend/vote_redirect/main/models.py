@@ -5,3 +5,6 @@ from django.db import models
 class domain(models.Model):
     domain = models.CharField(max_length=50)
     status = models.IntegerField(default=0)
+
+class Active(models.Model):
+    domain_list = models.CharField(max_length=100)
