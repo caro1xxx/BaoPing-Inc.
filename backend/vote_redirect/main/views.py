@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from django.core import serializers
+from django.core.cache import cache
 
 
 # get获取一个可用域名，post包含add和update方法
@@ -57,6 +58,82 @@ class GetDomain(APIView):
             ret['msg'] = 'Timeout'
             ret['error'] = str(e)
         return JsonResponse(ret)
+
+# post实现两个功能，传入add将访问次数加1，传入query查询域名访问次数
+class DomainVisCnt(APIView):
+    def post(self, request, *args, **kwargs):
+        ret = {'code': 200, 'msg': 'ok'}
+        # domainList = json.loads(request.body).get('fun')
+        try:
+            fun = json.loads(request.body).get('fun')
+            domainName = json.loads(request.body).get('domain')
+            if not domainName:
+                ret = {'code': 404, 'msg': 'domain does not exist'}
+                return JsonResponse(ret)
+            if fun == 'query':
+                res = self.queryCnt(domainName)
+                if res:
+                    ret['vis_cnt'] = res
+                else:
+                    ret['code'] = 404
+                    ret['msg'] = 'failed'
+                    return ret
+            elif fun == 'add':
+                ok = self.addCnt(domainName)
+                if not ok:
+                    ret['code'] = 404
+                    ret['msg'] = 'add visit failed'
+                    return ret
+        except Exception as e:
+            ret = {'code': 500, 'msg': 'Timeout'}
+            return ret
+        return JsonResponse(ret)
+
+    def queryCnt(self, domainName):
+        cnt = 0
+        try:
+            if cache.get(domainName):
+                cnt = cache.get(domainName)
+            else:
+                domainObj = models.domain.objects.filter(domain=str(domainName))
+                if domainObj.exists():
+                    cnt = domainObj.first().vis_cnt
+                else:
+                    return False
+                cache.set(domainName, cnt)
+        except Exception as e:
+            ret = {'code': 500, 'msg': 'Timeout'}
+            return ret
+        return cnt
+
+    def addCnt(self, domainName):
+        try:
+            cnt = cache.get(domain)
+            if cnt:
+                cnt = int(cnt) + 1
+                cache.set(domain, cnt)
+                domainObj = models.domain.objects.get(domain=str(domainName))
+                domainObj.vis_cnt = cnt
+                domainObj.save()
+            else:
+                domainObj = models.domain.objects.filter(domain=str(domainName))
+                if domainObj.exists():
+                    domainObj = models.domain.objects.get(domain=str(domainName))
+                    domainObj.vis_cnt = domainObj.vis_cnt + 1
+                    cache.set(domainName, domainObj.vis_cnt)
+                    domainObj.save()
+                else:
+                    return False
+        except Exception as e:
+            ret = {'code': 500, 'msg': 'Timeout'}
+            return ret
+        return True
+
+class TestFun(APIView):
+    def get(self, request, *args, **kwargs):
+        cnt = queryCnt("www.baidu.com")
+        return cnt
+
 
 # post包含add和update功能
 class Active(APIView):
