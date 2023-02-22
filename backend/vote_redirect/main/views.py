@@ -129,6 +129,7 @@ class DomainVisCnt(APIView):
             return ret
         return True
 
+
 # 用于编写代码时test
 class TestFun(APIView):
     def get(self, request, *args, **kwargs):
