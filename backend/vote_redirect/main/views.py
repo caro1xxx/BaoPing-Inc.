@@ -89,11 +89,12 @@ class DomainVisCnt(APIView):
             return ret
         return JsonResponse(ret)
 
+    # 查询域名访问数量
     def queryCnt(self, domainName):
         cnt = 0
         try:
-            if cache.get(domainName):
-                cnt = cache.get(domainName)
+            if cache.get(domainName, None):
+                cnt = cache.get(domainName, None)
             else:
                 domainObj = models.domain.objects.filter(domain=str(domainName))
                 if domainObj.exists():
@@ -106,9 +107,10 @@ class DomainVisCnt(APIView):
             return ret
         return cnt
 
+    # 将一个域名访问数量+1
     def addCnt(self, domainName):
         try:
-            cnt = cache.get(domain)
+            cnt = cache.get(domain, None)
             if cnt:
                 cnt = int(cnt) + 1
                 cache.set(domain, cnt)
@@ -129,10 +131,10 @@ class DomainVisCnt(APIView):
             return ret
         return True
 
+# 用于编写代码时test
 class TestFun(APIView):
     def get(self, request, *args, **kwargs):
-        cnt = queryCnt("www.baidu.com")
-        return cnt
+        pass
 
 
 # post包含add和update功能
