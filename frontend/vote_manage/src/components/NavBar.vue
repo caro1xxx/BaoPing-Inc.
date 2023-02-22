@@ -9,9 +9,10 @@
         <div class="navbar_midd_body_line"></div>
         <div class="navbar_midd_body_itemparent">
           <div
-            v-for="item in navItme"
+            v-for="(item) in navItme"
             :key="item"
             class="navbar_midd_body_itemFor"
+            @click="SureMenu(item.path)"
           >
             <img :src="item.img" alt="" class="icon_style" />
             <div class="navbar_midd_body_item">{{ item.name }}</div>
@@ -24,16 +25,22 @@
 
 <script setup>
 import { reactive } from "vue";
+import { useRouter } from 'vue-router'
 
 const navItme = reactive([
-  { name: "数据信息", img: require("../assets/img/2.png") },
-  { name: "系统管理", img: require("../assets/img/5.png") },
-  { name: "消息管理", img: require("../assets/img/7.png") },
-  { name: "投票管理", img: require("../assets/img/3.png") },
-  { name: "订单管理", img: require("../assets/img/4.png") },
-  { name: "粉丝管理", img: require("../assets/img/6.png") },
-  { name: "自动任务", img: require("../assets/img/1.png") },
+  { name: "数据信息", img: require("../assets/img/2.png"), path: '/' },
+  { name: "系统管理", img: require("../assets/img/5.png"), path: '/system' },
+  { name: "消息管理", img: require("../assets/img/7.png"), path: '/news' },
+  { name: "投票管理", img: require("../assets/img/3.png"), path: '/Vote' },
+  { name: "订单管理", img: require("../assets/img/4.png"), path: '/Order' },
+  { name: "粉丝管理", img: require("../assets/img/6.png"), path: '/Vermicelli' },
+  { name: "自动任务", img: require("../assets/img/1.png"), path: '/Assignment' },
 ]);
+const router = useRouter()
+const SureMenu = (value) => {
+  router.push(`${value}`)
+}
+
 </script>
 
 <style lang="scss" scoped>

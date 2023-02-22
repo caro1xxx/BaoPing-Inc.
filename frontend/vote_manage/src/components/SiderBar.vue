@@ -139,7 +139,7 @@ export default {
   height: 40px;
   margin-top: 24px;
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   padding-left: 20px;
 }
 .siderbar_name {
@@ -192,6 +192,6 @@ export default {
 .siderbar_operation_log_movement {
   height: 30px;
   display: flex;
-  align-items: end;
+  align-items:flex-end;
 }
 </style>

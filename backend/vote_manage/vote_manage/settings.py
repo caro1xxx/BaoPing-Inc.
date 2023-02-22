@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-##o70yld=9bj#wamwcy&&-=uoj2#*%=ufmh#7dj#z@dexavf!w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,13 +37,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'main'
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True  #跨域访问
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  #跨域访问
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -75,8 +79,12 @@ WSGI_APPLICATION = 'vote_manage.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'vote',
+        'USER': 'vote',
+        'PASSWORD': 'ftfKpdwy65SaS4ZT',
+        'HOST':'175.178.12.179',
+        'PORT':'3306',
     }
 }
 
@@ -123,3 +131,17 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",		# 使用django-redis的缓存
+        "LOCATION": "redis://127.0.0.1:6379/0",			# redis数据库的位置
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POOL_KWARGS": {"max_connections": 100},
+            "DECODE_RESPONSES": True,			# 自动将byte转成字符串
+            "PASSWORD": "",						# 设置密码
+        }
+    }
+}
