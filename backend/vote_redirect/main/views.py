@@ -21,7 +21,6 @@ class GetDomain(APIView):
             ret['msg'] = 'Timeout'
         return JsonResponse(ret)
 
-
     def post(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
@@ -56,7 +55,6 @@ class GetDomain(APIView):
         except Exception as e:
             ret['code'] = 500
             ret['msg'] = 'Timeout'
-            ret['error'] = str(e)
         return JsonResponse(ret)
 
 # post实现两个功能，传入add将访问次数加1，传入query查询域名访问次数
@@ -162,5 +160,4 @@ class Active(APIView):
         except Exception as e:
             ret['code'] = 500
             ret['msg'] = 'Timeout'
-            ret['error'] = str(e)
         return JsonResponse(ret)
