@@ -1,10 +1,14 @@
 <template>
-  <NavBar />
-  <router-view />
+  <div style="display: flex">
+    <NavBar />
+    <router-view />
+    <SiderBar />
+  </div>
 </template>
 
 <script setup>
 import NavBar from "./components/NavBar.vue";
+import SiderBar from "./components/SiderBar.vue";
 </script>
 
 <style lang="scss">
