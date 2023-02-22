@@ -1,17 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-<<<<<<< HEAD
 import RegisterView from "../views/RegisterView.vue";
-=======
-import System from '../views/system.vue'
-import News from '../views/news.vue'
-import Vote from '../views/Vote.vue'
-import Order from '../views/Order.vue'
-import Vermicelli from '../views/Vermicelli.vue'
-import Assignment from '../views/Assignment.vue'
-
-
->>>>>>> 571ea31b028318ae3140b40c58bf103581891cb3
+import System from "../views/system.vue";
+import News from "../views/news.vue";
+import Vote from "../views/Vote.vue";
+import Order from "../views/Order.vue";
+import Vermicelli from "../views/Vermicelli.vue";
+import Assignment from "../views/Assignment.vue";
 
 const routes = [
   {
@@ -20,12 +15,11 @@ const routes = [
     component: HomeView,
   },
   {
-<<<<<<< HEAD
     path: "/register",
     name: "register",
     component: RegisterView,
   },
-=======
+  {
     path: "/system",
     name: "system",
     component: System,
@@ -55,8 +49,6 @@ const routes = [
     name: "assignment",
     component: Assignment,
   },
-  
->>>>>>> 571ea31b028318ae3140b40c58bf103581891cb3
 ];
 
 const router = createRouter({

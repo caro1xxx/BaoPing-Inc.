@@ -47,17 +47,22 @@
 <script setup>
 import Search from "@/components/Search.vue";
 import { reactive } from "vue";
+
+// 数据列表
 const dataList = reactive([
   { title: "总访问量", value: 3000 },
   { title: "总访问量", value: 2000 },
   { title: "总访问量", value: 9999 },
 ]);
+
+// 第二排数据列表
 const dataListBot = reactive([
   { title: "总访问量", value: 122 },
   { title: "总访问量", value: 1000 },
   { title: "总访问量", value: 1000 },
   { title: "总访问量", value: 1000 },
 ]);
+// 表头数据
 const tableHead = reactive([
   { name: "活动ID" },
   { name: "域名" },
@@ -65,10 +70,13 @@ const tableHead = reactive([
   { name: "状态" },
 ]);
 
+// 表数据
 const tableData = reactive([
   { id: "#1", domain: "http://www.baidu.com", flow: "1.2k", state: false },
   { id: "#2", domain: "http://www.baidu.com", flow: "1.2k", state: true },
   { id: "#3", domain: "http://www.baidu.com", flow: "1.2k", state: true },
+  { id: "#4", domain: "http://www.baidu.com", flow: "1.2k", state: false },
+  { id: "#4", domain: "http://www.baidu.com", flow: "1.2k", state: false },
   { id: "#4", domain: "http://www.baidu.com", flow: "1.2k", state: false },
   { id: "#4", domain: "http://www.baidu.com", flow: "1.2k", state: false },
   { id: "#4", domain: "http://www.baidu.com", flow: "1.2k", state: false },
@@ -108,13 +116,13 @@ const tableData = reactive([
 }
 .home_data {
   margin-top: 50px;
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bold;
   position: relative;
 }
 .home_data_item_title {
   text-align: center;
-  font-size: 5px;
+  font-size: 10px;
   font-weight: lighter;
   color: #b5c3d1;
 }
@@ -148,7 +156,7 @@ const tableData = reactive([
     text-align: center;
     line-height: 40px;
     font-size: 15px;
-    font-weight: bold;
+    font-weight: lighter;
   }
 }
 .home_table_body {
@@ -156,9 +164,10 @@ const tableData = reactive([
   div {
     width: 25%;
     text-align: center;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: lighter;
-    margin: 15px 0px;
+    color: #585858;
+    margin: 10px 0px;
   }
 }
 .home_table_body_wrap {

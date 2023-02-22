@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-    <img src="../assets/img/5.png" width="25" height="25" alt="" />
+    <img src="../assets/img/18.png" width="25" height="25" alt="" />
     <input class="search_payload" placeholder="搜索..." />
   </div>
   <div class="search_line"></div>

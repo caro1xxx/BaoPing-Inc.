@@ -1,7 +1,7 @@
 <template>
   <div class="siderbar">
     <div class="siderbar_heater">
-      <img class="siderbar_img" src="../assets/img/header.webp" alt="" />
+      <img class="siderbar_img" src="../assets/img/25.png" alt="" />
       <span class="siderbar_name">Admin</span>
     </div>
     <div class="siderbar_statistical_chart_box">
@@ -24,7 +24,7 @@
             </div>
             <span class="siderbar_operation_log_movement">
               <span class="siderbar_operation_log_time">{{ item.action }}</span>
-              <span class="siderbar_operation_log_user">{{
+              <span class="siderbar_operation_log_active">{{
                 item.project
               }}</span>
             </span>
@@ -47,77 +47,77 @@ export default {
           time: "今天10:30",
           action: "admin增加了",
           project: "活动3",
-          url: require("../assets/img/header.webp"),
+          url: require("../assets/img/25.png"),
         },
         {
           username: "admin",
           time: "今天10:30",
           action: "admin增加了",
           project: "活动3",
-          url: require("../assets/img/header.webp"),
+          url: require("../assets/img/25.png"),
         },
         {
           username: "admin",
           time: "今天10:30",
           action: "admin增加了",
           project: "活动3",
-          url: require("../assets/img/header.webp"),
+          url: require("../assets/img/25.png"),
         },
         {
           username: "admin",
           time: "今天10:30",
           action: "admin增加了",
           project: "活动3",
-          url: require("../assets/img/header.webp"),
+          url: require("../assets/img/25.png"),
         },
         {
           username: "admin",
           time: "今天10:30",
           action: "admin增加了",
           project: "活动3",
-          url: require("../assets/img/header.webp"),
+          url: require("../assets/img/25.png"),
         },
         {
           username: "admin",
           time: "今天10:30",
           action: "admin增加了",
           project: "活动3",
-          url: require("../assets/img/header.webp"),
+          url: require("../assets/img/25.png"),
         },
         {
           username: "admin",
           time: "今天10:30",
           action: "admin增加了",
           project: "活动3",
-          url: require("../assets/img/header.webp"),
+          url: require("../assets/img/25.png"),
         },
         {
           username: "admin",
           time: "今天10:30",
           action: "admin增加了",
           project: "活动3",
-          url: require("../assets/img/header.webp"),
+          url: require("../assets/img/25.png"),
         },
         {
           username: "admin",
           time: "今天10:30",
           action: "admin增加了",
           project: "活动3",
-          url: require("../assets/img/header.webp"),
+          url: require("../assets/img/25.png"),
         },
         {
           username: "admin",
           time: "今天10:30",
           action: "admin增加了",
           project: "活动3",
-          url: require("../assets/img/header.webp"),
+          url: require("../assets/img/25.png"),
         },
         {
           username: "admin",
           time: "今天10:30",
           action: "admin增加了",
           project: "活动3",
-          url: require("../assets/img/header.webp"),
+          url: require("../assets/img/25.png"),
         },
       ],
     };
@@ -131,19 +131,22 @@ export default {
 
 <style lang="scss" scoped>
 .siderbar {
-  width: 400px;
+  width: 300px;
   height: calc(100vh);
   padding-right: 20px;
+  border-left: 1px solid #b5c3d177;
 }
 .siderbar_heater {
   height: 40px;
-  margin-top: 24px;
-  display: flex;
-  align-items: flex-end;
+  margin-top: 20px;
+  display: inline-flex;
+  vertical-align: top;
+  justify-content: center;
+  align-items: center;
   padding-left: 20px;
 }
 .siderbar_name {
-  margin-left: 20px;
+  margin-left: 10px;
   color: #000;
   font-size: 15px;
   font-weight: 20px;
@@ -153,13 +156,13 @@ export default {
 }
 .siderbar_operation_log_name {
   padding-left: 20px;
-  font-size: 15px;
+  font-size: 10px;
   color: #b5c3d1;
 }
 .siderbar_operation_log_content {
   padding-left: 20px;
   margin-top: 20px;
-  height: calc(100vh - 500px);
+  height: calc(100vh - 430px);
   overflow-y: scroll;
 }
 // 清除滚动条样式
@@ -182,16 +185,22 @@ export default {
 }
 .siderbar_operation_log_user {
   color: #000;
-  font-size: 15px;
+  font-size: 8px;
   font-weight: 20px;
+  margin-left: 10px;
 }
 .siderbar_operation_log_time {
   color: #b5c3d1;
-  font-size: 15px;
+  font-size: 8px;
 }
 .siderbar_operation_log_movement {
   height: 30px;
   display: flex;
-  align-items:flex-end;
+  align-items: flex-end;
+}
+.siderbar_operation_log_active {
+  color: #000;
+  font-size: 8px;
+  font-weight: 20px;
 }
 </style>
