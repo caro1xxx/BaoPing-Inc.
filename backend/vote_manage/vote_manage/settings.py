@@ -53,7 +53,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'vote_manage.mian.urls'
+ROOT_URLCONF = 'vote_manage.urls'
 
 TEMPLATES = [
     {

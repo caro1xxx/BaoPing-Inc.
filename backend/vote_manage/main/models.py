@@ -13,3 +13,7 @@ class User(models.Model):
     auth = models.IntegerField(default=1)
     avator = models.TextField(max_length=100)
     token = models.CharField(max_length=32)
+    # 1: 正常 0: 其他
+    status = models.IntegerField(default=1)
+
+    # objects = models.Manager()
