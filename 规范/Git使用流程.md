@@ -34,7 +34,7 @@ git checkout -b feature-xxx
 
 ```shell
 #回到develop分支
-git checekout main
+git checekout develop
 ```
 
 4. 保存本地代码
