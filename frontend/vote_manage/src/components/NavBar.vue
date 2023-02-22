@@ -13,7 +13,7 @@
             :key="item"
             class="navbar_midd_body_itemFor"
           >
-            <img :src="item.img" alt="" width="25" height="25" />
+            <img :src="item.img" alt="" class="icon_style" />
             <div class="navbar_midd_body_item">{{ item.name }}</div>
           </div>
         </div>
