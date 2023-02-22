@@ -72,7 +72,7 @@ const navItme = reactive([
 .navbar_midd_body_line {
   height: 1px;
   padding-top: 22px;
-  border-bottom: 1px solid #b5c3d1;
+  border-bottom: 1px solid #b5c3d17a;
 }
 .navbar_midd_body_item {
   margin-bottom: 30px;
