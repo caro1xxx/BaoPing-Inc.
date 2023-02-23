@@ -19,15 +19,15 @@ class CheckEmailCode(APIView):
             if not ok:
                 return JsonResponse({'code': 400, "msg": msg})
             if emailCode is None:
-                return JsonResponse({'code': 400, "msg": 'code is empty'})
+                return JsonResponse({'code': 400, "msg": '验证码不能为空'})
 
             serverEmailCode = cache.get('syl_' + email, None)
             print(emailCode, serverEmailCode)
             if serverEmailCode is None:
-                return JsonResponse({'code': 400, "msg": 'code timetout'})
+                return JsonResponse({'code': 400, "msg": '验证码已过期'})
             cache.delete('syl_' + email)
             if serverEmailCode != emailCode:
-                ret = JsonResponse({'code': 400, "msg": 'code error'})
+                ret = JsonResponse({'code': 400, "msg": '验证码错误'})
                 return ret
         except Exception as e:
             return JsonResponse({'code': 500, 'msg': 'Timeout'})

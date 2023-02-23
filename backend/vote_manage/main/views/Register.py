@@ -9,16 +9,23 @@ from main.tools import genearteMD5, getNowTimeStamp, Validate
 from main.views.UserOp import UserOp
 
 
+# 注册用户，先验证用户资料再验证邮件验证码
 class Register(APIView):
     def post(self, request, *ary, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
-            userdata = json.loads(request.body).get('data', None)
+            userdata = {}
+            userdata['name'] = request.POST.get('name', None)
+            userdata['username'] = request.POST.get('username', None)
+            userdata['pwd'] = request.POST.get('pwd', None)
+            userdata['email'] = request.POST.get('email', None)
+            userdata['email_code'] = request.POST.get('code', None)
+            # userdata = json.loads(request.body).get('data', None)
             if not Validate().checkIsNotEmpty(userdata):
-                ret = {'code': 404, 'msg': 'no userdata'}
+                ret = {'code': 404, 'msg': '没有用户数据'}
                 return JsonResponse(ret)
             userOp = UserOp()
-            ok, msg = userOp.register(userdata)
+            ok, msg = userOp.register(userdata, request)
             if not ok:
                 ret = {'code': 400, 'msg': msg}
         except Exception as e:

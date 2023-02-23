@@ -3,6 +3,7 @@ import time
 import re
 import random
 import string
+import base64
 
 # 验证类，通过addCheck()增加验证规则，start()进行统一验证
 # 验证类的check开头的方法，如果验证通过为True，否则为False
@@ -98,3 +99,11 @@ def generateString16():
 def generateCode6():
     randStr = ''.join(random.sample(string.digits, 6))
     return randStr
+
+def b64Encode(data):
+    b64Code = base64.b64encode(str(data).encode())
+    return b64Code
+
+def b64Decode(data):
+    data = base64.b64decode(str(data)).decode()
+    return data

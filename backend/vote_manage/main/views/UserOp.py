@@ -1,17 +1,15 @@
 import json
 from main import models
-from rest_framework.response import Response
-from django.http import JsonResponse
-from rest_framework.views import APIView
-from django.core import serializers
 from django.core.cache import cache
-from main.tools import genearteMD5, getNowTimeStamp, Validate, generateString16, generateCode6
+from main.tools import genearteMD5, getNowTimeStamp, Validate, generateString16, generateCode6, b64Encode, b64Decode
 from django.core.mail import send_mail
 from vote_manage import settings
 
+
+# 关于用户的一些操作
 class UserOp:
     def __init__(self):
-        self.ERROR1 = 'username or password error'
+        self.ERROR1 = '用户名或密码错误'
             
     def onLoginSuccess(self, userObj):
         userObj.last_login_time = getNowTimeStamp()
@@ -29,56 +27,56 @@ class UserOp:
         else:
             return False, self.ERROR1
 
+    # 检查username是否已经注册
     def checkUsernameExist(self, username):
         userObj = models.User.objects.filter(username=username)
-        return userObj.exists(), 'username already exists'
+        return userObj.exists(), '用户名已注册'
     
+    # 验证用户姓名的格式是否正确
     def checkName(self, name):
         validate = Validate()
-        validate.addCheck('checkMinLength', name, 'name min length is 2', 2)
-        validate.addCheck('checkMaxLength', name, 'name max length is 8', 8)
-        validate.addCheck('checkHasNoSpace', name, 'name has space')
+        validate.addCheck('checkMinLength', name, '姓名最小长度为2', 2)
+        validate.addCheck('checkMaxLength', name, '姓名最大长度为8', 8)
+        validate.addCheck('checkHasNoSpace', name, '姓名不能包含空格')
         return validate.startCheck()
 
+    #  验证用户名格式是否正确
     def checkUsername(self, username):
         validate = Validate()
-        validate.addCheck('checkMinLength', username, 'username min length is 5', 5)
-        validate.addCheck('checkMaxLength', username, 'username max length is 8', 8)
-        validate.addCheck('checkHasNoSpace', username, 'username has space')
-        validate.addCheck('checkOnlyNumal', username, 'username only number and alapha')
+        validate.addCheck('checkMinLength', username, '用户名最小长度为5', 5)
+        validate.addCheck('checkMaxLength', username, '用户名最大长度为8', 8)
+        validate.addCheck('checkHasNoSpace', username, '用户名不能包含空格')
+        validate.addCheck('checkOnlyNumal', username, '用户名只支持数字和字母的组合')
         return validate.startCheck()
-
+    
+    # 验证email格式是否正确
     def checkEmail(self, email):
         validate = Validate()
-        validate.addCheck('checkMinLength', email, 'email min length is 5', 5)
-        validate.addCheck('checkMaxLength', email, 'email max length is 20', 20)
-        validate.addCheck('checkHasNoSpace', email, 'email has space')
-        validate.addCheck('checkIsEmail', email, 'is not a email')
+        validate.addCheck('checkMinLength', email, '邮箱最小长度为5', 5)
+        validate.addCheck('checkMaxLength', email, '邮箱最大长度为20', 20)
+        validate.addCheck('checkHasNoSpace', email, '邮箱不能包含空格')
+        validate.addCheck('checkIsEmail', email, '邮箱格式错误')
         return validate.startCheck()
 
+    # 检查email是否已经注册
     def checkEmailExist(self, email):
         userObj = models.User.objects.filter(email=email)
-        return userObj.exists(), 'email already exists'
+        return userObj.exists(), '邮箱已经注册'
 
+    # 验证密码格式是否正确
     def checkPwd(self, pwd):
         print("check validate pwd")
         validate = Validate()
-        validate.addCheck('checkMinLength', pwd, 'password min length is 8', 8)
-        validate.addCheck('checkMaxLength', pwd, 'password max length is 16', 16)
-        validate.addCheck('checkHasNoSpace', pwd, 'password has space')
+        validate.addCheck('checkMinLength', pwd, '密码最小长度为8', 8)
+        validate.addCheck('checkMaxLength', pwd, '密码最大长度为16', 16)
+        validate.addCheck('checkHasNoSpace', pwd, '密码不能包含空格')
         ok, res = validate.startCheck()
         return ok, res
-        return validate.startCheck()
-    
-    def checkAuth(self, auth):
-        if auth not in [0, 1]:
-            return False, 'auth error'
-        return True, None
     
     def checkData(self, userdata):
         ok, msg = self.checkUsernameExist(userdata['username'])
         if ok:
-            return False, 'username repeat'
+            return False, '用户名重复'
         ok, msg = self.checkName(userdata['name'])
         if not ok:
             return ok, msg
@@ -96,10 +94,21 @@ class UserOp:
             return ok, msg
         return True, None
 
+    def generatreToken(self, username):
+        data = username + ' ' + str(getNowTimeStamp())
+        data = b64Encode(data)
+        return data
+
+    def getDataFromToken(self, token):
+        data = b64Decode(token)
+        usrename, lastLoginTime = data.split(' ')
+        lastLoginTime = int(lastLoginTime)
+        return usrename, lastLoginTime
+
     def onRegisterSuccess(self):
         pass    
 
-    def register(self, userdata):
+    def register(self, userdata, request):
         try:
             ok, msg = self.checkData(userdata)
             if not ok:
@@ -108,14 +117,18 @@ class UserOp:
             userdata['create_time'] = getNowTimeStamp()
             userdata['last_login_time'] = getNowTimeStamp()
             userdata['auth'] = 1
-            userdata['avator'] = userdata.get('avator', '/static/img/avator/avator1.jpeg')
-            userdata['token'] = generateString16()
+            userdata['avator'] = request.FILES.get('avator', None)  
+            if userdata['avator'] is None:
+                return False, '头像地址错误'
+            # userdata['avator'] = userdata.get('avator', '/static/img/avator/avator1.jpeg')
+            # userdata['token'] = generateString16()
+            userdata['token'] = self.generatreToken(userdata['username'])
             userdata['status'] = 1
             userObj = models.User.objects.create(name = userdata['name'], username = userdata['username'], pwd= userdata['pwd'], create_time = userdata['create_time'], last_login_time = userdata['last_login_time'], email = userdata['email'], auth = userdata['auth'], avator = userdata['avator'], token = userdata['token'], status = userdata['status'])
             userObj.save()
             return True, None
         except Exception as e:
-            return False, str(e)
+            # return False, str(e)
             return False, 'Timeout'
             
     def sendEmail(self, email):
@@ -124,12 +137,12 @@ class UserOp:
             content = code
             my_email = send_mail('你的验证码是:{}'.format(email), content, settings.DEFAULT_FROM_EMAIL, [email])
             if my_email != 1:
-                return False, 'send email error'
+                return False, '发送验证码失败'
             key = 'syl_' + email
             cache.set(key, code, 300)  
         except Exception as e:
-            return False, 'send email code error'
-        return True, 'send email code success'
+            return False, '发送验证码失败'
+        return True, '发送验证码成功'
     
     def checkEmailCode(self, email, emailCode):
         try:
@@ -138,15 +151,15 @@ class UserOp:
             if not ok:
                 return ok, msg
             if emailCode is None:
-                return ok, 'code is empty'
+                return ok, '验证码不能为空'
 
             serverEmailCode = cache.get('syl_' + email, None)
             print(emailCode, serverEmailCode)
             if serverEmailCode is None:
-                return ok, 'code timetout'
+                return ok, '验证码已过期'
             cache.delete('syl_' + email)
             if serverEmailCode != emailCode:
-                return ok, 'code error'
+                return ok, '验证码错误'
         except Exception as e:
             return False, 'Timeout'
         return True, None

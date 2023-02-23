@@ -9,7 +9,6 @@ from main.views.UserOp import UserOp
 
 
 class ForgetPassword(APIView):
-    # email, username
     def post(self, request, *arg, **kwargs):
         ret = {'code': 200, "msg": 'ok'}
         try:
@@ -20,7 +19,7 @@ class ForgetPassword(APIView):
                 return JsonResponse({'code': 400, "msg": msg})
             ok, msg = userop.checkEmailExist(email)
             if not ok:
-                return JsonResponse({'code': 400, "msg": 'email is not exists'})
+                return JsonResponse({'code': 400, "msg": '邮箱未注册'})
             ok, msg = userop.sendEmail(email)
             if not ok:
                 return JsonResponse({'code': 400, "msg": msg})

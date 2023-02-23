@@ -10,7 +10,7 @@ from main.views.UserOp import UserOp
 
 class SendEmailCode(APIView):
     def post(self, request, *arg, **kwargs):
-        ret = {'code': 200, "msg": 'ok'}
+        ret = {'code': 200, "msg": '发送成功'}
         try:
             email = json.loads(request.body).get('email', None) 
             userop = UserOp()
@@ -19,7 +19,7 @@ class SendEmailCode(APIView):
                 return JsonResponse({'code': 400, "msg": msg})
             ok, msg = userop.checkEmailExist(email)
             if ok:
-                return JsonResponse({'code': 400, "msg": 'email is already exists'})
+                return JsonResponse({'code': 400, "msg": '邮箱已注册'})
             ok, msg = userop.sendEmail(email)
             if not ok:
                 return JsonResponse({'code': 400, "msg": msg})

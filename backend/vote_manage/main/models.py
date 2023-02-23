@@ -11,7 +11,7 @@ class User(models.Model):
     email = models.CharField(max_length=50, unique=True)
     # 0: admin, 1: guest
     auth = models.IntegerField(default=1)
-    avator = models.TextField(max_length=100)
+    avator = models.FileField(blank=True, null=True, upload_to='avator', verbose_name='头像')
     token = models.CharField(max_length=32)
     # 1: 正常 0: 其他
     status = models.IntegerField(default=1)
