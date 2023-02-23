@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import RegisterView from "../views/RegisterView.vue";
-import System from "../views/system.vue";
-import News from "../views/news.vue";
+
+// 系统管理板块
+import System from "../views/System.vue";
+import News from "../views/News.vue";
 import Vote from "../views/Vote.vue";
 import Order from "../views/Order.vue";
 import Vermicelli from "../views/Vermicelli.vue";
@@ -20,8 +22,8 @@ const routes = [
     component: RegisterView,
   },
   {
-    path: "/system",
-    name: "system",
+    path: "/System",
+    name: "System",
     component: System,
   },
   {
