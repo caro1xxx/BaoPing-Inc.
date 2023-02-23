@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 from django.core import serializers
 from django.core.cache import cache
-from main.tools import genearteMD5, getNowTimeStamp, Validate, genearteString16
+from main.tools import genearteMD5, getNowTimeStamp, Validate
 from main.views.UserOp import UserOp
 
 
@@ -13,7 +13,7 @@ class Register(APIView):
     def post(self, request, *ary, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
-            userdata = json.loads(request.body).get('userdata', None)
+            userdata = json.loads(request.body).get('data', None)
             if not Validate().checkIsNotEmpty(userdata):
                 ret = {'code': 404, 'msg': 'no userdata'}
                 return JsonResponse(ret)

@@ -5,7 +5,9 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 from django.core import serializers
 from django.core.cache import cache
-from main.tools import genearteMD5, getNowTimeStamp, Validate, genearteString16
+from main.tools import genearteMD5, getNowTimeStamp, Validate, generateString16, generateCode6
+from django.core.mail import send_mail
+from vote_manage import settings
 
 class UserOp:
     def __init__(self):
@@ -29,7 +31,7 @@ class UserOp:
 
     def checkUsernameExist(self, username):
         userObj = models.User.objects.filter(username=username)
-        return userObj.exists()
+        return userObj.exists(), 'username already exists'
     
     def checkName(self, name):
         validate = Validate()
@@ -54,6 +56,10 @@ class UserOp:
         validate.addCheck('checkIsEmail', email, 'is not a email')
         return validate.startCheck()
 
+    def checkEmailExist(self, email):
+        userObj = models.User.objects.filter(email=email)
+        return userObj.exists(), 'email already exists'
+
     def checkPwd(self, pwd):
         print("check validate pwd")
         validate = Validate()
@@ -70,7 +76,8 @@ class UserOp:
         return True, None
     
     def checkData(self, userdata):
-        if self.checkUsernameExist(userdata['username']):
+        ok, msg = self.checkUsernameExist(userdata['username'])
+        if ok:
             return False, 'username repeat'
         ok, msg = self.checkName(userdata['name'])
         if not ok:
@@ -79,6 +86,12 @@ class UserOp:
         if not ok:
             return ok, msg
         ok, msg = self.checkEmail(userdata['email'])
+        if not ok:
+            return ok, msg
+        ok, msg = self.checkEmailExist(userdata['email'])
+        if ok:
+            return False, msg
+        ok, msg = self.checkEmailCode(userdata['email'], userdata['email_code'])
         if not ok:
             return ok, msg
         return True, None
@@ -95,16 +108,49 @@ class UserOp:
             userdata['create_time'] = getNowTimeStamp()
             userdata['last_login_time'] = getNowTimeStamp()
             userdata['auth'] = 1
-            userdata['avator'] = 'pi'
-            # userdata['avator'] = '//' if userdata['avator'] is None else userdata['avator']
-            userdata['token'] = genearteString16()
+            userdata['avator'] = userdata.get('avator', '/static/img/avator/avator1.jpeg')
+            userdata['token'] = generateString16()
             userdata['status'] = 1
             userObj = models.User.objects.create(name = userdata['name'], username = userdata['username'], pwd= userdata['pwd'], create_time = userdata['create_time'], last_login_time = userdata['last_login_time'], email = userdata['email'], auth = userdata['auth'], avator = userdata['avator'], token = userdata['token'], status = userdata['status'])
             userObj.save()
             return True, None
         except Exception as e:
-            # return False, str(e)
+            return False, str(e)
             return False, 'Timeout'
-        return False, 'Timeout'
             
+    def sendEmail(self, email):
+        try:
+            code = generateCode6()
+            content = code
+            my_email = send_mail('你的验证码是:{}'.format(email), content, settings.DEFAULT_FROM_EMAIL, [email])
+            if my_email != 1:
+                return False, 'send email error'
+            key = 'syl_' + email
+            cache.set(key, code, 300)  
+        except Exception as e:
+            return False, 'send email code error'
+        return True, 'send email code success'
+    
+    def checkEmailCode(self, email, emailCode):
+        try:
+            userop = UserOp()
+            ok, msg = userop.checkEmail(email)
+            if not ok:
+                return ok, msg
+            if emailCode is None:
+                return ok, 'code is empty'
+
+            serverEmailCode = cache.get('syl_' + email, None)
+            print(emailCode, serverEmailCode)
+            if serverEmailCode is None:
+                return ok, 'code timetout'
+            cache.delete('syl_' + email)
+            if serverEmailCode != emailCode:
+                return ok, 'code error'
+        except Exception as e:
+            return False, 'Timeout'
+        return True, None
+
+
+
 

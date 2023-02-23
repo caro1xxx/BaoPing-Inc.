@@ -90,7 +90,11 @@ def genearteMD5(text):
 def getNowTimeStamp():
     return int(time.time())
 
-def genearteString16():
+def generateString16():
     # random.sample('1234567890abcdefghijklmnopqrstuvwxyz!@#$%^&*()', 16)
-    ran_str = ''.join(random.sample(string.ascii_letters + string.digits, 16))
-    return ran_str
+    randStr = ''.join(random.sample(string.ascii_letters + string.digits, 16))
+    return randStr
+
+def generateCode6():
+    randStr = ''.join(random.sample(string.digits, 6))
+    return randStr

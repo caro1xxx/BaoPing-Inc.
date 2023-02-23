@@ -5,7 +5,6 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 from django.core import serializers
 from django.core.cache import cache
-from main.tools import genearteMD5, getNowTimeStamp, Validate, genearteString16
 from main.views.UserOp import UserOp
 
 
@@ -18,7 +17,7 @@ class Login(APIView):
             userOp = UserOp()
             ok, data = userOp.login(username, pwd)
             if ok:
-                ret['user_data'] = serializers.serialize("json",models.User.objects.filter(username=data.username))
+                ret['data'] = serializers.serialize("json",models.User.objects.filter(username=data.username))
             else:
                 ret['code'] = 400
                 ret['msg'] = data
