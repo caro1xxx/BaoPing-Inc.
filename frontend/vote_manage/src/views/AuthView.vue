@@ -72,7 +72,7 @@ const closeAuth = () => {
   align-items: center;
 }
 .register_mask_body {
-  width: calc(25vw);
+  width: 400px;
   background-color: white;
   border-radius: 3px;
   position: relative;
@@ -89,7 +89,7 @@ const closeAuth = () => {
 }
 .register_mask_close {
   position: absolute;
-  left: 370px;
+  left:420px;
   width: 20px;
   height: 20px;
   cursor: pointer;

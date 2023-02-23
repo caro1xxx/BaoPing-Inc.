@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import RegisterView from "../views/RegisterView.vue";
 
 // 系统管理板块
 import System from "../views/System.vue";
