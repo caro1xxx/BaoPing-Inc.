@@ -7,7 +7,7 @@ import SystemUserView from "../views/SystemUserView.vue";
 import SystemSettingView from "../views/SystemSettingView.vue";
 import GlobalDomainView from "../views/GlobalDomainView.vue";
 import AuthGroupView from "../views/AuthGroupView.vue";
-
+import FeedbackView from "../views/FeedbackView.vue";
 const routes = [
   {
     path: "/",
@@ -43,6 +43,12 @@ const routes = [
     path: "/authgroup",
     name: "authgroup",
     component: AuthGroupView,
+  },
+  // f反馈
+  {
+    path: "/feedback",
+    name: "feedback",
+    component: FeedbackView,
   },
 ];
 
