@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from django.core import serializers
 from django.core.cache import cache
 from main.tools import genearteMD5, getNowTimeStamp, Validate
-from main.views.UserOp import UserOp
+from main.views.user.UserOp import UserOp
 
 
 # 注册用户，先验证用户资料再验证邮件验证码
@@ -20,6 +20,7 @@ class Register(APIView):
             userdata['pwd'] = request.POST.get('pwd', None)
             userdata['email'] = request.POST.get('email', None)
             userdata['email_code'] = request.POST.get('code', None)
+            userdata['avator'] = request.POST.get('avator', None)
             # userdata = json.loads(request.body).get('data', None)
             if not Validate().checkIsNotEmpty(userdata):
                 ret = {'code': 404, 'msg': '没有用户数据'}

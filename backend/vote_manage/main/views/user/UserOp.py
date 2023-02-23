@@ -73,6 +73,7 @@ class UserOp:
         ok, res = validate.startCheck()
         return ok, res
     
+    # 验证用户数据是否正确
     def checkData(self, userdata):
         ok, msg = self.checkUsernameExist(userdata['username'])
         if ok:
@@ -94,11 +95,13 @@ class UserOp:
             return ok, msg
         return True, None
 
+    # 根据用户名和当前时间戳生成加密token
     def generatreToken(self, username):
         data = username + ' ' + str(getNowTimeStamp())
         data = b64Encode(data)
         return data
 
+    # 将token解密获取用户名和时间戳
     def getDataFromToken(self, token):
         data = b64Decode(token)
         usrename, lastLoginTime = data.split(' ')
@@ -108,6 +111,7 @@ class UserOp:
     def onRegisterSuccess(self):
         pass    
 
+    # 注册用户
     def register(self, userdata, request):
         try:
             ok, msg = self.checkData(userdata)
@@ -117,11 +121,7 @@ class UserOp:
             userdata['create_time'] = getNowTimeStamp()
             userdata['last_login_time'] = getNowTimeStamp()
             userdata['auth'] = 1
-            userdata['avator'] = request.FILES.get('avator', None)  
-            if userdata['avator'] is None:
-                return False, '头像地址错误'
-            # userdata['avator'] = userdata.get('avator', '/static/img/avator/avator1.jpeg')
-            # userdata['token'] = generateString16()
+            print(userdata['avator'])
             userdata['token'] = self.generatreToken(userdata['username'])
             userdata['status'] = 1
             userObj = models.User.objects.create(name = userdata['name'], username = userdata['username'], pwd= userdata['pwd'], create_time = userdata['create_time'], last_login_time = userdata['last_login_time'], email = userdata['email'], auth = userdata['auth'], avator = userdata['avator'], token = userdata['token'], status = userdata['status'])
@@ -130,7 +130,8 @@ class UserOp:
         except Exception as e:
             # return False, str(e)
             return False, 'Timeout'
-            
+    
+    # 发送六位数字验证码到邮箱
     def sendEmail(self, email):
         try:
             code = generateCode6()
@@ -144,6 +145,7 @@ class UserOp:
             return False, '发送验证码失败'
         return True, '发送验证码成功'
     
+    # 检查验证码是否正确
     def checkEmailCode(self, email, emailCode):
         try:
             userop = UserOp()
