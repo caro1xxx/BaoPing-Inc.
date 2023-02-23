@@ -8,6 +8,7 @@
 
 <script setup>
 import NavBar from "./components/NavBar.vue";
+import SiderBar from "./components/SiderBar.vue";
 import Message from "./components/Message.vue";
 import { useStore } from "vuex";
 const $store = useStore();
