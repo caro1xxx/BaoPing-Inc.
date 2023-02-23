@@ -5,6 +5,7 @@ import RegisterView from "../views/RegisterView.vue";
 // 系统管理板块
 import System from "../views/System.vue";
 import News from "../views/News.vue";
+import AuthView from "../views/AuthView.vue";
 import Vote from "../views/Vote.vue";
 import Order from "../views/Order.vue";
 import Vermicelli from "../views/Vermicelli.vue";
@@ -17,9 +18,9 @@ const routes = [
     component: HomeView,
   },
   {
-    path: "/register",
-    name: "register",
-    component: RegisterView,
+    path: "/auth",
+    name: "auth",
+    component: AuthView,
   },
   {
     path: "/System",
