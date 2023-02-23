@@ -1,8 +1,9 @@
 <!-- 系统设置 -->
 <template>
-    <div class="system_main">
+  <div class="system_main">
+    <div class="system_main_body">
       <Search />
-      <div class="title_style">系统管理</div>
+      <div class="title_style">全局域名</div>
       <div class="setup_table">
         <div class="setup_table_head">
           <div>公众号设置</div>
@@ -14,30 +15,30 @@
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
-
 import Search from "@/components/Search.vue";
 
 export default {
   data() {
-    return {
-    }
+    return {};
   },
   components: {
-    Search
-  }
-}
-
+    Search,
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-.system_main{
-  width: calc(100vw - 170px);
-  height: calc(100vh - 40px);
-  font-size: 40px;
+.system_main {
+  width: calc(100vw - 200px);
+  height: calc(100vh);
+  font-size: 20px;
   font-weight: 50px;
+}
+.system_main_body {
   margin: 20px 20px;
 }
 

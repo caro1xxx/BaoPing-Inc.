@@ -1,15 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import RegisterView from "../views/RegisterView.vue";
 
 // 系统管理板块
-import System from "../views/System.vue";
-import News from "../views/News.vue";
 import AuthView from "../views/AuthView.vue";
-import Vote from "../views/Vote.vue";
-import Order from "../views/Order.vue";
-import Vermicelli from "../views/Vermicelli.vue";
-import Assignment from "../views/Assignment.vue";
+import SystemUserView from "../views/SystemUserView.vue";
+import SystemSettingView from "../views/SystemSettingView.vue";
+import GlobalDomainView from "../views/GlobalDomainView.vue";
+import AuthGroupView from "../views/AuthGroupView.vue";
 
 const routes = [
   {
@@ -17,40 +14,35 @@ const routes = [
     name: "home",
     component: HomeView,
   },
+  // 登录注册
   {
     path: "/auth",
     name: "auth",
     component: AuthView,
   },
+  // 系统用户
   {
-    path: "/System",
-    name: "System",
-    component: System,
+    path: "/systemuser",
+    name: "systemuser",
+    component: SystemUserView,
   },
+  // 系统设置
   {
-    path: "/news",
-    name: "news",
-    component: News,
+    path: "/systemsetting",
+    name: "systemsetting",
+    component: SystemSettingView,
   },
+  // 全局域名
   {
-    path: "/vote",
-    name: "vote",
-    component: Vote,
+    path: "/globaldomain",
+    name: "globaldomain",
+    component: GlobalDomainView,
   },
+  // 权限分支
   {
-    path: "/order",
-    name: "order",
-    component: Order,
-  },
-  {
-    path: "/vermicelli",
-    name: "vermicelli",
-    component: Vermicelli,
-  },
-  {
-    path: "/assignment",
-    name: "assignment",
-    component: Assignment,
+    path: "/authgroup",
+    name: "authgroup",
+    component: AuthGroupView,
   },
 ];
 

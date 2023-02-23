@@ -2,20 +2,15 @@
   <div style="display: flex">
     <NavBar />
     <router-view />
-    <!-- <SiderBar /> -->
-    <SiderBar />
     <Message v-if="$store.state.globalMessage !== ''" />
   </div>
 </template>
 
 <script setup>
 import NavBar from "./components/NavBar.vue";
-// import SiderBar from "./components/SiderBar.vue";
-import SiderBar from "./components/SiderBar.vue";
 import Message from "./components/Message.vue";
 import { useStore } from "vuex";
 const $store = useStore();
-
 </script>
 
 <style lang="scss">
