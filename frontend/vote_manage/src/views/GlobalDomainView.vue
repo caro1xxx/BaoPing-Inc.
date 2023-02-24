@@ -72,7 +72,6 @@ const realmSetuo = reactive({
 .setup_table {
   border: 1px solid #b5c3d178;
   border-radius: 10px;
-  height: 240px;
   margin-top: 20px;
 }
 .setup_table_head {

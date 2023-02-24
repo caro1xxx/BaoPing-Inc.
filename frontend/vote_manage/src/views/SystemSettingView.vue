@@ -158,154 +158,97 @@ const setupdata = reactive({
 
 <style lang="scss" scoped>
 .system_main {
-  width: calc(100vw - 200px);
-  height: calc(100vh);
-  font-size: 20px;
-  font-weight: 50px;
+   width: calc(100vw - 200px);
+    height: calc(100vh);
+ font-size: 20px;
+ font-weight: 50px;
 }
 .system_main_body {
-  margin: 20px 20px;
+ margin: 20px 20px;
 }
-.system_main_content {
-  width: 100%;
-  height: calc(100vh - 155px);
+.system_main_content{
+ width: 100%;
+ height: calc(100vh - 155px);
+ display: flex;
+ flex-direction: column;
+ .setup_table {
+  border: 1px solid #b5c3d178;
+  border-radius: 10px;
+  margin-top: 20px;
+  flex: 1;
+  overflow: hidden;
+ }
+ .setup_table_head {
+  border-radius: 10px 10px 0px 0px;
+  height: 40px;
+  line-height: 40px;
+  border-bottom: 1px solid #b5c3d178;
+  box-shadow: 0 4px 4px 0 #bababa21;
   display: flex;
   color: #000;
   font-size: 20px;
   div {
-    width: 11.111%;
-    text-align: center;
-    line-height: 40px;
-    font-size: 15px;
-    font-weight: lighter;
+   width: 11.111%;
+   text-align: center;
+   font-size: 15px;
+   font-weight: lighter;
   }
-}
-.setup_table_body {
-  height: 200px;
+ }
+ .setup_table_body {
+  width: 100%;
+  height: calc((100vh - 364px) / 3);
   display: flex;
   text-align: center;
   font-size: 14px;
   font-weight: lighter;
   color: #585858;
-  margin: 10px 0px;
-}
-.setup_table_body_left {
-  flex: 1;
-  .setup_table_body_head {
-    height: 40px;
-    display: flex;
-    align-items: center;
-    div {
-      width: 14.28%;
-    }
+ }
+ .setup_table_body_left{
+  width: 87.5%;
+  .setup_table_body_head{
+   height: 40px;
+   display: flex;
+   align-items: center;
+   div{
+    width: 12.5%;
+   }
   }
-  .setup_table_body_content {
-    height: 80px;
+  .setup_table_body_content{
+   display: flex;
+   align-items: center;
+   div{
+    width: 12.5%;
     display: flex;
-    align-items: center;
-    div {
-      width: 14.28%;
-      display: flex;
-      justify-content: flex-end;
-    }
-    input {
-      border-style: none;
-      outline: none;
-    }
-    img {
-      width: 80px;
-      height: 80px;
-      background-size: 100%;
-      background-repeat: no-repeat;
-      margin: auto;
-    }
-  }
-}
-.setup_table_body_right {
-  width: 200px;
-  button {
-    width: 82px;
-    height: 47px;
-    background-color: #188cff;
-    color: #fff;
+    justify-content: flex-end;
+   }
+   input{
     border-style: none;
-    flex-direction: column;
+    outline: none;
+    width: 80%;
+   }
+   img{
+    width: 50px;
+    height: 50px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    margin: auto;
+   }
   }
-  .setup_table {
-    border: 1px solid #b5c3d178;
-    border-radius: 10px;
-    margin-top: 20px;
-    flex: 1;
+ }
+ .setup_table_body_right{
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  button{
+   width: 80px;
+   height: 40px;
+   background-color: #188CFF;
+   color: #fff;
+   border-style: none;
+   border-radius: 10px;
+   font-size: 20px;
   }
-  .setup_table_head {
-    border-radius: 10px 10px 0px 0px;
-    height: 40px;
-    line-height: 40px;
-    border-bottom: 1px solid #b5c3d178;
-    box-shadow: 0 4px 4px 0 #bababa21;
-    display: flex;
-    color: #000;
-    font-size: 20px;
-    div {
-      width: 11.111%;
-      text-align: center;
-      font-size: 15px;
-      font-weight: lighter;
-    }
-  }
-  .setup_table_body {
-    width: 100%;
-    height: calc((100vh - 364px) / 3);
-    display: flex;
-    text-align: center;
-    font-size: 14px;
-    font-weight: lighter;
-    color: #585858;
-  }
-  .setup_table_body_left {
-    width: 87.5%;
-    .setup_table_body_head {
-      height: 40px;
-      display: flex;
-      align-items: center;
-      div {
-        width: 12.5%;
-      }
-    }
-    .setup_table_body_content {
-      display: flex;
-      align-items: center;
-      div {
-        width: 12.5%;
-        display: flex;
-        justify-content: flex-end;
-      }
-      input {
-        border-style: none;
-        outline: none;
-      }
-      img {
-        width: 50px;
-        height: 50px;
-        background-size: 100%;
-        background-repeat: no-repeat;
-        margin: auto;
-      }
-    }
-  }
-  .setup_table_body_right {
-    flex: 1;
-    display: flex;
-    align-items: flex-end;
-    button {
-      width: 80px;
-      height: 40px;
-      background-color: #188cff;
-      color: #fff;
-      border-style: none;
-      border-radius: 10px;
-      font-size: 20px;
-    }
-  }
+ }
 }
 </style>
