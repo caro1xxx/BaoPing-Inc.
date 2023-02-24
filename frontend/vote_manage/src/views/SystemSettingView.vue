@@ -184,6 +184,7 @@ const setupdata = reactive({
     color: #000;
     font-size: 20px;
     cursor: pointer;
+    user-select: none;
     div {
      width: 11.111%;
      text-align: center;
@@ -244,6 +245,7 @@ const setupdata = reactive({
      border-radius: 10px;
      font-size: 15px;
      cursor: pointer;
+    user-select: none;
     }
    }
   }

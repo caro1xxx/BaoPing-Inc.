@@ -87,6 +87,7 @@ const feedbackdata = reactive([
     font-weight: lighter;
   }
   cursor: pointer;
+    user-select: none;
 }
 .feedback_table_body {
   display: flex;
@@ -112,6 +113,7 @@ const feedbackdata = reactive([
     color: #188CFF;
     span{
       cursor: pointer;
+    user-select: none;
       margin: 0px 10px;
     }
   }

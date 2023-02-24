@@ -88,6 +88,8 @@ const linmitsdata = reactive([
   border-bottom: 1px solid #b5c3d178;
   box-shadow: 0 4px 4px 0 #bababa21;
   display: flex;
+  cursor: pointer;
+    user-select: none;
   div {
     flex: 1;
     text-align: center;
@@ -114,6 +116,7 @@ const linmitsdata = reactive([
     span{
       margin: 0px 10px;
       cursor: pointer;
+    user-select: none;
     }
   }
 }

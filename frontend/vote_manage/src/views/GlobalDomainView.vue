@@ -82,6 +82,8 @@ const realmSetuo = reactive({
   display: flex;
   color: #000;
   font-size: 20px;
+  cursor: pointer;
+    user-select: none;
   div {
     width: 11.111%;
     text-align: center;
@@ -144,6 +146,7 @@ const realmSetuo = reactive({
     border-radius: 10px;
     margin-top: 130px;
     cursor: pointer;
+    user-select: none;
   }
 }
 </style>
