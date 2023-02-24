@@ -85,14 +85,14 @@ import { HOST } from "@/ENV";
 const $store = useStore();
 // 头像列表
 const avatorList = reactive([
-  { id: 1, img: require("../assets/img/22.png"), select: false },
-  { id: 2, img: require("../assets/img/23.png"), select: false },
-  { id: 3, img: require("../assets/img/24.png"), select: false },
-  { id: 4, img: require("../assets/img/25.png"), select: false },
-  { id: 5, img: require("../assets/img/26.png"), select: false },
-  { id: 6, img: require("../assets/img/27.png"), select: false },
-  { id: 7, img: require("../assets/img/28.png"), select: false },
-  { id: 8, img: require("../assets/img/29.png"), select: false },
+  { id: 22, img: require("../assets/img/22.png"), select: false },
+  { id: 23, img: require("../assets/img/23.png"), select: false },
+  { id: 24, img: require("../assets/img/24.png"), select: false },
+  { id: 25, img: require("../assets/img/25.png"), select: false },
+  { id: 26, img: require("../assets/img/26.png"), select: false },
+  { id: 27, img: require("../assets/img/27.png"), select: false },
+  { id: 28, img: require("../assets/img/28.png"), select: false },
+  { id: 29, img: require("../assets/img/29.png"), select: false },
 ]);
 
 // 用户输入
@@ -144,24 +144,19 @@ const checkForm = () => {
 };
 
 // 注册
-const register = (input) => {
+const register = () => {
   let form = new FormData();
   form.append("name", userInfo.name);
   form.append("username", userInfo.username);
   form.append("pwd", userInfo.password);
   form.append("email", userInfo.email);
   form.append("code", userInfo.code);
-  form.append("image", require(`../assets/img/${userInfo.avator}.png`));
+  form.append("avator", userInfo.avator);
   fetch(`${HOST}/register/`, { method: "post", body: form })
     .then((res) => res.json())
     .then((data) => {
       console.log(data);
     });
-  // 更新通知
-  // await $store.dispatch(
-  //   "GlobalMessageActions",
-  //   result.code === 200 ? "登录成功" : result.msg
-  // );
 };
 
 // 请求验证码

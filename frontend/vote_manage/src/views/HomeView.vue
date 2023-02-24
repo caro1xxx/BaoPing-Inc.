@@ -42,11 +42,13 @@
       </div>
     </div>
   </div>
+  <SiderBar />
 </template>
 
 <script setup>
 import Search from "@/components/Search.vue";
 import { reactive } from "vue";
+import SiderBar from "@/components/SiderBar.vue";
 
 // 数据列表
 const dataList = reactive([

@@ -2,7 +2,6 @@
   <div style="display: flex">
     <NavBar />
     <router-view />
-    <SiderBar />
     <Message v-if="$store.state.globalMessage !== ''" />
   </div>
 </template>

@@ -2,7 +2,12 @@
   <div class="register"></div>
   <div class="register_mask">
     <div class="register_mask_body">
-      <img src="../assets/img/31.png" class="register_mask_close" alt="" />
+      <img
+        src="../assets/img/31.png"
+        @click="closeAuth"
+        class="register_mask_close"
+        alt=""
+      />
       <div class="register_mask_body_body">
         <div
           class="register_mask_body_login"
@@ -29,13 +34,22 @@
 import Register from "@/components/Register.vue";
 import Login from "@/components/Login.vue";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 // 标志是否点击登录
 const authFlag = ref(true);
 
+const router = useRouter();
+
+// 改变注册或登录
 const changeAuth = (flag) => {
   if (flag === "login") authFlag.value = true;
   else authFlag.value = false;
+};
+
+// 关闭
+const closeAuth = () => {
+  router.push("/");
 };
 </script>
 
@@ -58,7 +72,7 @@ const changeAuth = (flag) => {
   align-items: center;
 }
 .register_mask_body {
-  width: calc(25vw);
+  width: 400px;
   background-color: white;
   border-radius: 3px;
   position: relative;
@@ -75,7 +89,7 @@ const changeAuth = (flag) => {
 }
 .register_mask_close {
   position: absolute;
-  left: 370px;
+  left:420px;
   width: 20px;
   height: 20px;
   cursor: pointer;
