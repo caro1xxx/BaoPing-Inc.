@@ -9,6 +9,7 @@ import GlobalDomainView from "../views/GlobalDomainView.vue";
 import AuthGroupView from "../views/AuthGroupView.vue";
 import FeedbackView from "../views/FeedbackView.vue";
 import InfoEditView from '../views/InfoEditView.vue'
+import PrizeApply from '../views/PrizeApplyView.vue'
 const routes = [
   {
     path: "/",
@@ -56,6 +57,12 @@ const routes = [
     path: "/infoedit",
     name: "infoedit",
     component: InfoEditView,
+  },
+  //  奖品申请
+  {
+    path: "/prizeapply",
+    name: "prizeapply",
+    component: PrizeApply,
   },
 ];
 
