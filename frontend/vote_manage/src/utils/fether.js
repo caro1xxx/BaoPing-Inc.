@@ -12,5 +12,21 @@ export const fether = (path, method = "get", params = {}) => {
     })
       .then((res) => res.json())
       .then((data) => data);
+  } else if (method === "delete") {
+    return fetch(`${HOST}${path}`, {
+      method: "delete",
+      body: JSON.stringify(params),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((data) => data);
+  } else if (method === "put") {
+    return fetch(`${HOST}${path}`, {
+      method: "put",
+      body: JSON.stringify(params),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((data) => data);
   }
 };

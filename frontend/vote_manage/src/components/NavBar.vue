@@ -308,6 +308,12 @@ const onclickParent = (path) => {
 .navbar_midd {
   width: 100%;
   height: calc(100vh - 102px);
+  overflow: scroll;
+}
+.navbar_midd::-webkit-scrollbar {
+  display: none;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 .navbar_midd_body {
   margin: 0px 25px;
