@@ -20,7 +20,11 @@ class UserOp:
 
     def login(self, username, pwd):
         pwdMD5 = genearteMD5(pwd)
-        if not self.checkUsernameExist(username):
+        ok, msg = self.checkUsername(username)
+        if not ok:
+            return False, msg
+        ok, msg = self.checkUsernameExist(username)
+        if not ok:
             return False, self.ERROR1
         userObj = models.User.objects.get(username=username)
         # print(pwd, pwdMD5, userObj.pwd)

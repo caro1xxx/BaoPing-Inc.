@@ -46,7 +46,8 @@ class UserInfo(APIView):
     def put(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': '修改成功'}
         try:
-            userdata = json.loads(str(request.body, encoding='utf-8')).get('data', None)
+            # userdata = json.loads(str(request.body, encoding='utf-8')).get('data', None)
+            userdata = json.loads(request.body).get('data', None)
 
             ok, msg = UserOp().checkDataOnUpdate(userdata)
             if not ok:
