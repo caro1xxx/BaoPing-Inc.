@@ -5,7 +5,7 @@
       <Search />
       <div class="title_style">系统设置</div>
       <div class="system_main_content">
-        <div class="setup_table redius1">
+        <div class="setup_table redius1 dislodgeborder">
           <div class="setup_table_head">
             <div>公众号设置</div>
           </div>
@@ -43,7 +43,7 @@
             </div>
           </div>
         </div>
-        <div class="setup_table">
+        <div class="setup_table dislodgeborder">
           <div class="setup_table_head">
             <div>cou云存储</div>
           </div>
@@ -183,6 +183,7 @@ const setupdata = reactive({
     display: flex;
     color: #000;
     font-size: 20px;
+    cursor: pointer;
     div {
      width: 11.111%;
      text-align: center;
@@ -242,14 +243,21 @@ const setupdata = reactive({
      border-style: none;
      border-radius: 10px;
      font-size: 15px;
+     cursor: pointer;
     }
    }
   }
-  // 圆角样式
+  // 更改表格圆角样式
   .redius1{
     border-radius: 10px 10px 0px 0px;
+    margin-top: 20px;
   }
   .redius2{
     border-radius: 0px 0px 10px 10px;
+  }
+
+  // 去除表格下边框
+  .dislodgeborder{
+    border-bottom: none;
   }
 </style>

@@ -113,11 +113,12 @@ const linmitsdata = reactive([
     color: #188CFF;
     span{
       margin: 0px 10px;
+      cursor: pointer;
     }
   }
 }
 .limits_table_body_wrap {
-  height: calc(100vh - 322px);
+  height: calc(100vh - 230px);
   overflow-y: scroll;
 }
 .limits_table_body_wrap::-webkit-scrollbar {
