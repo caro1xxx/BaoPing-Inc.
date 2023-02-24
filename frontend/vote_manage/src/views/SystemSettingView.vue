@@ -235,13 +235,13 @@ const setupdata = reactive({
     display: flex;
     align-items: flex-end;
     button{
-     width: 80px;
-     height: 40px;
+     width: 50px;
+     height: 30px;
      background-color: #188CFF;
      color: #fff;
      border-style: none;
      border-radius: 10px;
-     font-size: 20px;
+     font-size: 15px;
     }
    }
   }

@@ -134,8 +134,8 @@ const realmSetuo = reactive({
 .setup_table_body_right{
   width: 200px;
   button{
-    width: 82px;
-    height: 47px;
+    width: 50px;
+    height: 30px;
     background-color: #188CFF;
     color: #fff;
     border-style: none;
