@@ -12,7 +12,7 @@ from main.views.user.UserOp import UserOp
 # 注册用户，先验证用户资料再验证邮件验证码
 class Register(APIView):
     def post(self, request, *ary, **kwargs):
-        ret = {'code': 200, 'msg': 'ok'}
+        ret = {'code': 200, 'msg': '注册成功'}
         try:
             userdata = {}
             userdata['name'] = request.POST.get('name', None)
@@ -29,6 +29,7 @@ class Register(APIView):
             ok, msg = userOp.register(userdata, request)
             if not ok:
                 ret = {'code': 400, 'msg': msg}
+            ret['data'] = serializers.serialize("json",models.User.objects.filter(username=userdata['username']))
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
             # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}

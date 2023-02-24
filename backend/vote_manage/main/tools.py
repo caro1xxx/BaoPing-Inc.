@@ -23,7 +23,7 @@ class Validate:
     def startCheck(self):
         ok = True
         for i in range(len(self.funList)):
-            if self.checkValueList[i] is None:
+            if self.checkValueList[i] is None or self.checkValueList[i] == '':
                 ok = ok and getattr(self, self.funList[i], None)(self.dataList[i])
             else:
                 ok = ok and getattr(self, self.funList[i], None)(self.dataList[i], self.checkValueList[i])
@@ -72,6 +72,8 @@ class Validate:
 
     def checkOnlyNumal(self, data):
         return data.isalnum()
+    
+
 
 
 # Validate使用过程

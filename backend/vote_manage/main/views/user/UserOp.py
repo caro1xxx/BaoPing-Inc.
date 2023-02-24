@@ -4,6 +4,7 @@ from django.core.cache import cache
 from main.tools import genearteMD5, getNowTimeStamp, Validate, generateString16, generateCode6, b64Encode, b64Decode
 from django.core.mail import send_mail
 from vote_manage import settings
+from main.tools import *
 
 
 # 关于用户的一些操作
@@ -13,6 +14,7 @@ class UserOp:
             
     def onLoginSuccess(self, userObj):
         userObj.last_login_time = getNowTimeStamp()
+        userObj.token = self.generatreToken(userObj.username)
         userObj.save()
 
     def login(self, username, pwd):
@@ -65,7 +67,6 @@ class UserOp:
 
     # 验证密码格式是否正确
     def checkPwd(self, pwd):
-        print("check validate pwd")
         validate = Validate()
         validate.addCheck('checkMinLength', pwd, '密码最小长度为8', 8)
         validate.addCheck('checkMaxLength', pwd, '密码最大长度为16', 16)
@@ -121,7 +122,6 @@ class UserOp:
             userdata['create_time'] = getNowTimeStamp()
             userdata['last_login_time'] = getNowTimeStamp()
             userdata['auth'] = 1
-            print(userdata['avator'])
             userdata['token'] = self.generatreToken(userdata['username'])
             userdata['status'] = 1
             userObj = models.User.objects.create(name = userdata['name'], username = userdata['username'], pwd= userdata['pwd'], create_time = userdata['create_time'], last_login_time = userdata['last_login_time'], email = userdata['email'], auth = userdata['auth'], avator = userdata['avator'], token = userdata['token'], status = userdata['status'])
@@ -156,7 +156,6 @@ class UserOp:
                 return ok, '验证码不能为空'
 
             serverEmailCode = cache.get('syl_' + email, None)
-            print(emailCode, serverEmailCode)
             if serverEmailCode is None:
                 return ok, '验证码已过期'
             cache.delete('syl_' + email)
@@ -165,6 +164,15 @@ class UserOp:
         except Exception as e:
             return False, 'Timeout'
         return True, None
+    
+    def setNewPassword(self, email, newPwd):
+        try:
+            userObj = models.User.objects.get(email=email)
+            userObj.pwd = genearteMD5(newPwd)
+            userObj.save()
+        except Exception as e:
+            return False, '重置密码失败'
+        return True, '重置密码成功'
 
 
 

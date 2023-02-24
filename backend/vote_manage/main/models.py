@@ -11,9 +11,16 @@ class User(models.Model):
     email = models.CharField(max_length=50, unique=True)
     # 0: admin, 1: guest
     auth = models.IntegerField(default=1)
-    avator = models.TextField(max_length=10)
+    avator = models.TextField(max_length=10, default='22')
     token = models.CharField(max_length=32)
     # 1: 正常 0: 其他
     status = models.IntegerField(default=1)
 
     # objects = models.Manager()
+
+
+class Logs(models.Model):
+    who = models.CharField(max_length=20)
+    action = models.TextField(max_length=20)
+    target = models.TextField(max_length=20, null=False)
+    create_time = models.IntegerField(null=False)

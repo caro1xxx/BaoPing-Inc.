@@ -8,8 +8,8 @@ from django.core.cache import cache
 from main.views.user.UserOp import UserOp
 
 
-# 注册时使用的发送邮件接口，如果邮箱已经注册会报错
-class SendEmailCode(APIView):
+# 忘记密码时使用的发送邮件接口，如果邮箱未注册会报错
+class ForgetPasswordSendEmail(APIView):
     def post(self, request, *arg, **kwargs):
         ret = {'code': 200, "msg": '发送成功'}
         try:
@@ -19,8 +19,8 @@ class SendEmailCode(APIView):
             if not ok:
                 return JsonResponse({'code': 400, "msg": msg})
             ok, msg = userop.checkEmailExist(email)
-            if ok:
-                return JsonResponse({'code': 400, "msg": '邮箱已注册'})
+            if not ok:
+                return JsonResponse({'code': 400, "msg": '邮箱未注册'})
             ok, msg = userop.sendEmail(email)
             if not ok:
                 return JsonResponse({'code': 400, "msg": msg})
