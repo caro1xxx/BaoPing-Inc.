@@ -11,21 +11,29 @@
       <div class="register_mask_body_body">
         <div
           class="register_mask_body_login"
-          :style="{ borderBottom: authFlag ? '3px solid #2379fb' : '' }"
+          :style="{ borderBottom: authFlag[0] ? '3px solid #2379fb' : '' }"
           @click="() => changeAuth('login')"
         >
           账号登录
         </div>
         <div
           class="register_mask_body_login"
-          :style="{ borderBottom: !authFlag ? '3px solid #2379fb' : '' }"
+          :style="{ borderBottom: authFlag[1] ? '3px solid #2379fb' : '' }"
           @click="() => changeAuth('register')"
         >
           注册账号
         </div>
+        <div
+          class="register_mask_body_login"
+          :style="{ borderBottom: authFlag[2] ? '3px solid #2379fb' : '' }"
+          @click="() => changeAuth('lost')"
+        >
+          找回密码
+        </div>
       </div>
-      <Login v-if="authFlag" />
-      <Register v-else />
+      <Login v-if="authFlag[0]" />
+      <Register v-if="authFlag[1]" />
+      <ForgetPwd v-if="authFlag[2]" />
     </div>
   </div>
 </template>
@@ -33,18 +41,30 @@
 <script setup>
 import Register from "@/components/Register.vue";
 import Login from "@/components/Login.vue";
+import ForgetPwd from "@/components/ForgetPwd.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 // 标志是否点击登录
-const authFlag = ref(true);
+const authFlag = ref([true, false, false]);
 
 const router = useRouter();
 
-// 改变注册或登录
+// 改变注册或登录或找回密码
 const changeAuth = (flag) => {
-  if (flag === "login") authFlag.value = true;
-  else authFlag.value = false;
+  if (flag === "login") {
+    authFlag.value[0] = true;
+    authFlag.value[1] = false;
+    authFlag.value[2] = false;
+  } else if (flag === "lost") {
+    authFlag.value[2] = true;
+    authFlag.value[0] = false;
+    authFlag.value[1] = false;
+  } else {
+    authFlag.value[1] = true;
+    authFlag.value[0] = false;
+    authFlag.value[2] = false;
+  }
 };
 
 // 关闭
@@ -89,7 +109,7 @@ const closeAuth = () => {
 }
 .register_mask_close {
   position: absolute;
-  left:420px;
+  left: 420px;
   width: 20px;
   height: 20px;
   cursor: pointer;

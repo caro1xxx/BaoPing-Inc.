@@ -27,7 +27,7 @@
             @click="SureMenu(item.path, item.type, item.name)"
             :style="{
               backgroundColor:
-                item.type === 'child' && item.isClick ? '#4597e8' : '#fff',
+                item.type === 'child' && item.isClick ? '#4597e8' : '#fafdff',
             }"
           >
             <div v-if="item.img">
@@ -52,7 +52,7 @@
               v-else
               class="navbar_midd_body_item"
               :style="{
-                color: item.isClick ? '#fff' : '#b5c3d1',
+                color: item.isClick ? '#b5c3d1' : '#b5c3d1',
               }"
             >
               {{ item.name }}
