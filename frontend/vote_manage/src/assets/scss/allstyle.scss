@@ -21,4 +21,6 @@
     font-weight: bold;
     // 鼠标手势
     cursor: pointer;
+    // 禁止复制
+    user-select: none;
 }
