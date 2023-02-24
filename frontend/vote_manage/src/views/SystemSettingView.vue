@@ -4,86 +4,92 @@
     <div class="system_main_body">
       <Search />
       <div class="title_style">系统设置</div>
-      <div class="setup_table">
-        <div class="setup_table_head">
-          <div>公众号设置</div>
-        </div>
-        <div class="setup_table_body_wrap">
-          <div class="setup_table_body">
-            <div class="setup_table_body_left">
-              <div class="setup_table_body_head">
-                <div v-for="item in accountHead" :key="item.name">
-                  {{ item.name }}
+      <div class="system_main_content">
+        <div class="setup_table">
+          <div class="setup_table_head">
+            <div>公众号设置</div>
+          </div>
+          <div class="setup_table_body_wrap">
+            <div class="setup_table_body">
+              <div class="setup_table_body_left">
+                <div class="setup_table_body_head">
+                  <div v-for="item in accountHead" :key="item.name">
+                    {{ item.name }}
+                  </div>
+                </div>
+                <div class="setup_table_body_content">
+                  <div>
+                    <input type="text" :value="accountSetuo.accountNam" />
+                  </div>
+                  <div><input type="text" :value="accountSetuo.appId" /></div>
+                  <div>
+                    <input type="text" :value="accountSetuo.AppScret" />
+                  </div>
+                  <div>
+                    <input type="text" :value="accountSetuo.Merchant" />
+                  </div>
+                  <div>
+                    <input type="text" :value="accountSetuo.Paymentkey1" />
+                  </div>
+                  <div>
+                    <input type="text" :value="accountSetuo.Paymentkey2" />
+                  </div>
+                  <div><img :src="accountSetuo.accountinmg" alt="" /></div>
                 </div>
               </div>
-              <div class="setup_table_body_content">
-                <div>
-                  <input type="text" :value="accountSetuo.accountNam" />
-                </div>
-                <div><input type="text" :value="accountSetuo.appId" /></div>
-                <div><input type="text" :value="accountSetuo.AppScret" /></div>
-                <div><input type="text" :value="accountSetuo.Merchant" /></div>
-                <div>
-                  <input type="text" :value="accountSetuo.Paymentkey1" />
-                </div>
-                <div>
-                  <input type="text" :value="accountSetuo.Paymentkey2" />
-                </div>
-                <div><img :src="accountSetuo.accountinmg" alt="" /></div>
+              <div class="setup_table_body_right">
+                <button>提交</button>
               </div>
-            </div>
-            <div class="setup_table_body_right">
-              <button>提交</button>
             </div>
           </div>
         </div>
-      </div>
-      <div class="setup_table">
-        <div class="setup_table_head">
-          <div>cou云存储</div>
-        </div>
-        <div class="setup_table_body_wrap">
-          <div class="setup_table_body">
-            <div class="setup_table_body_left">
-              <div class="setup_table_body_head">
-                <div v-for="item in couhead" :key="item.name">
-                  {{ item.name }}
+        <div class="setup_table">
+          <div class="setup_table_head">
+            <div>cou云存储</div>
+          </div>
+          <div class="setup_table_body_wrap">
+            <div class="setup_table_body">
+              <div class="setup_table_body_left">
+                <div class="setup_table_body_head">
+                  <div v-for="item in couhead" :key="item.name">
+                    {{ item.name }}
+                  </div>
+                </div>
+                <div class="setup_table_body_content">
+                  <div><input type="text" :value="coudata.SecretId" /></div>
+                  <div><input type="text" :value="coudata.SecretKey" /></div>
+                  <div><input type="text" :value="coudata.region" /></div>
+                  <div><input type="text" :value="coudata.realmname" /></div>
+                  <div><input type="text" :value="coudata.isopen" /></div>
+                  <div><input type="text" :value="coudata.bucket" /></div>
                 </div>
               </div>
-              <div class="setup_table_body_content">
-                <div><input type="text" :value="coudata.SecretId" /></div>
-                <div><input type="text" :value="coudata.SecretKey" /></div>
-                <div><input type="text" :value="coudata.region" /></div>
-                <div><input type="text" :value="coudata.realmname" /></div>
-                <div><input type="text" :value="coudata.isopen" /></div>
-                <div><input type="text" :value="coudata.bucket" /></div>
+              <div class="setup_table_body_right">
+                <button>提交</button>
               </div>
-            </div>
-            <div class="setup_table_body_right">
-              <button>提交</button>
             </div>
           </div>
         </div>
-      </div>
-      <div class="setup_table">
-        <div class="setup_table_head">
-          <div>网站设置</div>
-        </div>
-        <div class="setup_table_body_wrap">
-          <div class="setup_table_body">
-            <div class="setup_table_body_left">
-              <div class="setup_table_body_head">
-                <div v-for="item in setuphead" :key="item.name">
-                  {{ item.name }}
+        <div class="setup_table">
+          <div class="setup_table_head">
+            <div>网站设置</div>
+          </div>
+          <div class="setup_table_body_wrap">
+            <div class="setup_table_body">
+              <div class="setup_table_body_left">
+                <div class="setup_table_body_head">
+                  <div v-for="item in setuphead" :key="item.name">
+                    {{ item.name }}
+                  </div>
+                </div>
+                <div class="setup_table_body_content">
+                  <div><input type="text" :value="setupdata.SecretId" /></div>
+                  <div><input type="text" :value="setupdata.LOGO" /></div>
                 </div>
               </div>
-              <div class="setup_table_body_content">
-                <div><input type="text" :value="setupdata.SecretId" /></div>
-                <div><input type="text" :value="setupdata.LOGO" /></div>
+              <div class="setup_table_body_right">
+                <button>提交</button>
               </div>
-            </div>
-            <div class="setup_table_body_right">
-              <button>提交</button>
             </div>
           </div>
         </div>
@@ -160,18 +166,9 @@ const setupdata = reactive({
 .system_main_body {
   margin: 20px 20px;
 }
-
-.setup_table {
-  border: 1px solid #b5c3d178;
-  border-radius: 10px;
-  height: 240px;
-  margin-top: 20px;
-}
-.setup_table_head {
-  border-radius: 10px 10px 0px 0px;
-  height: 40px;
-  border-bottom: 1px solid #b5c3d178;
-  box-shadow: 0 4px 4px 0 #bababa21;
+.system_main_content {
+  width: 100%;
+  height: calc(100vh - 155px);
   display: flex;
   color: #000;
   font-size: 20px;
@@ -232,8 +229,83 @@ const setupdata = reactive({
     background-color: #188cff;
     color: #fff;
     border-style: none;
+    flex-direction: column;
+  }
+  .setup_table {
+    border: 1px solid #b5c3d178;
     border-radius: 10px;
-    margin-top: 130px;
+    margin-top: 20px;
+    flex: 1;
+  }
+  .setup_table_head {
+    border-radius: 10px 10px 0px 0px;
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid #b5c3d178;
+    box-shadow: 0 4px 4px 0 #bababa21;
+    display: flex;
+    color: #000;
+    font-size: 20px;
+    div {
+      width: 11.111%;
+      text-align: center;
+      font-size: 15px;
+      font-weight: lighter;
+    }
+  }
+  .setup_table_body {
+    width: 100%;
+    height: calc((100vh - 364px) / 3);
+    display: flex;
+    text-align: center;
+    font-size: 14px;
+    font-weight: lighter;
+    color: #585858;
+  }
+  .setup_table_body_left {
+    width: 87.5%;
+    .setup_table_body_head {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      div {
+        width: 12.5%;
+      }
+    }
+    .setup_table_body_content {
+      display: flex;
+      align-items: center;
+      div {
+        width: 12.5%;
+        display: flex;
+        justify-content: flex-end;
+      }
+      input {
+        border-style: none;
+        outline: none;
+      }
+      img {
+        width: 50px;
+        height: 50px;
+        background-size: 100%;
+        background-repeat: no-repeat;
+        margin: auto;
+      }
+    }
+  }
+  .setup_table_body_right {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    button {
+      width: 80px;
+      height: 40px;
+      background-color: #188cff;
+      color: #fff;
+      border-style: none;
+      border-radius: 10px;
+      font-size: 20px;
+    }
   }
 }
 </style>
