@@ -38,8 +38,9 @@
     { name: '图片' },
     { name: '名称' },
     { name: '姓名' },
+    { name: '电话' },
     { name: '活动id' },
-    { name: '选手id' },
+    { name: 'openid' },
     { name: '添加时间' },
     { name: '反馈内容' },
     { name: '是否处理' },
@@ -47,13 +48,13 @@
   ])
   
   const prizeapplydata = reactive([
-    { id: '124', imgUrl: '', activename: '生宣', username: '小明', activeid: '43', userid: 'satejgssndsa', addtime: '2023-01-13 10:00:00',  feedbackcontent:'熙增的', ishandle: true},
-    { id: '124', imgUrl: '', activename: '生宣', username: '小明', activeid: '43', userid: 'satejgssndsa', addtime: '2023-01-13 10:00:00',  feedbackcontent:'熙增的', ishandle: true},
-    { id: '124', imgUrl: '', activename: '生宣', username: '小明', activeid: '43', userid: 'satejgssndsa', addtime: '2023-01-13 10:00:00',  feedbackcontent:'熙增的', ishandle: true},
-    { id: '124', imgUrl: '', activename: '生宣', username: '小明', activeid: '43', userid: 'satejgssndsa', addtime: '2023-01-13 10:00:00',  feedbackcontent:'熙增的', ishandle: true},
-    { id: '124', imgUrl: '', activename: '生宣', username: '小明', activeid: '43', userid: 'satejgssndsa', addtime: '2023-01-13 10:00:00',  feedbackcontent:'熙增的', ishandle: true},
-    { id: '124', imgUrl: '', activename: '生宣', username: '小明', activeid: '43', userid: 'satejgssndsa', addtime: '2023-01-13 10:00:00',  feedbackcontent:'熙增的', ishandle: true},
-    { id: '124', imgUrl: '', activename: '生宣', username: '小明', activeid: '43', userid: 'satejgssndsa', addtime: '2023-01-13 10:00:00',  feedbackcontent:'熙增的', ishandle: true},
+    { id: '124', imgUrl: '', activename: '生宣', username: '小明', telephone: '15696421332', activeid: '43', userid: 'satejgssndsa', addtime: '2023-01-13 10:00:00',  feedbackcontent:'熙增的', ishandle: true},
+    { id: '124', imgUrl: '', activename: '生宣', username: '小明', telephone: '15696421332', activeid: '43', userid: 'satejgssndsa', addtime: '2023-01-13 10:00:00',  feedbackcontent:'熙增的', ishandle: true},
+    { id: '124', imgUrl: '', activename: '生宣', username: '小明', telephone: '15696421332', activeid: '43', userid: 'satejgssndsa', addtime: '2023-01-13 10:00:00',  feedbackcontent:'熙增的', ishandle: true},
+    { id: '124', imgUrl: '', activename: '生宣', username: '小明', telephone: '15696421332', activeid: '43', userid: 'satejgssndsa', addtime: '2023-01-13 10:00:00',  feedbackcontent:'熙增的', ishandle: true},
+    { id: '124', imgUrl: '', activename: '生宣', username: '小明', telephone: '15696421332', activeid: '43', userid: 'satejgssndsa', addtime: '2023-01-13 10:00:00',  feedbackcontent:'熙增的', ishandle: true},
+    { id: '124', imgUrl: '', activename: '生宣', username: '小明', telephone: '15696421332', activeid: '43', userid: 'satejgssndsa', addtime: '2023-01-13 10:00:00',  feedbackcontent:'熙增的', ishandle: true},
+    { id: '124', imgUrl: '', activename: '生宣', username: '小明', telephone: '15696421332', activeid: '43', userid: 'satejgssndsa', addtime: '2023-01-13 10:00:00',  feedbackcontent:'熙增的', ishandle: true},
   ])
   
   </script>
