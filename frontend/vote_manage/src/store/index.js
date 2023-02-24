@@ -2,6 +2,7 @@ import { createStore } from "vuex";
 export default createStore({
   state: {
     globalMessage: "",
+    loadingState: false,
     userInfo: {
       name: "",
       username: "",
@@ -27,6 +28,9 @@ export default createStore({
     updateGlobalMessage(state, payload) {
       state.globalMessage = payload;
     },
+    noticifyLoading(state, payload) {
+      state.loadingState = payload;
+    },
   },
   actions: {
     UserActions(context, payload) {
@@ -36,6 +40,9 @@ export default createStore({
     GlobalMessageActions(context, payload) {
       context.commit("closeGlobalMessage");
       context.commit("updateGlobalMessage", payload);
+    },
+    NoticifyActions(context, payload) {
+      context.commit("noticifyLoading", payload);
     },
   },
   modules: {},

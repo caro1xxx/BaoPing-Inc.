@@ -27,7 +27,7 @@
             @click="SureMenu(item.path, item.type, item.name)"
             :style="{
               backgroundColor:
-                item.type === 'child' && item.isClick ? '#4597e8' : '#fff',
+                item.type === 'child' && item.isClick ? '#4597e8' : '#fafdff',
             }"
           >
             <div v-if="item.img">

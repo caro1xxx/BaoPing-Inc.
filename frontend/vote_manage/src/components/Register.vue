@@ -68,7 +68,7 @@
       </div>
     </div>
     <div class="register_child_radio">
-      <input type="radio" />
+      <input type="radio" @click="onClickRadio" />
       <div>记住我</div>
     </div>
     <button class="register_child_btn" @click="checkForm">注册并登录</button>
@@ -79,8 +79,12 @@
 import { reactive } from "vue";
 import { Validator } from "@/utils/validator";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import { fether } from "@/utils/fether";
 import { HOST } from "@/ENV";
+import Cookies from "js-cookie";
+
+const router = useRouter();
 
 const $store = useStore();
 // 头像列表
@@ -95,6 +99,11 @@ const avatorList = reactive([
   { id: 29, img: require("../assets/img/29.png"), select: false },
 ]);
 
+// 点击记住
+const onClickRadio = () => {
+  avatorList.isRemember = !avatorList.isRemember;
+};
+
 // 用户输入
 const userInfo = reactive({
   name: "",
@@ -104,6 +113,7 @@ const userInfo = reactive({
   email: "",
   code: "",
   avator: "",
+  isRemember: false,
 });
 
 // 选择头像
@@ -143,6 +153,12 @@ const checkForm = () => {
   else $store.dispatch("GlobalMessageActions", result);
 };
 
+// 是否记住记住登录
+const rememberUser = (flag, value) => {
+  if (flag) Cookies.set("token", value, { expires: 7 });
+  else Cookies.set("token", value);
+};
+
 // 注册
 const register = () => {
   let form = new FormData();
@@ -155,7 +171,15 @@ const register = () => {
   fetch(`${HOST}/register/`, { method: "post", body: form })
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
+      if (data.code === 200) {
+        // 保存用户信息
+        $store.dispatch("UserActions", JSON.parse(data.data)[0].fields);
+        rememberUser(
+          userInfo.isRemember,
+          JSON.parse(data.data)[0].fields.token
+        );
+        loginSuccess();
+      }
     });
 };
 
@@ -171,6 +195,11 @@ const sendCode = async () => {
     email: userInfo.email,
   });
   let res = await $store.dispatch("GlobalMessageActions", codeResult.msg);
+};
+
+// 登录成功
+const loginSuccess = () => {
+  router.push("/");
 };
 </script>
 
