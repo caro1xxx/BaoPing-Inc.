@@ -10,7 +10,69 @@
         </div>
         <div class="setup_table_body_wrap">
           <div class="setup_table_body">
-            <div></div>
+            <div class="setup_table_body_left">
+              <div class="setup_table_body_head">
+                <div v-for="(item) in accountHead" :key="item.name">{{ item.name }}</div>
+              </div>
+              <div class="setup_table_body_content">
+                <div><input type="text" :value="accountSetuo.accountNam"></div>
+                <div><input type="text" :value="accountSetuo.appId"></div>
+                <div><input type="text" :value="accountSetuo.AppScret"></div>
+                <div><input type="text" :value="accountSetuo.Merchant"></div>
+                <div><input type="text" :value="accountSetuo.Paymentkey1"></div>
+                <div><input type="text" :value="accountSetuo.Paymentkey2"></div>
+                <div><img :src="accountSetuo.accountinmg" alt=""></div>
+              </div>
+            </div>
+            <div class="setup_table_body_right">
+              <button>提交</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="setup_table">
+        <div class="setup_table_head">
+          <div>cou云存储</div>
+        </div>
+        <div class="setup_table_body_wrap">
+          <div class="setup_table_body">
+            <div class="setup_table_body_left">
+              <div class="setup_table_body_head">
+                <div v-for="(item) in couhead" :key="item.name">{{ item.name }}</div>
+              </div>
+              <div class="setup_table_body_content">
+                <div><input type="text" :value="coudata.SecretId"></div>
+                <div><input type="text" :value="coudata.SecretKey"></div>
+                <div><input type="text" :value="coudata.region"></div>
+                <div><input type="text" :value="coudata.realmname"></div>
+                <div><input type="text" :value="coudata.isopen"></div>
+                <div><input type="text" :value="coudata.bucket"></div>
+              </div>
+            </div>
+            <div class="setup_table_body_right">
+              <button>提交</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="setup_table">
+        <div class="setup_table_head">
+          <div>网站设置</div>
+        </div>
+        <div class="setup_table_body_wrap">
+          <div class="setup_table_body">
+            <div class="setup_table_body_left">
+              <div class="setup_table_body_head">
+                <div v-for="(item) in setuphead" :key="item.name">{{ item.name }}</div>
+              </div>
+              <div class="setup_table_body_content">
+                <div><input type="text" :value="setupdata.SecretId"></div>
+                <div><input type="text" :value="setupdata.LOGO"></div>
+              </div>
+            </div>
+            <div class="setup_table_body_right">
+              <button>提交</button>
+            </div>
           </div>
         </div>
       </div>
@@ -18,17 +80,66 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import Search from "@/components/Search.vue";
+import { reactive } from "vue";
 
-export default {
-  data() {
-    return {};
-  },
-  components: {
-    Search,
-  },
-};
+// 公众号设置表头数据
+const accountHead = reactive([
+  {name: '公众号名称'},
+  {name: 'Appid'},
+  {name: 'AppScret'},
+  {name: '微信支付微商号'},
+  {name: '微信支付APiv2密钥'},
+  {name: '微信支付APiv3密钥'},
+  {name: '公众二维码'}
+])
+
+// 公众号设置数据
+const accountSetuo = reactive({
+  accountNam: '1',
+  appId: '1',
+  AppScret:'1',
+  Merchant:'1',
+  Paymentkey1: '1',
+  Paymentkey1: '1',
+  accountinmg: require('../assets/img/1.png'),
+})
+
+// cou云存储表头数据
+const couhead = reactive([
+  {name: 'SecretId'},
+  {name: 'SecretKey'},
+  {name: 'region'},
+  {name: '访问域名'},
+  {name: '是否开启'},
+  {name: 'bucket'}
+])
+
+// cou云存储数据
+const coudata = reactive({
+  SecretId: '1',
+  SecretKey: '1',
+  region: '1',
+  realmname: '1',
+  isopen: false,
+  bucket: '1'
+})
+
+// 网站设置表头
+const setuphead = reactive([
+  {name: '程序名称'},
+  {name: '网站LOGO'}
+])
+
+// 网站设置数据
+const setupdata = reactive({
+  ordername: '1',
+  LOGO: '1'
+})
+
+
+// 网站设置数据
 </script>
 
 <style lang="scss" scoped>
@@ -45,7 +156,7 @@ export default {
 .setup_table {
   border: 1px solid #b5c3d178;
   border-radius: 10px;
-  height: calc(100vh - 410px);
+  height: 240px;
   margin-top: 20px;
 }
 .setup_table_head {
@@ -54,6 +165,8 @@ export default {
   border-bottom: 1px solid #b5c3d178;
   box-shadow: 0 4px 4px 0 #bababa21;
   display: flex;
+  color: #000;
+  font-size: 20px;
   div {
     width: 11.111%;
     text-align: center;
@@ -63,21 +176,56 @@ export default {
   }
 }
 .setup_table_body {
+  height: 200px;
   display: flex;
-  div {
-    width: 11.111%;
-    text-align: center;
-    font-size: 14px;
-    font-weight: lighter;
-    color: #585858;
-    margin: 10px 0px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: lighter;
+  color: #585858;
+  margin: 10px 0px;
+}
+.setup_table_body_left{
+  flex: 1;
+  .setup_table_body_head{
+    height: 40px;
+    display: flex;
+    align-items: center;
+    div{
+      width: 14.28%;
+    }
+  }
+  .setup_table_body_content{
+    height: 80px;
+    display: flex;
+    align-items: center;
+    div{
+      width: 14.28%;
+      display: flex;
+      justify-content: flex-end;
+    }
+    input{
+      border-style: none;
+      outline: none;
+    }
+    img{
+      width: 80px;
+      height: 80px;
+      background-size: 100%;
+      background-repeat: no-repeat;
+      margin: auto;
+    }
   }
 }
-.setup_table_body_wrap {
-  overflow: scroll;
-  height: calc(100vh - 450px);
-}
-.setup_table_body_wrap::-webkit-scrollbar {
-  display: none;
+.setup_table_body_right{
+  width: 200px;
+  button{
+    width: 82px;
+    height: 47px;
+    background-color: #188CFF;
+    color: #fff;
+    border-style: none;
+    border-radius: 10px;
+    margin-top: 130px;
+  }
 }
 </style>
