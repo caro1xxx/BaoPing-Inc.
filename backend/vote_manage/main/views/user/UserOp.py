@@ -5,6 +5,7 @@ from main.tools import genearteMD5, getNowTimeStamp, Validate, generateString16,
 from django.core.mail import send_mail
 from vote_manage import settings
 from main.tools import *
+import base64
 
 
 # 关于用户的一些操作
@@ -40,7 +41,8 @@ class UserOp:
         validate.addCheck('checkMinLength', name, '姓名最小长度为2', 2)
         validate.addCheck('checkMaxLength', name, '姓名最大长度为8', 8)
         validate.addCheck('checkHasNoSpace', name, '姓名不能包含空格')
-        return validate.startCheck()
+        ok, msg = validate.startCheck()
+        return ok, msg
 
     #  验证用户名格式是否正确
     def checkUsername(self, username):
@@ -49,7 +51,8 @@ class UserOp:
         validate.addCheck('checkMaxLength', username, '用户名最大长度为8', 8)
         validate.addCheck('checkHasNoSpace', username, '用户名不能包含空格')
         validate.addCheck('checkOnlyNumal', username, '用户名只支持数字和字母的组合')
-        return validate.startCheck()
+        ok, msg = validate.startCheck()
+        return ok, msg
     
     # 验证email格式是否正确
     def checkEmail(self, email):
@@ -58,7 +61,8 @@ class UserOp:
         validate.addCheck('checkMaxLength', email, '邮箱最大长度为20', 20)
         validate.addCheck('checkHasNoSpace', email, '邮箱不能包含空格')
         validate.addCheck('checkIsEmail', email, '邮箱格式错误')
-        return validate.startCheck()
+        ok, msg = validate.startCheck()
+        return ok, msg
 
     # 检查email是否已经注册
     def checkEmailExist(self, email):
@@ -71,11 +75,52 @@ class UserOp:
         validate.addCheck('checkMinLength', pwd, '密码最小长度为8', 8)
         validate.addCheck('checkMaxLength', pwd, '密码最大长度为16', 16)
         validate.addCheck('checkHasNoSpace', pwd, '密码不能包含空格')
-        ok, res = validate.startCheck()
-        return ok, res
+        ok, msg = validate.startCheck()
+        return ok, msg
     
+    # 检查auth格式是否正确
+    def checkAuth(self, auth):
+        if auth is None:
+            return False, 'auth error'
+        return int(auth) in [0, 1], 'auth error'
+    
+    # 检查状态格式是否正确
+    def checkStatus(self, status):
+        if status is None:
+            return False, 'status error'
+        return int(status) in [0, 1], 'status error'
+    
+    # 当更新用户的时候检查数据
+    def checkDataOnUpdate(self, userdata):
+        ok, msg = self.checkUsername(userdata['username'])
+        if not ok:
+            return False, msg
+        ok, msg = self.checkUsernameExist(userdata['username'])
+        if not ok:
+            return False, '用户名不存在'
+        ok, msg = self.checkName(userdata['name'])
+        if not ok:
+            return ok, msg
+        ok, msg = self.checkPwd(userdata['pwd'])
+        if not ok:
+            return ok, msg
+        ok, msg = self.checkAuth(userdata['auth'])
+        if not ok:
+            return ok, msg
+        ok, msg = self.checkStatus(userdata['status'])
+        if not ok:
+            return ok, msg
+        if userdata.get('email_code', None):
+            ok, msg = self.checkEmailCode(userdata['email'], userdata['email_code'])
+            if not ok:
+                return ok, msg
+        return True, None
+
     # 验证用户数据是否正确
     def checkData(self, userdata):
+        ok, msg = self.checkUsername(userdata['username'])
+        if not ok:
+            return False, msg
         ok, msg = self.checkUsernameExist(userdata['username'])
         if ok:
             return False, '用户名重复'
@@ -91,23 +136,19 @@ class UserOp:
         ok, msg = self.checkEmailExist(userdata['email'])
         if ok:
             return False, msg
-        ok, msg = self.checkEmailCode(userdata['email'], userdata['email_code'])
-        if not ok:
-            return ok, msg
+        if userdata.get('email_code', None):
+            ok, msg = self.checkEmailCode(userdata['email'], userdata['email_code'])
+            if not ok:
+                return ok, msg
         return True, None
 
     # 根据用户名和当前时间戳生成加密token
     def generatreToken(self, username):
-        data = username + ' ' + str(getNowTimeStamp())
-        data = b64Encode(data)
-        return data
-
-    # 将token解密获取用户名和时间戳
-    def getDataFromToken(self, token):
-        data = b64Decode(token)
-        usrename, lastLoginTime = data.split(' ')
-        lastLoginTime = int(lastLoginTime)
-        return usrename, lastLoginTime
+        token = generateString32()
+        expire_time = getNowTimeStamp() + (7 * 24 * 60)
+        tokenModels = models.Token.objects.create(value=token,expire_time=expire_time)
+        tokenModels.save()
+        return token
 
     def onRegisterSuccess(self):
         pass    
@@ -165,6 +206,7 @@ class UserOp:
             return False, 'Timeout'
         return True, None
     
+    # 设置新密码
     def setNewPassword(self, email, newPwd):
         try:
             userObj = models.User.objects.get(email=email)

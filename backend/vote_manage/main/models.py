@@ -18,6 +18,10 @@ class User(models.Model):
 
     # objects = models.Manager()
 
+class Token(models.Model):
+    value = models.CharField(max_length=32,unique=True)
+    expire_time = models.IntegerField()
+
 
 class Logs(models.Model):
     who = models.CharField(max_length=20)

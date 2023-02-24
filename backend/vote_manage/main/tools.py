@@ -4,6 +4,7 @@ import re
 import random
 import string
 import base64
+from Crypto.Cipher import AES
 
 # 验证类，通过addCheck()增加验证规则，start()进行统一验证
 # 验证类的check开头的方法，如果验证通过为True，否则为False
@@ -72,9 +73,6 @@ class Validate:
 
     def checkOnlyNumal(self, data):
         return data.isalnum()
-    
-
-
 
 # Validate使用过程
 # ck = Validate()
@@ -82,6 +80,25 @@ class Validate:
 # ck.addCheck('empty', data, 'null')
 # ck.addCheck('maxLength', data, 'maxlength')
 # print(ck.start())
+
+class AesOp:
+    def __init__(self):
+        self.password = b'1234567812345678' #秘钥，b就是表示为bytes类型
+        self.iv = b'1234567812345678' # iv偏移量，bytes类型
+
+    def addTo32(self, text):
+        if len(text) < 32:
+            text = text + ((32 - len(text)) * '=')
+        return text
+
+    def aesEncode(self, text):
+        aes = AES.new(self.password, AES.MODE_CBC, self.iv)
+        return aes.encrypt(text) 
+
+    def aesDecode(self, text):
+        aes = AES.new(self.password, AES.MODE_CBC, self.iv) #CBC模式下解密需要重新创建一个aes对象
+        return str(aes.decrypt(text), 'utf-8').replace('=', '')
+    
 
 
 def genearteMD5(text):
@@ -96,6 +113,10 @@ def getNowTimeStamp():
 def generateString16():
     # random.sample('1234567890abcdefghijklmnopqrstuvwxyz!@#$%^&*()', 16)
     randStr = ''.join(random.sample(string.ascii_letters + string.digits, 16))
+    return randStr
+
+def generateString32():
+    randStr = ''.join(random.sample(string.ascii_letters + string.digits, 32))
     return randStr
 
 def generateCode6():

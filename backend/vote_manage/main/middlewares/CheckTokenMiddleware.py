@@ -5,42 +5,35 @@ from main import models
 from main.views.user.UserOp import UserOp
 from main.tools import *
 from django.http import JsonResponse
-
-
+from main.models import Token
 
 class CheckTokenMiddleware(MiddlewareMixin):
     def process_request(self, request):
         try:
-            print('checktokenmiddleware test')
+            # print('checktokenmiddleware test')
             m = str(request.method)
+            pathInfo = request.path_info.replace('/', '')
+
+            if pathInfo in ['login', 'register', 'forgetpassword', 'sendemailcode']:
+                return None
             if m == 'GET':
                 token = request.GET.get('token', None)
             elif m in ['POST', 'PUT', 'DELETE']:
+                # print(request.body)
                 token = json.loads(request.body).get("token", None)
             else:
                 return JsonResponse({"code": 400, "msg": "身份验证失败"})
-            
             userop = UserOp() 
-            if token:
-                username, lastLoginTime = userop.getDataFromToken(token)
-                print(username, lastLoginTime)
-                userObj = models.User.objects.get(username=username)
-                serverUsername, serverLastLoginTime = userop.getDataFromToken(userObj.token)
-                if token == userObj.token and getNowTimeStamp() - lastLoginTime > 7 * 24 * 60:
-                    return JsonResponse({"code": 400, "msg": "登陆超时"})
-        except Exception as e:
-            return JsonResponse({"code": 400, "msg": "身份验证失败"})
-            # return JsonResponse({"code": 400, "msg": "身份验证失败", "error": str(e)})
-        # print("middleware test")
-        # userop = UserOp() 
-        # token = json.loads(request.body).get('token', None)
 
-        # if token:
-        #     username, lastLoginTime = userop.getDataFromToken(token)
-        #     userObj = models.User.objects.get(username=username)
-        #     serverUsername, serverLastLoginTime = userop.getDataFromToken(userObj.token)
-        #     if token == userObj.token:
-        #         if getNowTimeStamp() - lastLoginTime > 7 * 24 * 60 * 60:
-        #             return JsonResponse({"code": 400, "msg": "登陆超时"})
-        #     else:
-        #         return JsonResponse({"code": 400, "msg": "身份验证失败"})
+            if token:
+                tokenModel = models.Token.objects.filter(value=token).first()
+                if not tokenModel:
+                    return JsonResponse({"code": 404, "msg": "token不存在"})
+                if tokenModel.expire_time < getNowTimeStamp():
+                    return JsonResponse({"code": 405, "msg": "token过期"})
+            else:
+                return JsonResponse({"code": 400, "msg": "缺失token"})
+
+                
+        except Exception as e:
+            return JsonResponse({"code": 500, "msg": "身份验证失败", "error": str(e)})

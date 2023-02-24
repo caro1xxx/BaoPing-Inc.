@@ -14,13 +14,7 @@ class Register(APIView):
     def post(self, request, *ary, **kwargs):
         ret = {'code': 200, 'msg': '注册成功'}
         try:
-            userdata = {}
-            userdata['name'] = request.POST.get('name', None)
-            userdata['username'] = request.POST.get('username', None)
-            userdata['pwd'] = request.POST.get('pwd', None)
-            userdata['email'] = request.POST.get('email', None)
-            userdata['email_code'] = request.POST.get('code', None)
-            userdata['avator'] = request.POST.get('avator', None)
+            userdata = json.loads(request.body).get("data", None)
             # userdata = json.loads(request.body).get('data', None)
             if not Validate().checkIsNotEmpty(userdata):
                 ret = {'code': 404, 'msg': '没有用户数据'}
