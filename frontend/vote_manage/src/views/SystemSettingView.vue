@@ -5,7 +5,7 @@
       <Search />
       <div class="title_style">系统设置</div>
       <div class="system_main_content">
-        <div class="setup_table">
+        <div class="setup_table redius1">
           <div class="setup_table_head">
             <div>公众号设置</div>
           </div>
@@ -70,7 +70,7 @@
             </div>
           </div>
         </div>
-        <div class="setup_table">
+        <div class="setup_table redius2">
           <div class="setup_table_head">
             <div>网站设置</div>
           </div>
@@ -156,99 +156,100 @@ const setupdata = reactive({
 // 网站设置数据
 </script>
 
-<style lang="scss" scoped>
-.system_main {
+<style lang="scss" scoped>.system_main {
    width: calc(100vw - 200px);
-    height: calc(100vh);
- font-size: 20px;
- font-weight: 50px;
-}
-.system_main_body {
- margin: 20px 20px;
-}
-.system_main_content{
- width: 100%;
- height: calc(100vh - 155px);
- display: flex;
- flex-direction: column;
- .setup_table {
-  border: 1px solid #b5c3d178;
-  border-radius: 10px;
-  margin-top: 20px;
-  flex: 1;
-  overflow: hidden;
- }
- .setup_table_head {
-  border-radius: 10px 10px 0px 0px;
-  height: 40px;
-  line-height: 40px;
-  border-bottom: 1px solid #b5c3d178;
-  box-shadow: 0 4px 4px 0 #bababa21;
-  display: flex;
-  color: #000;
-  font-size: 20px;
-  div {
-   width: 11.111%;
-   text-align: center;
-   font-size: 15px;
-   font-weight: lighter;
-  }
- }
- .setup_table_body {
-  width: 100%;
-  height: calc((100vh - 364px) / 3);
-  display: flex;
-  text-align: center;
-  font-size: 14px;
-  font-weight: lighter;
-  color: #585858;
- }
- .setup_table_body_left{
-  width: 87.5%;
-  .setup_table_body_head{
-   height: 40px;
-   display: flex;
-   align-items: center;
-   div{
-    width: 12.5%;
-   }
-  }
-  .setup_table_body_content{
-   display: flex;
-   align-items: center;
-   div{
-    width: 12.5%;
-    display: flex;
-    justify-content: flex-end;
-   }
-   input{
-    border-style: none;
-    outline: none;
-    width: 80%;
-   }
-   img{
-    width: 50px;
-    height: 50px;
-    background-size: 100%;
-    background-repeat: no-repeat;
-    margin: auto;
-   }
-  }
- }
- .setup_table_body_right{
-  flex: 1;
-  display: flex;
-  align-items: flex-end;
-  overflow: hidden;
-  button{
-   width: 80px;
-   height: 40px;
-   background-color: #188CFF;
-   color: #fff;
-   border-style: none;
-   border-radius: 10px;
+   height: calc(100vh);
    font-size: 20px;
+   font-weight: 50px;
   }
- }
-}
+  .system_main_body {
+   margin: 20px 20px;
+  }
+  .system_main_content{
+   width: 100%;
+   height: calc(100vh - 155px);
+   display: flex;
+   flex-direction: column;
+   .setup_table {
+    border: 1px solid #b5c3d178;
+    flex: 1;
+   }
+   .setup_table_head {
+    border-radius: 10px 10px 0px 0px;
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid #b5c3d178;
+    box-shadow: 0 4px 4px 0 #bababa21;
+    display: flex;
+    color: #000;
+    font-size: 20px;
+    div {
+     width: 11.111%;
+     text-align: center;
+     font-size: 15px;
+     font-weight: lighter;
+    }
+   }
+   .setup_table_body {
+    width: 100%;
+    height: calc((100vh - 364px) / 3);
+    display: flex;
+    text-align: center;
+    font-size: 14px;
+    font-weight: lighter;
+    color: #585858;
+   }
+   .setup_table_body_left{
+    width: 87.5%;
+    .setup_table_body_head{
+     height: 40px;
+     display: flex;
+     align-items: center;
+     div{
+      width: 12.5%;
+     }
+    }
+    .setup_table_body_content{
+     display: flex;
+     align-items: center;
+     div{
+      width: 12.5%;
+      display: flex;
+      justify-content: flex-end;
+     }
+     input{
+      border-style: none;
+      outline: none;
+     }
+     img{
+      width: 50px;
+      height: 50px;
+      background-size: 100%;
+      background-repeat: no-repeat;
+      margin: auto;
+     }
+    }
+   }
+   .setup_table_body_right{
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    button{
+     width: 80px;
+     height: 40px;
+     background-color: #188CFF;
+     color: #fff;
+     border-style: none;
+     border-radius: 10px;
+     font-size: 20px;
+    }
+   }
+  }
+  // 圆角样式
+  .redius1{
+    border-radius: 10px 10px 0px 0px;
+  }
+  .redius2{
+    border-radius: 0px 0px 10px 10px;
+  }
 </style>
