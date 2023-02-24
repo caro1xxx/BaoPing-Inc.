@@ -52,7 +52,7 @@
               v-else
               class="navbar_midd_body_item"
               :style="{
-                color: item.isClick ? '#b5c3d1' : '#b5c3d1',
+                color: item.isClick ? '#fff' : '#b5c3d1',
               }"
             >
               {{ item.name }}
