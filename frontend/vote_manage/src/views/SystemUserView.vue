@@ -138,7 +138,9 @@ const getUserInfoList = async () => {
       tableData.push({ ...result.data, isMove: false });
     }
   } else {
-    await $store.dispatch("GlobalMessageActions", "获取失败,请刷新");
+    // 请求发送错误
+    await $store.dispatch("refreshErroActions");
+    await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
   }
   // 关闭加载loading
   $store.commit("noticifyLoading", false);

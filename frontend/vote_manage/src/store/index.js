@@ -5,6 +5,9 @@ export default createStore({
     subNavBarList: [],
     // 全局提示消息
     globalMessage: "",
+    // 错误刷新按钮
+    errorRefresh: false,
+    freshFlag: 0,
     // 加载状态
     loadingState: false,
     // 编辑框
@@ -35,6 +38,15 @@ export default createStore({
     // 用户修改信息后点击保存出发
     changeSubNavBarList(state, payload) {
       state.subNavBarList = payload;
+    },
+    // 错误刷新状态
+    reFreshState(state) {
+      state.errorRefresh = true;
+    },
+    // 错误刷新重试
+    reFresh(state) {
+      state.errorRefresh = false;
+      state.freshFlag += 1;
     },
     // 全局信息自动关闭
     closeGlobalMessage(state) {
@@ -87,6 +99,9 @@ export default createStore({
     },
     handleUserEditActions(context, payload) {
       context.commit("editUserInfoSave", payload);
+    },
+    refreshErroActions(context) {
+      context.commit("reFreshState");
     },
   },
   modules: {},
