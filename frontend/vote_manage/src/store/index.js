@@ -1,6 +1,8 @@
 import { createStore } from "vuex";
 export default createStore({
   state: {
+    // 二级路由列表
+    subNavBarList: [],
     // 全局提示消息
     globalMessage: "",
     // 加载状态
@@ -30,6 +32,10 @@ export default createStore({
   },
   getters: {},
   mutations: {
+    // 用户修改信息后点击保存出发
+    changeSubNavBarList(state, payload) {
+      state.subNavBarList = payload;
+    },
     // 全局信息自动关闭
     closeGlobalMessage(state) {
       setTimeout(() => {
@@ -62,6 +68,9 @@ export default createStore({
     },
   },
   actions: {
+    SubNavBarActions(context, payload) {
+      context.commit("changeSubNavBarList", payload);
+    },
     UserActions(context, payload) {
       context.commit("closeGlobalMessage");
       context.commit("saveUserInfo", payload);

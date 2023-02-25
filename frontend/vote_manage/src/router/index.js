@@ -1,68 +1,56 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
 
 // 系统管理板块
 import AuthView from "../views/AuthView.vue";
 import SystemUserView from "../views/SystemUserView.vue";
 import SystemSettingView from "../views/SystemSettingView.vue";
-import GlobalDomainView from "../views/GlobalDomainView.vue";
+import DataOverview from "../views/DataOverview.vue";
+import ActivityStatusView from "../views/ActivityStatusView.vue";
+import GloablDomainView from "../views/GloablDomainView.vue";
 import AuthGroupView from "../views/AuthGroupView.vue";
-import FeedbackView from "../views/FeedbackView.vue";
-import InfoEditView from '../views/InfoEditView.vue'
-import PrizeApply from '../views/PrizeApplyView.vue'
+
 const routes = [
-  {
-    path: "/",
-    name: "home",
-    component: HomeView,
-  },
   // 登录注册
   {
     path: "/auth",
     name: "auth",
     component: AuthView,
   },
+  // 数据概括
+  {
+    path: "/",
+    name: "home",
+    component: DataOverview,
+  },
+  // 活动状态
+  {
+    path: "/activitystatus",
+    name: "activitystatus",
+    component: ActivityStatusView,
+  },
   // 系统用户
   {
-    path: "/systemuser",
+    path: "/system/systemuser",
     name: "systemuser",
     component: SystemUserView,
   },
   // 系统设置
   {
-    path: "/systemsetting",
+    path: "/system/systemsetting",
     name: "systemsetting",
     component: SystemSettingView,
   },
   // 全局域名
   {
-    path: "/globaldomain",
-    name: "globaldomain",
-    component: GlobalDomainView,
+    path: "/system/gloabldomain",
+    name: "gloabldomain",
+    component: GloablDomainView,
   },
-  // 权限分支
+  // 权限分组
   {
-    path: "/authgroup",
+    path: "/system/authgroup",
     name: "authgroup",
     component: AuthGroupView,
-  },
-  // f反馈
-  {
-    path: "/feedback",
-    name: "feedback",
-    component: FeedbackView,
-  },
-  // 信息修改
-  {
-    path: "/infoedit",
-    name: "infoedit",
-    component: InfoEditView,
-  },
-  //  奖品申请
-  {
-    path: "/prizeapply",
-    name: "prizeapply",
-    component: PrizeApply,
   },
 ];
 
