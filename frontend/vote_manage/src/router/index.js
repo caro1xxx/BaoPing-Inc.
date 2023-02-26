@@ -8,6 +8,8 @@ import DataOverview from "../views/DataOverview.vue";
 import ActivityStatusView from "../views/ActivityStatusView.vue";
 import GloablDomainView from "../views/GloablDomainView.vue";
 import AuthGroupView from "../views/AuthGroupView.vue";
+import FeedbackView from "../views/FeedbackView.vue";
+import PrizeApplicationView from "../views/PrizeApplicationView.vue";
 
 const routes = [
   // 登录注册
@@ -51,6 +53,18 @@ const routes = [
     path: "/system/authgroup",
     name: "authgroup",
     component: AuthGroupView,
+  },
+  // 反馈信息
+  {
+    path: "/message/feedback",
+    name: "feedback",
+    component: FeedbackView,
+  },
+  // 奖品申请
+  {
+    path: "/message/prizeapplication",
+    name: "prizeapplication",
+    component: PrizeApplicationView,
   },
 ];
 

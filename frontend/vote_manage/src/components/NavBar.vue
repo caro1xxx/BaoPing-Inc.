@@ -297,7 +297,22 @@ const goPage = (index) => {
       $router.push("/system/systemuser");
       break;
     case 3:
-      $router.push("/MessageManager");
+      $store.dispatch("SubNavBarActions", {
+        item: [
+          {
+            name: "反馈信息",
+            description: "以直观的方式和图标显示总体运营数据",
+            path: "/message/feedback",
+          },
+          {
+            name: "奖品申请",
+            description: "以直观的方式和图标显示总体运营数据",
+            path: "/message/prizeapplication",
+          },
+        ],
+        navName: "消息管理",
+      });
+      $router.push("/message/feedback");
       break;
     case 4:
       $router.push("/VoteManager");
