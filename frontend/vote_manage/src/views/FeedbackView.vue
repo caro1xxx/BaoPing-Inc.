@@ -13,7 +13,7 @@
           >
             <div class="home_table_item_top">
               <img :src="require(`../assets/img/avator/${item.avator}.png`)" />
-              <div>{{ item.username }}</div>
+              <div>{{ item.wx_username }}</div>
             </div>
             <div style="margin-left: 30px">{{ item.content }}</div>
             <div
@@ -28,7 +28,7 @@
             </div>
             <div class="home_table_item_move" v-show="item.isMove">
               <svg
-                @click="deleteUser(item.username)"
+                @click="deleteFeedback(item.pk)"
                 t="1677328484608"
                 class="icon"
                 viewBox="0 0 1024 1024"
@@ -63,31 +63,26 @@ import { fether } from "@/utils/fether";
 import { reactive, watch } from "vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
+import { parseStampTime } from "../utils/stampTime";
 const $store = new useStore();
 // 表数据
 const tableData = reactive([]);
 
-// 获取用户信息
-const getUserInfoList = async () => {
+// 获取反馈信息
+const getFeedbackList = async () => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
   let result = await fether(
-    // 获取vuex中的username
-    `/feedback/?username=${$store.state.userInfo.username}&token=${Cookies.get(
-      "token"
-    )}`
+    `/feedback/?token=${Cookies.get("token")}&value=all`
   );
   if (result.code === 200) {
     //serve
-    // let JSONResult = await JSON.parse(result.data);
-    // JSONResult.forEach((item) => {
-    //   tableData.push(item.fields);
-    // });
-    //mock
-    console.log(result.data);
-    for (let i = 0; i < 8; i++) {
-      tableData.push({ ...result.data, isMove: false });
-    }
+    result.data.forEach((item) => {
+      tableData.push({
+        ...item,
+        create_time: parseStampTime(item.create_time),
+      });
+    });
   } else {
     // 请求发送错误
     await $store.dispatch("refreshErroActions");
@@ -97,54 +92,25 @@ const getUserInfoList = async () => {
   $store.commit("noticifyLoading", false);
 };
 
-// 删除用户
-const deleteUser = async (target) => {
+// 删除反馈信息
+const deleteFeedback = async (pk) => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  let result = await fether(`/userinfo/`, "delete", {
-    username: target,
+  let result = await fether(`/feedback/`, "delete", {
     token: Cookies.get("token"),
+    feedback_id: pk,
   });
   if (result.code === 200) {
-    for (let i = 0; i < tableData.length; i++) {
-      if (tableData[i].username === target) {
-        tableData.splice(i, 1);
-        break;
+    tableData.forEach((item, index) => {
+      if (item.pk === pk) {
+        tableData.splice(index, 1);
       }
-    }
+    });
+  } else {
+    // 请求发送错误
+    await $store.dispatch("refreshErroActions");
+    await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
   }
-  await $store.dispatch("GlobalMessageActions", result.msg);
-  // 关闭加载loading
-  $store.commit("noticifyLoading", false);
-};
-
-// 修改用户显示界面
-const editUserShowPopup = async (target) => {
-  await $store.dispatch("editUserActions", target);
-};
-
-// 提交修改用户
-const saveUserEdit = async (target) => {
-  // 开启加载loading
-  await $store.dispatch("NoticifyActions", true);
-  let result = await fether(`/userinfo/`, "put", {
-    data: {
-      name: target.name,
-      auth: target.auth,
-      pwd: target.pwd,
-      status: target.status,
-      username: target.username,
-    },
-    token: Cookies.get("token"),
-  });
-  if (result.code === 200) {
-    for (let i = 0; i < tableData.length; i++) {
-      if (tableData[i].username === target.username) {
-        tableData[i] = target;
-      }
-    }
-  }
-  await $store.dispatch("GlobalMessageActions", result.msg);
   // 关闭加载loading
   $store.commit("noticifyLoading", false);
 };
@@ -153,7 +119,6 @@ const saveUserEdit = async (target) => {
 const onClickMove = async (index, type) => {
   tableData[index].isMove = type;
 };
-// 鼠标移出
 
 watch(
   () => $store.state.isUserEditSave,
@@ -162,7 +127,7 @@ watch(
   }
 );
 
-getUserInfoList();
+getFeedbackList();
 </script>
 
 <style lang="scss" scoped>
