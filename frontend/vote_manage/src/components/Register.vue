@@ -164,11 +164,19 @@ const register = () => {
   let form = new FormData();
   form.append("name", userInfo.name);
   form.append("username", userInfo.username);
-  form.append("pwd", userInfo.password);
-  form.append("email", userInfo.email);
-  form.append("code", userInfo.code);
-  form.append("avator", userInfo.avator);
-  fetch(`${HOST}/register/`, { method: "post", body: form })
+  fetch(`${HOST}/register/`, {
+    method: "post",
+    body: JSON.stringify({
+      data: {
+        name: userInfo.name,
+        username: userInfo.username,
+        pwd: userInfo.password,
+        email: userInfo.email,
+        email_code: userInfo.code,
+        avator: userInfo.avator,
+      },
+    }),
+  })
     .then((res) => res.json())
     .then((data) => {
       if (data.code === 200) {

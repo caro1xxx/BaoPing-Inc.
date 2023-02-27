@@ -21,6 +21,7 @@
   margin-left: 20px;
   outline: none;
   border: none;
+  background-color: #f8fbfc;
 }
 
 .search_payload::placeholder {

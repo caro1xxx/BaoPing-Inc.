@@ -1,12 +1,17 @@
 import { HOST } from "@/ENV";
-export const fether = (path, method = "get", params = {}) => {
+import isOnline from "is-online";
+export const fether = async (path, method = "get", params = {}) => {
+  let online = await isOnline();
+  if (!online) {
+    return "网络错误";
+  }
   if (method === "get") {
     return fetch(`${HOST}${path}`)
       .then((res) => res.json())
       .then((data) => data);
-  } else if (method === "post") {
+  } else {
     return fetch(`${HOST}${path}`, {
-      method: "post",
+      method: method,
       body: JSON.stringify(params),
       headers: { "Content-Type": "application/json" },
     })

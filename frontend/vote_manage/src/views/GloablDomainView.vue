@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <Search />
-    <div class="home_title">系统设置</div>
+    <div class="home_title">全局域名</div>
   </div>
 </template>
 
