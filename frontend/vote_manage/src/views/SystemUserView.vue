@@ -102,18 +102,6 @@ import { reactive, watch } from "vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
 const $store = new useStore();
-// 表头
-const tableHead = reactive([
-  { name: "编号" },
-  { name: "用户" },
-  { name: "姓名" },
-  { name: "权限" },
-  { name: "创建时间" },
-  { name: "最后登录时间" },
-  { name: "邮箱" },
-  { name: "状态" },
-  { name: "操作" },
-]);
 // 表数据
 const tableData = reactive([]);
 
@@ -123,9 +111,8 @@ const getUserInfoList = async () => {
   await $store.dispatch("NoticifyActions", true);
   let result = await fether(
     // 获取vuex中的username
-    `/userinfo/?username=${$store.state.userInfo.username}&token=${Cookies.get(
-      "token"
-    )}`
+    // `/userinfo/?username=${$store.state.userInfo.username}&token=${Cookies.get(
+    `/userinfo/?username=xiaotest&token=${Cookies.get("token")}`
   );
   if (result.code === 200) {
     //serve
@@ -134,7 +121,7 @@ const getUserInfoList = async () => {
     //   tableData.push(item.fields);
     // });
     //mock
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 7; i++) {
       tableData.push({ ...result.data, isMove: false });
     }
   } else {

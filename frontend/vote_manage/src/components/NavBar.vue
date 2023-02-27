@@ -315,7 +315,27 @@ const goPage = (index) => {
       $router.push("/message/feedback");
       break;
     case 4:
-      $router.push("/VoteManager");
+      $store.dispatch("SubNavBarActions", {
+        item: [
+          {
+            name: "投票活动",
+            description: "以直观的方式和图标显示总体运营数据",
+            path: "/vote/activity",
+          },
+          {
+            name: "投票用户",
+            description: "以直观的方式和图标显示总体运营数据",
+            path: "/vote/voteuser",
+          },
+          {
+            name: "投票记录",
+            description: "以直观的方式和图标显示总体运营数据",
+            path: "/vote/voterecord",
+          },
+        ],
+        navName: "投票管理",
+      });
+      $router.push("/vote/activity");
       break;
     case 5:
       $router.push("/OrderManager");

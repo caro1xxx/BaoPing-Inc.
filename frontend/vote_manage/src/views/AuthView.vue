@@ -75,9 +75,9 @@ const closeAuth = () => {
 
 <style lang="scss" scoped>
 .register {
-  width: calc(100vw - 150px - 400px);
+  /* width: calc(100vw - 150px - 400px);
   height: calc(100vh);
-  background-color: #fff;
+  background-color: #fff; */
 }
 .register_mask {
   position: absolute;

@@ -8,6 +8,8 @@ export default createStore({
     // 错误刷新按钮
     errorRefresh: false,
     freshFlag: 0,
+    // 是否登录
+    isAuth: true,
     // 加载状态
     loadingState: false,
     // 编辑框
@@ -78,6 +80,10 @@ export default createStore({
     editUserInfoSave(state, payload) {
       state.isUserEditSave += payload;
     },
+    // 修改登录状态
+    editUserInfoSave(state, payload) {
+      state.isAuth = payload;
+    },
   },
   actions: {
     SubNavBarActions(context, payload) {
@@ -102,6 +108,9 @@ export default createStore({
     },
     refreshErroActions(context) {
       context.commit("reFreshState");
+    },
+    authActions(context, payload) {
+      context.commit("editUserInfoSave", payload);
     },
   },
   modules: {},
