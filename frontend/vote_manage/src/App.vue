@@ -8,6 +8,7 @@
       v-if="$store.state.editPopProps.name !== ''"
       :data="$store.state.editPopProps"
     />
+    <AuthView v-if="!$store.state.isAuth" />
     <!-- <Loading v-show="$store.state.loadingState" /> -->
   </div>
 </template>
@@ -18,8 +19,14 @@ import NavBar from "./components/NavBar.vue";
 import Message from "./components/Message.vue";
 import EditPopup from "./components/EditPopup.vue";
 import SubNavBar from "./components/SubNavBar.vue";
+import AuthView from "./views/AuthView.vue";
 import { useStore } from "vuex";
+import Cookies from "js-cookie";
+import { ref } from "vue";
 const $store = useStore();
+if (Cookies.get("token") === undefined) {
+  $store.dispatch("authActions", false);
+}
 </script>
 
 <style lang="scss">

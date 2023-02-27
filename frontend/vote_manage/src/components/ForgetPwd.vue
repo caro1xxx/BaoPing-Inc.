@@ -117,6 +117,7 @@ const sendCode = async () => {
 
 // 登录成功
 const loginSuccess = () => {
+  $store.dispatch("authActions", true);
   router.push("/");
 };
 </script>
