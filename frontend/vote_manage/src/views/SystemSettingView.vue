@@ -48,8 +48,9 @@ import Search from "@/components/Search.vue";
 import { fether } from '@/utils/fether'
 import { reactive, watch } from "vue";
 import { useStore } from "vuex";
+import Cookies from 'js-cookie'
 const $store = new useStore();
-// import Cookies from 'js-cookie'
+
 
 // 公众号数据
 const officialdata = reactive({
@@ -67,13 +68,12 @@ const officialdata = reactive({
 const getofficial = async () => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  // 192.168.0.147:8000/officialaccount/?token=kA9Qj0wyaeTst2huDJRZISVMF61HfEnm
-  // let result = await fether(
-  //   `/officialaccount/?token=${Cookies.get('token')}`
-  // )
   let result = await fether(
-    `/officialaccount/?token=h0iLxzKyDbZCAJg9m3Yd8BWRrsHQtEvG`
+    `/officialaccount/?token=${Cookies.get('token')}`
   )
+  // let result = await fether(
+  //   `/officialaccount/?token=h0iLxzKyDbZCAJg9m3Yd8BWRrsHQtEvG`
+  // )
   if (result.code === 200) {
     officialdata.data ={...result.data}
     // officialdata = {...result.data}
@@ -100,8 +100,8 @@ const preserve = async () => {
       wx_pay_apiv3_secret_key: officialdata.data.wx_pay_apiv3_secret_key,
       wx_pay_pos_id: officialdata.data.wx_pay_pos_id,
     },
-    // token: Cookies.get("token"),
-    token: 'h0iLxzKyDbZCAJg9m3Yd8BWRrsHQtEvG'
+    token: Cookies.get("token"),
+    // token: 'h0iLxzKyDbZCAJg9m3Yd8BWRrsHQtEvG'
   })
   if (result.code === 200) {
     console.log(1)
