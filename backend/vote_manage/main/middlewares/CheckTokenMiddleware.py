@@ -19,8 +19,9 @@ class CheckTokenMiddleware(MiddlewareMixin):
             if m == 'GET':
                 token = request.GET.get('token', None)
             elif m in ['POST', 'PUT', 'DELETE']:
-                # print(request.body)
+                # print(str(request.body, encoding='utf-8'))
                 token = json.loads(request.body).get("token", None)
+                # token = json.loads(str(request.body, encoding='utf-8')).get("token", None)
             else:
                 return JsonResponse({"code": 400, "msg": "身份验证失败"})
             userop = UserOp() 

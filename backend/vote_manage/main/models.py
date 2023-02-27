@@ -28,3 +28,18 @@ class Logs(models.Model):
     action = models.TextField(max_length=20)
     target = models.TextField(max_length=20, null=False)
     create_time = models.IntegerField(null=False)
+
+
+class OfficialAccount(models.Model):
+    name = models.TextField()
+    app_id = models.TextField()
+    region = models.TextField()
+    wx_pay_pos_id = models.TextField()
+    wx_pay_apiv2_secret_key = models.TextField()
+    wx_pay_apiv3_secret_key = models.TextField()
+
+
+class VoteUser(models.Model):
+    open_id = models.CharField(unique=True, max_length=128)
+    wx_username = models.TextField()
+    create_time = models.IntegerField(null=False)
