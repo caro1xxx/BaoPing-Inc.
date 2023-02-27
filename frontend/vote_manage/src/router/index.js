@@ -13,6 +13,8 @@ import PrizeApplicationView from "../views/PrizeApplicationView.vue";
 import ActivityView from "../views/ActivityView.vue";
 import VoteUserView from "../views/VoteUserView.vue";
 import VoteRecordView from "../views/VoteRecordView.vue";
+import PaymentRecordView from "../views/PaymentRecordView.vue";
+import OverViewView from "../views/OverViewView.vue";
 
 const routes = [
   // 登录注册
@@ -86,6 +88,18 @@ const routes = [
     path: "/vote/voterecord",
     name: "VoteRecordView",
     component: VoteRecordView,
+  },
+  // 概括
+  {
+    path: "/order/paymentrecord",
+    name: "PaymentRecordView",
+    component: PaymentRecordView,
+  },
+  // 概括
+  {
+    path: "/order/overview",
+    name: "OverViewView",
+    component: OverViewView,
   },
 ];
 
