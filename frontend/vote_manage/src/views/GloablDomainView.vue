@@ -3,14 +3,14 @@
     <Search />
     <div class="home_title">全局域名</div>
     <div class="addrealm">
-      <svg t="1677473562522" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2330" width="20" height="20">
+      <svg @click="addrealm()" t="1677473562522" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2330" width="20" height="20">
       <path d="M512 992C246.912 992 32 777.088 32 512 32 246.912 246.912 32 512 32c265.088 0 480 214.912 480 480 0 265.088-214.912 480-480 480z m0-64c229.76 0 416-186.24 416-416S741.76 96 512 96 96 282.24 96 512s186.24 416 416 416z" fill="#2460E5" p-id="2331"></path>
       <path d="M256 544a32 32 0 0 1 0-64h512a32 32 0 0 1 0 64H256z" fill="#2460E5" p-id="2332"></path>
       <path d="M480 256a32 32 0 0 1 64 0v512a32 32 0 0 1-64 0V256z" fill="#2460E5" p-id="2333"></path></svg>
     </div>
     <div class="realmlist">
       <div class="grid" v-for="item in realmdata" :key="item">
-        <div>#1</div>
+        <div>{{ item.id }}</div>
         <div class="span-col-2 realmlist_item">
           <svg t="1677475912109" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7543" data-spm-anchor-id="a313x.7781069.0.i33" width="20" height="20">
           <path d="M607.934444 417.856853c-6.179746-6.1777-12.766768-11.746532-19.554358-16.910135l-0.01228 0.011256c-6.986111-6.719028-16.47216-10.857279-26.930349-10.857279-21.464871 0-38.864146 17.400299-38.864146 38.864146 0 9.497305 3.411703 18.196431 9.071609 24.947182l-0.001023 0c0.001023 0.001023 0.00307 0.00307 0.005117 0.004093 2.718925 3.242857 5.953595 6.03853 9.585309 8.251941 3.664459 3.021823 7.261381 5.997598 10.624988 9.361205l3.203972 3.204995c40.279379 40.229237 28.254507 109.539812-12.024871 149.820214L371.157763 796.383956c-40.278355 40.229237-105.761766 40.229237-146.042167 0l-3.229554-3.231601c-40.281425-40.278355-40.281425-105.809861 0-145.991002l75.93546-75.909877c9.742898-7.733125 15.997346-19.668968 15.997346-33.072233 0-23.312962-18.898419-42.211381-42.211381-42.211381-8.797363 0-16.963347 2.693342-23.725354 7.297197-0.021489-0.045025-0.044002-0.088004-0.066515-0.134053l-0.809435 0.757247c-2.989077 2.148943-5.691629 4.669346-8.025791 7.510044l-78.913281 73.841775c-74.178443 74.229608-74.178443 195.632609 0 269.758863l3.203972 3.202948c74.178443 74.127278 195.529255 74.127278 269.707698 0l171.829484-171.880649c74.076112-74.17435 80.357166-191.184297 6.282077-265.311575L607.934444 417.856853z" fill="#000000" p-id="7544">
@@ -28,16 +28,16 @@
         <div class="span-col-4 realmlist_item"></div>
         <div>
           <!-- 状态正确 -->
-          <svg t="1677475207777" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4111" width="20" height="20">
+          <svg @click="changestatus(item)" v-if="item.status === true" t="1677475207777" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4111" width="20" height="20">
             <path d="M512 1015.345c-277.909 0-503.198-225.29-503.198-503.198s225.287-503.196 503.198-503.196c277.907 0 503.198 225.29 503.198 503.198s-225.29 503.196-503.198 503.196zM512 71.851c-243.163 0-440.295 197.134-440.295 440.297s197.134 440.295 440.295 440.295 440.295-197.134 440.295-440.295-197.134-440.297-440.295-440.297zM713.042 337.108c8.681-15.049 3.543-34.274-11.506-42.957s-34.274-3.543-42.957 11.506l-201.147 348.361-112.531-103.77c-11.856-12.674-31.756-13.329-44.45-1.453-12.676 11.876-13.308 31.778-1.432 44.452l143.776 132.617c11.876 12.674 31.778 13.308 44.452 1.432 3.825-3.582 225.793-390.19 225.793-390.19z" fill="#3CDA72" p-id="4112">  
             </path></svg>
           <!-- 状态错误 -->
-          <!-- <svg t="1677475358125" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5243" width="20" height="20">
+          <svg @click="changestatus(item)" v-else t="1677475358125" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5243" width="20" height="20">
             <path d="M512 128c212 0 384 172 384 384s-172 384-384 384-384-172-384-384 172-384 384-384m0-64C264.8 64 64 264.8 64 512s200.8 448 448 448 448-200.8 448-448S759.2 64 512 64z m238.4 254.4l-45.6-45.6L512 467.2 318.4 273.6l-45.6 45.6L467.2 512 273.6 705.6l45.6 45.6L512 557.6l193.6 193.6 45.6-45.6L557.6 512l192.8-193.6z" p-id="5244" fill="#F40606">
-            </path></svg> -->
+            </path></svg>
         </div>
         <div class="svg">
-          <svg t="1677475434506" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6493" id="mx_n_1677475434509" width="20" height="20">
+          <svg @click="deleterealm()" t="1677475434506" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6493" id="mx_n_1677475434509" width="20" height="20">
             <path d="M607.897867 768.043004c-17.717453 0-31.994625-14.277171-31.994625-31.994625L575.903242 383.935495c0-17.717453 14.277171-31.994625 31.994625-31.994625s31.994625 14.277171 31.994625 31.994625l0 351.94087C639.892491 753.593818 625.61532 768.043004 607.897867 768.043004z" fill="#F40606" p-id="6494">
             </path><path d="M415.930119 768.043004c-17.717453 0-31.994625-14.277171-31.994625-31.994625L383.935495 383.935495c0-17.717453 14.277171-31.994625 31.994625-31.994625 17.717453 0 31.994625 14.277171 31.994625 31.994625l0 351.94087C447.924744 753.593818 433.647573 768.043004 415.930119 768.043004z" fill="#F40606" p-id="6495">
             </path><path d="M928.016126 223.962372l-159.973123 0L768.043004 159.973123c0-52.980346-42.659499-95.983874-95.295817-95.983874L351.94087 63.989249c-52.980346 0-95.983874 43.003528-95.983874 95.983874l0 63.989249-159.973123 0c-17.717453 0-31.994625 14.277171-31.994625 31.994625s14.277171 31.994625 31.994625 31.994625l832.032253 0c17.717453 0 31.994625-14.277171 31.994625-31.994625S945.73358 223.962372 928.016126 223.962372zM319.946246 159.973123c0-17.545439 14.449185-31.994625 31.994625-31.994625l320.806316 0c17.545439 0 31.306568 14.105157 31.306568 31.994625l0 63.989249L319.946246 223.962372 319.946246 159.973123 319.946246 159.973123z" fill="#F40606" p-id="6496">
@@ -50,30 +50,76 @@
 </template>
 
 <script setup>
-import Search from "@/components/Search.vue";
-import { reactive } from "vue";
+import Search from "@/components/Search.vue"
+import { fether } from "@/utils/fether"
+import { reactive } from "vue"
+import { useStore } from "vuex"
+import Cookies from 'js-cookie'
+const $store = new useStore()
 
 // 域名管理数据
-const realmdata = reactive([
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-  { id: '1', location: 'http://www.baidu.com', time: '到期时间：2023年1月20日11:30:15' },
-])
+const realmdata = reactive([])
+
+// 获取域名列表
+const getrealm = async () => {
+  //开启加载loading
+  await $store.dispatch("NoticifyActions", true);
+  let result = await fether(
+    // `/applyprize/?token=${Cookies.get('token')}`
+  )
+  if (result.code === 200) {
+    // realmdata.push(...result.data)
+  } else {
+    //请求发送错误
+    await $store.dispatch("refreshErroActions");
+    await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
+  }
+  //关闭加载loading
+  $store.commit("noticifyLoading", false);
+}
+// getrealm()
+
+// 新增域名数据
+const addrealm = async () => {
+  //开启加载loading
+  await $store.dispatch("NoticifyActions", true);
+  let result = await fether(
+    // `/applyprize/?token=${Cookies.get('token')}`
+  )
+  if (result.code === 200) {
+    // realmdata.push(...result.data)
+  } else {
+    //请求发送错误
+    await $store.dispatch("refreshErroActions");
+    await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
+  }
+  //关闭加载loading
+  $store.commit("noticifyLoading", false);
+}
+
+// 状态改变
+const changestatus = async () => {
+  //开启加载loading
+  await $store.dispatch("NoticifyActions", true);
+  let result = await fether(`//`, `put`, {
+
+  })
+  await $store.dispatch("GlobalMessageActions", result.msg);
+  // 关闭加载loading
+  $store.commit("noticifyLoading", false);
+}
+
+// 删除域名列表数据
+const deleterealm = async () => {
+  //开启加载loading
+  await $store.dispatch("NoticifyActions", true);
+  let result = await fether(`//`, `delete`, {
+
+  })
+  await $store.dispatch("GlobalMessageActions", result.msg);
+  // 关闭加载loading
+  $store.commit("noticifyLoading", false);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -100,8 +146,9 @@ const realmdata = reactive([
   }
 }
 .realmlist{
-  height: calc(100vh - 168px);
+  height: calc(100vh - 178px);
   overflow-y: scroll;
+  margin-top: 10px;
 }
 .realmlist::-webkit-scrollbar {
   display: none;

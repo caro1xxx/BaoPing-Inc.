@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <Search />
-    <div class="home_title">系统设置</div>
+    <div class="home_title"><span>系统设置</span></div>
     <div class="systemseting-content">
       <div class="systemseting-content-left">
         <div class="grid">
@@ -46,7 +46,7 @@
 <script setup>
 import Search from "@/components/Search.vue";
 import { fether } from '@/utils/fether'
-import { reactive, watch } from "vue";
+import { reactive } from "vue";
 import { useStore } from "vuex";
 import Cookies from 'js-cookie'
 const $store = new useStore();
@@ -103,9 +103,6 @@ const preserve = async () => {
     token: Cookies.get("token"),
     // token: 'h0iLxzKyDbZCAJg9m3Yd8BWRrsHQtEvG'
   })
-  if (result.code === 200) {
-    console.log(1)
-  }
   await $store.dispatch("GlobalMessageActions", result.msg);
   // 关闭加载loading
   $store.commit("noticifyLoading", false);
@@ -124,8 +121,10 @@ getofficial()
   font-size: 20px;
   font-weight: bold;
   margin: 20px 0px;
-  cursor: pointer;
-  user-select: none;
+  span{
+    cursor: pointer;
+    user-select: none;
+  }
 }
 .systemseting-content{
   height: calc(100vh - 148px);
