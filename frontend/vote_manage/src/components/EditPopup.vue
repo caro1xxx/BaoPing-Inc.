@@ -1,7 +1,12 @@
 <template>
   <div class="popup">
     <div class="popup_body">
-      <img src="../assets/img/31.png" class="register_mask_close" alt="" />
+      <img
+        src="../assets/img/31.png"
+        @click="closePopup"
+        class="register_mask_close"
+        alt=""
+      />
       <div class="popup_body_margin">
         <input
           type="text"
@@ -59,6 +64,10 @@ const userEditInfo = reactive({
   auth: props.data.auth,
   username: props.data.username,
 });
+
+const closePopup = () => {
+  $store.state.editPopProps.name = "";
+};
 
 // 检查
 const checkForm = async () => {
