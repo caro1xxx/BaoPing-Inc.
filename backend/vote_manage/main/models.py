@@ -86,10 +86,13 @@ class Active(models.Model):
 
 
 class VoteRecord(models.Model):
-    wx_username = models.TextField()
     voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE)
     create_time = models.IntegerField(null=False)
     vote_activity = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
+    ip = models.TextField(default='')
+    phone_number = models.TextField(default='')
+    system = models.TextField(default='')
+    network = models.TextField(default='')
 
 
 class PaymentRecord(models.Model):

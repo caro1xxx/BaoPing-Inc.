@@ -37,7 +37,7 @@ class VoteActivity(APIView):
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'msg': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'msg': str(e)}
         return JsonResponse(ret)
 
     def post(self, request, *args, **kwargs):
@@ -49,6 +49,7 @@ class VoteActivity(APIView):
             validate.addCheck('checkIsNotEmpty', data['vote_name'], '活动名称不能为空')
             validate.addCheck('checkIsNotEmpty', data['create_user_username'], '创建者不能为空')
             validate.addCheck('checkIsNotEmpty', data['create_time'], '活动开始时间不能为空')
+            validate.addCheck('checkIsNotEmpty', data['img'], '缩略图不能为空')
             validate.addCheck('checkIsNotEmpty', data['expire_time'], '活动结束时间不能为空')
             validate.addCheck('checkIsNumber', data['create_time'], '活动开始时间错误')
             validate.addCheck('checkIsNumber', data['expire_time'], '活动结束时间错误')
@@ -74,7 +75,7 @@ class VoteActivity(APIView):
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout',   'error': str(e)}
         return JsonResponse(ret)
 
     def put(self, request, *args, **kwargs):
@@ -91,5 +92,5 @@ class VoteActivity(APIView):
             feedbackObj.delete()
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)

@@ -15,13 +15,13 @@ class Domain(APIView):
             if value in ['all', None]:
                 domainObj =  models.Domain.objects.all()
             else:
-                domainObj = models.Domain.objects.filter(domain_name__contains=value)
+                domainObj = models.Domain.objects.filter()
 
             ret['data'] = serializers.serialize('json', domainObj)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
 
     def post(self, request, *args, **kwargs):
@@ -40,7 +40,7 @@ class Domain(APIView):
             ok, msg = validate.startCheck()
             if not ok:
                 return JsonResponse({'code': 400, 'msg': msg})
-            if models.Domain.objects.get(domain_name=domain):
+            if models.Domain.objects.filter(domain_name=domain).first():
                 return JsonResponse({'code': 400, 'msg': '域名重复'})
 
             # 创建
@@ -54,25 +54,25 @@ class Domain(APIView):
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
 
     def put(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': '修改成功'}
         try:
             # 接收参数
-            domainId = json.loads(request.body).get('domain_id', None)
+            domainName = json.loads(request.body).get('domain', None)
             key = json.loads(request.body).get('key', None)
             value = json.loads(request.body).get('value', None)
 
             # 验证数据
             validate = Validate()
-            validate.addCheck('checkIsNotEmpty', domainId, '域名ID不能为空')
-            validate.addCheck('checkIsNumber', domainId, '域名ID错误')
+            validate.addCheck('checkIsNotEmpty', domainName, '域名ID不能为空')
+            validate.addCheck('checkIsNumber', domainName, '域名ID错误')
             ok, msg = validate.startCheck()
             if not ok:
                 return JsonResponse({'code': 400, 'msg': msg})
-            domainObj = models.Domain.objects.filter(pk=domainId).first()
+            domainObj = models.Domain.objects.filter(domain_name=domainName).first()
             if not domainObj:
                 return JsonResponse({'code': 400, 'msg': '记录不存在'})
             
@@ -107,16 +107,15 @@ class Domain(APIView):
         ret = {'code': 200, 'msg': '删除成功'}
         try:
             # 接收数据
-            domainId = json.loads(request.body).get('domain_id', None)
+            domainName = json.loads(request.body).get('domain', None)
             
             # 验证参数
             validate = Validate()
-            validate.addCheck('checkIsNotEmpty', domainId, '域名ID不能为空')
-            validate.addCheck('checkIsNumber', domainId, '域名ID错误')
+            validate.addCheck('checkIsNotEmpty', domainName, '域名ID不能为空')
             ok, msg = validate.startCheck()
             if not ok:
                 return JsonResponse({'code': 400, 'msg': msg})
-            domainObj = models.Domain.objects.filter(pk=domainId).first()
+            domainObj = models.Domain.objects.filter(domain_name=domainName).first()
             if not domainObj:
                 return JsonResponse({'code': 400, 'msg': '记录不存在'})         
 
