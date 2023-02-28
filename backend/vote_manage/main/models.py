@@ -35,6 +35,7 @@ class VoteActivity(models.Model):
     domain = models.ForeignKey(Domain, to_field='domain_name', on_delete=models.CASCADE)
     create_time = models.IntegerField()
     expire_time = models.IntegerField()
+    name = models.TextField(default='')
 
 
 class VoteUser(models.Model):
@@ -89,7 +90,6 @@ class VoteRecord(models.Model):
     voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE)
     create_time = models.IntegerField(null=False)
     vote_activity = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
-
 
 
 class PaymentRecord(models.Model):

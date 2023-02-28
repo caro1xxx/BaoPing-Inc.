@@ -2,8 +2,9 @@ from rest_framework.views import APIView
 from django.core import serializers
 from django.http import JsonResponse
 from main import models
-from main.tools import generateString16
+from main.tools import generateCode6
 import json
+from main.tools import Validate
 
 
 class VoteActivity(APIView):
@@ -22,12 +23,13 @@ class VoteActivity(APIView):
                 tmp = {}
                 tmp['name'] = voteActivity.create_user.name
                 tmp['username'] = voteActivity.create_user.username
-                tmp['domain'] = voteActivity.domain.domain
+                tmp['domain'] = voteActivity.domain.domain_name
+                tmp['vote_name'] = voteActivity.name
                 tmp['flow'] = voteActivity.flow
                 tmp['share'] = voteActivity.share
                 tmp['img'] = voteActivity.img
                 tmp['income'] = voteActivity.income
-                tmp['params'] = voteActivity.params
+                tmp['vote_id'] = voteActivity.vote_id
                 tmp['create_time'] = voteActivity.create_time
                 tmp['expire_time'] = voteActivity.expire_time
                 data.append(tmp)
@@ -43,24 +45,37 @@ class VoteActivity(APIView):
         try:
             data = json.loads(request.body).get('data', None)
 
-            # validate data
+            validate = Validate()
+            validate.addCheck('checkIsNotEmpty', data['vote_name'], '活动名称不能为空')
+            validate.addCheck('checkIsNotEmpty', data['create_user_username'], '创建者不能为空')
+            validate.addCheck('checkIsNotEmpty', data['create_time'], '活动开始时间不能为空')
+            validate.addCheck('checkIsNotEmpty', data['expire_time'], '活动结束时间不能为空')
+            validate.addCheck('checkIsNumber', data['create_time'], '活动开始时间错误')
+            validate.addCheck('checkIsNumber', data['expire_time'], '活动结束时间错误')
+            ok, msg = validate.startCheck()
+            if not ok:
+                return JsonResponse({'code': 400, 'msg': msg})
+            if not models.User.objects.filter(username=data['create_user_username']).first():
+                return JsonResponse({'code': 400, 'msg': '创建者错误'})
+            domainObj = models.Domain.objects.filter(status=1).order_by('visit_count').first()
+            domain_name = '' if domainObj is None else domainObj.domain_name
+            if not domain_name:
+                return JsonResponse({'code': 400, 'msg': '暂时没有可用域名，无法创建活动'})
 
-            domainObj = models.Domain.objects.filter(status=1).order_by('-vis_cnt').first()
-            domain_id = '' if domainObj is None else domainObj.pk
             models.VoteActivity.objects.create(
+                name = data['vote_name'],
                 create_user_id = data['create_user_username'],
                 img = data['img'],
-                domain_id = domain_id,
-                params = generateString16(),
+                domain_id = domain_name,
+                vote_id = generateCode6(),
                 create_time = data['create_time'],
                 expire_time = data['expire_time'],
             ).save()
 
         except Exception as e:
-            # ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            ret = {'code': 500, 'msg': 'Timeout'}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
-        pass
 
     def put(self, request, *args, **kwargs):
         pass
@@ -68,12 +83,13 @@ class VoteActivity(APIView):
     def delete(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': '删除成功'}
         try:
-            vote_id = json.loads(request.body).get('vote_id', None)
+            voteId = json.loads(request.body).get('vote_id', None)
              
-            feedbackObj = models.User.objects.get(pk=vote_id)
+            feedbackObj = models.VoteActivity.objects.filter(vote_id=voteId).first()
             if not feedbackObj:
                 return JsonResponse({'code': 400, 'msg': 'ID错误'})
             feedbackObj.delete()
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
+            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
