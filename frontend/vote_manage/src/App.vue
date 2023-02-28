@@ -9,6 +9,7 @@
       :data="$store.state.editPopProps"
     />
     <AuthView v-if="!$store.state.isAuth" />
+    <EditActivity />
     <!-- <Loading v-show="$store.state.loadingState" /> -->
   </div>
 </template>
@@ -20,6 +21,7 @@ import Message from "./components/Message.vue";
 import EditPopup from "./components/EditPopup.vue";
 import SubNavBar from "./components/SubNavBar.vue";
 import AuthView from "./views/AuthView.vue";
+import EditActivity from "./components/EditActivity.vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
 import { ref } from "vue";
