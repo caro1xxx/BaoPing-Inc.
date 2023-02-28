@@ -9,7 +9,7 @@
       :data="$store.state.editPopProps"
     />
     <AuthView v-if="!$store.state.isAuth" />
-    <EditActivity />
+    <!-- <EditActivity /> -->
     <!-- <Loading v-show="$store.state.loadingState" /> -->
   </div>
 </template>
