@@ -67,15 +67,15 @@ class Domain(APIView):
 
             # 验证数据
             validate = Validate()
-            validate.addCheck('checkIsNotEmpty', domainName, '域名ID不能为空')
-            validate.addCheck('checkIsNumber', domainName, '域名ID错误')
+            validate.addCheck('checkIsNotEmpty', domainName, '域名不能为空')
+            validate.addCheck('checkIsDomain', domainName, '域名错误')
             ok, msg = validate.startCheck()
             if not ok:
                 return JsonResponse({'code': 400, 'msg': msg})
             domainObj = models.Domain.objects.filter(domain_name=domainName).first()
             if not domainObj:
                 return JsonResponse({'code': 400, 'msg': '记录不存在'})
-            
+                
             # 进行修改
             if key == 'expire_time':
                 validate.addCheck('checkIsNotEmpty', value, '过期时间不能为空')

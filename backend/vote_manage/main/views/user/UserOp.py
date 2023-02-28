@@ -149,7 +149,7 @@ class UserOp:
     # 根据用户名和当前时间戳生成加密token
     def generatreToken(self, username):
         token = generateString32()
-        expire_time = getNowTimeStamp() + (7 * 24 * 60)
+        expire_time = getNowTimeStamp() + (7 * 24 * 60 * 60)
         tokenModels = models.Token.objects.create(value=token,expire_time=expire_time)
         tokenModels.save()
         return token

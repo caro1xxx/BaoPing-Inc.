@@ -85,6 +85,9 @@ class Validate:
     
     def checkIsNumber(self, data):
         return str(data).isdigit()
+    
+    def checkIsNotNagetiveNumber(self, data):
+        return int(data) >= 0
 
 # Validate使用过程
 # ck = Validate()

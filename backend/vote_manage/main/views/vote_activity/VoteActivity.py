@@ -5,6 +5,7 @@ from main import models
 from main.tools import generateCode6
 import json
 from main.tools import Validate
+from main.views.vote_activity.VoteActivityOp import VoteActivityOp
 
 
 class VoteActivity(APIView):
@@ -79,7 +80,36 @@ class VoteActivity(APIView):
         return JsonResponse(ret)
 
     def put(self, request, *args, **kwargs):
-        pass
+        ret = {'code': 200, 'msg': '修改成功'}
+        try:
+            data = json.loads(request.body).get('data', None)
+
+            if data is None:
+                return JsonResponse({'code': 400, 'msg': '数据错误'})
+            content = data.get('content', None)
+            if content is None:
+                return JsonResponse({'code': 400, 'msg': '参数错误'})
+                
+            voteActivityOp = VoteActivityOp()
+            if content == 'activity_settings':
+                ok, msg = voteActivityOp.checkActivityData(data)
+                if not ok:
+                    return JsonResponse({'code': 400, 'msg': msg})
+                voteActivityOp.updateActivityData(data)
+                
+            elif content == 'vote_settings':
+                ok, msg = voteActivityOp.checkVoteData(data)
+                if not ok:
+                    return JsonResponse({'code': 400, 'msg': msg})
+                voteActivityOp.updateVoteData(data)
+
+            else:
+                return JsonResponse({'code': 400, 'msg': '参数错误'})
+            
+        except Exception as e:
+            ret = {'code': 500, 'msg': 'Timeout'}
+            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+        return JsonResponse(ret)
 
     def delete(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': '删除成功'}

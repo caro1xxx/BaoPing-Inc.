@@ -25,6 +25,13 @@ class Domain(models.Model):
     flow = models.IntegerField()
 
 
+class VoteUser(models.Model):
+    open_id = models.CharField(unique=True, max_length=128)
+    wx_username = models.TextField()
+    create_time = models.IntegerField(null=False)
+    avator = models.TextField(default='')
+
+
 class VoteActivity(models.Model):
     create_user = models.ForeignKey(User, to_field='username', on_delete=models.CASCADE, related_name='user')
     vote_id = models.IntegerField(unique=True)
@@ -36,13 +43,24 @@ class VoteActivity(models.Model):
     create_time = models.IntegerField()
     expire_time = models.IntegerField()
     name = models.TextField(default='')
-
-
-class VoteUser(models.Model):
-    open_id = models.CharField(unique=True, max_length=128)
-    wx_username = models.TextField()
-    create_time = models.IntegerField(null=False)
-    avator = models.TextField(default='')
+    vote_everyday_begin_time = models.IntegerField(default=0)
+    vote_everyday_end_time = models.IntegerField(default=0)
+    vote_enroll_begin_time = models.IntegerField(default=0)
+    vote_enroll_end_time = models.IntegerField(default=0)
+    allowed_vote_region = models.TextField(default='')
+    visit_count = models.IntegerField(default=0)
+    visit_count_multiple = models.IntegerField(default=1)
+    vote_count_restrict = models.TextField(default='')
+    today_start_voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE, null=True)
+    today_star_update_begin_time = models.IntegerField(default=0)
+    today_star_update_end_time = models.IntegerField(default=0)
+    allowed_alone_everyday_vote_count = models.IntegerField(default=1)
+    allowed_alone_everyhour_vote_count = models.IntegerField(default=1)
+    open_today_star_with = models.IntegerField(default=1)
+    visible_no1_with = models.IntegerField(default=1)
+    enable_vote_to_me = models.IntegerField(default=1)
+    enable_comment = models.IntegerField(default=1)
+    enable_vote_cert_code = models.IntegerField(default=1)
 
 
 class Feedback(models.Model):
@@ -103,4 +121,7 @@ class PaymentRecord(models.Model):
     ip = models.TextField(default='')
     phone_number = models.TextField(default='')
     system = models.TextField(default='')
-    network = models.TextField(default='')
+    network = models.TextField(default='')  
+    prize_type = models.TextField(default='')
+    payment_order_id = models.TextField(default='')
+    payment_status = models.IntegerField(default=0)
