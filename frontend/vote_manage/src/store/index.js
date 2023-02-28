@@ -1,3 +1,4 @@
+
 import { createStore } from "vuex";
 export default createStore({
   state: {
@@ -34,6 +35,16 @@ export default createStore({
       token: "",
       status: "",
     },
+    // 全局域名管理新增弹窗是否开启
+    isrealmaddopen: false,
+    // 全局域名管理编辑弹窗是否开启
+    isRealmUpdata: false,
+    // 全局域名新增数据
+    realmData: {
+      domain_name: '',
+      status: undefined,
+      expire_time: undefined
+    }
   },
   getters: {},
   mutations: {
@@ -83,6 +94,24 @@ export default createStore({
     // 修改登录状态
     editUserInfoSave(state, payload) {
       state.isAuth = payload;
+    },
+    // 改变全局域名新增弹窗开启或关闭状态
+    changeRealmStatus(state) {
+      state.isRealmAddOpen =!state.isRealmAddOpen
+    },
+    // 全局域名编辑弹窗开启或关闭状态
+    undateRealmStatus(state, payload) {
+      state.isRealmUpdata =!state.isRealmUpdata;
+      if (payload) {
+        state.realmData.expire_time = payload.expire_time,
+        state.realmData.status = payload.status,
+        state.realmData.domain_name = payload.domain_name
+      }
+    },
+    // 保存全局域名新增数据
+    preserveRealmData(state, payload) {
+      state.realmData.domain_name =  payload.domain_name;
+      state.realmData.expire_time =  payload.expire_time;
     },
   },
   actions: {
