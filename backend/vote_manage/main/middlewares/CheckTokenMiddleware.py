@@ -37,4 +37,5 @@ class CheckTokenMiddleware(MiddlewareMixin):
 
                 
         except Exception as e:
-            return JsonResponse({"code": 500, "msg": "身份验证失败", "error": str(e)})
+            return JsonResponse({"code": 500, "msg": "身份验证失败"})
+            # return JsonResponse({"code": 500, "msg": "身份验证失败", "error": str(e)})
