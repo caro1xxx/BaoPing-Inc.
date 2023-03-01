@@ -34,6 +34,12 @@ export default createStore({
       token: "",
       status: "",
     },
+    // 活动管理编辑框
+    voteManagePopup: { state: false, target: "" },
+    // 活动管理添加框
+    voteManageAddPopup: false,
+    // 活动管理修改数据
+    voteManageData: {},
   },
   getters: {},
   mutations: {
@@ -84,6 +90,15 @@ export default createStore({
     editUserInfoSave(state, payload) {
       state.isAuth = payload;
     },
+    // 修改活动管理编辑框状态
+    edidVoteManageSave(state, payload) {
+      if (payload.type === "post") {
+        state.voteManageAddPopup = !state.voteManageAddPopup;
+      } else {
+        state.voteManagePopup.state = !state.voteManagePopup.state;
+        state.voteManagePopup.target = payload.target;
+      }
+    },
   },
   actions: {
     SubNavBarActions(context, payload) {
@@ -111,6 +126,9 @@ export default createStore({
     },
     authActions(context, payload) {
       context.commit("editUserInfoSave", payload);
+    },
+    voteManagerActions(context, payload) {
+      context.commit("edidVoteManageSave", payload);
     },
   },
   modules: {},

@@ -55,10 +55,14 @@ const checkForm = () => {
 };
 
 // 是否记住记住登录
-const rememberUser = (flag, value) => {
-  console.log(flag, value);
-  if (flag) Cookies.set("token", value, { expires: 7 });
-  else Cookies.set("token", value);
+const rememberUser = (flag, target) => {
+  if (flag) {
+    Cookies.set("token", target.token, { expires: 7 });
+    Cookies.set("username", target.username, { expires: 7 });
+  } else {
+    Cookies.set("token", target.token);
+    Cookies.set("username", target.username);
+  }
 };
 
 // 登录
@@ -75,10 +79,10 @@ const authUser = async (input) => {
   if (result.code === 200) {
     // 保存用户信息
     await $store.dispatch("UserActions", JSON.parse(result.data)[0].fields);
-    rememberUser(
-      userInputInfo.value.isRemember,
-      JSON.parse(result.data)[0].fields.token
-    );
+    rememberUser(userInputInfo.value.isRemember, {
+      token: JSON.parse(result.data)[0].fields.token,
+      username: JSON.parse(result.data)[0].fields.username,
+    });
     loginSuccess();
   }
 };
