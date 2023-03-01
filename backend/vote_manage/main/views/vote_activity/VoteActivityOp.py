@@ -70,12 +70,33 @@ class VoteActivityOp:
         validate.addCheck('checkIsNumber', data.get('enable_vote_cert_code', None), '是否开启投票验证码错误')
         ok, msg = validate.startCheck()
         return ok, msg
-
-    def checkData(self, data):
+    
+    def checkAutoCommentData(self, data):
+        ok, msg = self.checkVoteIdIsExist(data.get('vote_id', None))
+        if not ok:
+            return False, msg
+        if data.get('auto_comment_voteuser_open_id', None) in ['', None]:
+            return True, None
+        
         validate = Validate()
-        validate.addCheck('checkIsNotEmpty', data.get('allowed_alone_everyday_vote_count', None), '单人每天投票不能为空')
-        validate.addCheck('checkIsNumber', data.get('allowed_alone_everyday_vote_count', None), '单人每天投票错误')
-        validate.addCheck('checkIsNotNagetiveNumber', data.get('allowed_alone_everyday_vote_count', None), '单人每天投票不能为负数')
+        validate.addCheck('checkIsNotEmpty', data.get('auto_comment_voteuser_open_id', None), '自动评论对象用户不能为空')
+        validate.addCheck('checkIsNotEmpty', data.get('auto_comment_begin_time', None), '自动评论开始时间不能为空')
+        validate.addCheck('checkIsNumber', data.get('auto_comment_begin_time', None), '自动评论开始时间错误')
+        validate.addCheck('checkIsNotEmpty', data.get('auto_comment_end_time', None), '自动评论结束时间不能为空')
+        validate.addCheck('checkIsNumber', data.get('auto_comment_end_time', None), '自动评论结束时间错误')
+        validate.addCheck('checkIsNotEmpty', data.get('auto_comment_everyday_begin_time', None), '自动评论每日开始时间不能为空')
+        validate.addCheck('checkIsNumber', data.get('auto_comment_everyday_begin_time', None), '自动评论每日开始时间错误')
+        validate.addCheck('checkIsNotEmpty', data.get('auto_comment_everyday_end_time', None), '自动评论每日结束时间不能为空')
+        validate.addCheck('checkIsNumber', data.get('auto_comment_everyday_end_time', None), '自动评论每日结束时间错误')
+        validate.addCheck('checkIsNotEmpty', data.get('auto_comment_space_minute', None), '自动评论间隔时间不能为空')
+        validate.addCheck('checkIsNumber', data.get('auto_comment_space_minute', None), '自动评论间隔时间错误')
+        validate.addCheck('checkIsNotEmpty', data.get('auto_comment_everyday_count_strict', None), '自动评论每日上限不能为空')
+        validate.addCheck('checkIsNumber', data.get('auto_comment_everyday_count_strict', None), '自动评论每日上限错误')
+        ok, msg = validate.startCheck()
+        if not ok:
+            return ok, msg
+        ok, msg = self.checkVoteuserIsExist(data.get('auto_comment_voteuser_open_id', None))
+        return ok, msg
 
     def updateActivityData(self, data):
         voteActivityObj = models.VoteActivity.objects.filter(vote_id=data.get('vote_id', None)).first()
@@ -93,13 +114,25 @@ class VoteActivityOp:
         voteActivityObj.vote_count_restrict = data.get('vote_count_restrict', None)
         if data.get('today_start_voteuser_open_id', None) or data.get('today_start_voteuser_open_id', None) != '':
             voteActivityObj.today_start_voteuser_id = data.get('today_start_voteuser_open_id', None)
-        voteActivityObj.today_star_update_begin_time = data.get('today_star_update_begin_time', None)
-        voteActivityObj.today_star_update_end_time = data.get('today_star_update_end_time', None)
-        voteActivityObj.allowed_alone_everyday_vote_count = data.get('allowed_alone_everyday_vote_count', None)
-        voteActivityObj.allowed_alone_everyhour_vote_count = data.get('allowed_alone_everyhour_vote_count', None)
-        voteActivityObj.open_today_star_with = data.get('open_today_star_with', None)
+            voteActivityObj.today_star_update_begin_time = data.get('today_star_update_begin_time', None)
+            voteActivityObj.today_star_update_end_time = data.get('today_star_update_end_time', None)
+            voteActivityObj.allowed_alone_everyday_vote_count = data.get('allowed_alone_everyday_vote_count', None)
+            voteActivityObj.allowed_alone_everyhour_vote_count = data.get('allowed_alone_everyhour_vote_count', None)
+            voteActivityObj.open_today_star_with = data.get('open_today_star_with', None)
         voteActivityObj.visible_no1_with = data.get('visible_no1_with', None)
         voteActivityObj.enable_vote_to_me = data.get('enable_vote_to_me', None)
         voteActivityObj.enable_comment = data.get('enable_comment', None)
         voteActivityObj.enable_vote_cert_code = data.get('enable_vote_cert_code', None)
         voteActivityObj.save()
+
+    def updateAutoCommentData(self, data):
+        voteActivityObj = models.VoteActivity.objects.filter(vote_id=data.get('vote_id', None)).first()
+        if data.get('auto_comment_voteuser_open_id', None) or data.get('auto_comment_voteuser_open_id', None) != '':
+            voteActivityObj.auto_comment_voteuser_id = data.get('auto_comment_voteuser_open_id', None)
+            voteActivityObj.auto_comment_begin_time = data.get('auto_comment_begin_time', None)
+            voteActivityObj.auto_comment_end_time = data.get('auto_comment_end_time', None)
+            voteActivityObj.auto_comment_everyday_begin_time = data.get('auto_comment_everyday_begin_time', None)
+            voteActivityObj.auto_comment_everyday_end_time = data.get('auto_comment_everyday_end_time', None)
+            voteActivityObj.auto_comment_space_minute = data.get('auto_comment_space_minute', None)
+            voteActivityObj.auto_comment_everyday_count_strict = data.get('auto_comment_everyday_count_strict', None)
+            voteActivityObj.save()

@@ -103,6 +103,12 @@ class VoteActivity(APIView):
                     return JsonResponse({'code': 400, 'msg': msg})
                 voteActivityOp.updateVoteData(data)
 
+            elif content == 'auto_comment_settings':
+                ok, msg = voteActivityOp.checkAutoCommentData(data)
+                if not ok:
+                    return JsonResponse({'code': 400, 'msg': msg})
+                voteActivityOp.updateAutoCommentData(data)
+
             else:
                 return JsonResponse({'code': 400, 'msg': '参数错误'})
             
