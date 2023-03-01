@@ -9,8 +9,17 @@
       :data="$store.state.editPopProps"
     />
     <AuthView v-if="!$store.state.isAuth" />
+<<<<<<< HEAD
     <EditActivity v-if="$store.state.voteManagePopup.state" />
     <AddActivity v-if="$store.state.voteManageAddPopup" />
+=======
+    <!-- <EditActivity /> -->
+    <!-- 全局域名编辑弹窗 -->
+    <UpdateRealm v-if="$store.state.isRealmUpdata" />
+    <!-- 奖品申请编辑弹窗 -->
+    <UpdatePrize v-if="$store.state.isPrizeUpdate" />
+    <!-- <Loading v-show="$store.state.loadingState" /> -->
+>>>>>>> c8f51597dfe950d85a4cc8fd5a754a6f10de88b8
   </div>
 </template>
 
@@ -26,6 +35,8 @@ import AddActivity from "./components/AddActivity.vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
 import { ref } from "vue";
+import UpdateRealm from "./components/UpdateRealm.vue";
+import UpdatePrize from './components/UpdataPrize.vue'
 const $store = useStore();
 if (Cookies.get("token") === undefined) {
   $store.dispatch("authActions", false);
