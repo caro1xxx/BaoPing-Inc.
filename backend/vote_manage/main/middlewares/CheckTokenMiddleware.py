@@ -20,7 +20,10 @@ class CheckTokenMiddleware(MiddlewareMixin):
                 token = request.GET.get('token', None)
             elif m in ['POST', 'PUT', 'DELETE']:
                 # print(str(request.body, encoding='utf-8'))
-                token = json.loads(request.body).get("token", None)
+                if request.FILES:
+                    token = request.POST.get('token', None)
+                else:
+                    token = json.loads(request.body).get("token", None)
                 # token = json.loads(str(request.body, encoding='utf-8')).get("token", None)
             else:
                 return JsonResponse({"code": 400, "msg": "身份验证失败"})
@@ -37,5 +40,5 @@ class CheckTokenMiddleware(MiddlewareMixin):
 
                 
         except Exception as e:
-            return JsonResponse({"code": 500, "msg": "身份验证失败"})
-            # return JsonResponse({"code": 500, "msg": "身份验证失败", "error": str(e)})
+            # return JsonResponse({"code": 500, "msg": "身份验证失败"})
+            return JsonResponse({"code": 500, "msg": "身份验证失败", "error": str(e)})

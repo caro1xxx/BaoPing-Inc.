@@ -68,6 +68,10 @@ class VoteActivityOp:
         validate.addCheck('checkIsNumber', data.get('enable_comment', None), '是否可以评论错误')
         validate.addCheck('checkIsNotEmpty', data.get('enable_vote_cert_code', None), '是否开启投票验证码不能为空')
         validate.addCheck('checkIsNumber', data.get('enable_vote_cert_code', None), '是否开启投票验证码错误')
+        validate.addCheck('checkIsNotEmpty', data.get('enable_prize', None), '是否开启投票验证码不能为空')
+        validate.addCheck('checkIsNumber', data.get('enable_prize', None), '是否开启投票验证码错误')
+        validate.addCheck('checkIsNotEmpty', data.get('enable_browser', None), '是否开启投票验证码不能为空')
+        validate.addCheck('checkIsNumber', data.get('enable_browser', None), '是否开启投票验证码错误')
         ok, msg = validate.startCheck()
         return ok, msg
     
@@ -123,6 +127,8 @@ class VoteActivityOp:
         voteActivityObj.enable_vote_to_me = data.get('enable_vote_to_me', None)
         voteActivityObj.enable_comment = data.get('enable_comment', None)
         voteActivityObj.enable_vote_cert_code = data.get('enable_vote_cert_code', None)
+        voteActivityObj.enable_prize = data.get('enable_prize', None)
+        voteActivityObj.enable_browser = data.get('enable_browser', None)
         voteActivityObj.save()
 
     def updateAutoCommentData(self, data):

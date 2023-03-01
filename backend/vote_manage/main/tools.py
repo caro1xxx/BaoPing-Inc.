@@ -5,6 +5,7 @@ import random
 import string
 import base64
 from Crypto.Cipher import AES
+from django.core.paginator import Paginator
 
 # 验证类，通过addCheck()增加验证规则，start()进行统一验证
 # 验证类的check开头的方法，如果验证通过为True，否则为False
@@ -145,3 +146,14 @@ def b64Encode(data):
 def b64Decode(data):
     data = base64.b64decode(str(data)).decode()
     return data
+
+def myPaginator(data, maxSize, pageNum):
+    print(type(data))
+    paginator = Paginator(data.order_by('pk'), maxSize)
+    pageNum = int(pageNum)
+    pageCount = paginator.count
+    if pageNum > pageCount:
+        data = {}
+    else:
+        data = paginator.page(int(pageNum))
+    return data, pageCount

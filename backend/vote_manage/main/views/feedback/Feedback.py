@@ -3,6 +3,9 @@ from django.core import serializers
 from django.http import JsonResponse
 from main import models
 import json
+from django.core.paginator import Paginator
+from main.tools import myPaginator
+
 
 class Feedback(APIView):
     def get(self, request, *args, **kwargs):
@@ -15,17 +18,19 @@ class Feedback(APIView):
             else:
                 feedbackObj = models.Feedback.objects.filter(content__contains=value)
 
-            data = []
-            for feedback in feedbackObj:
-                tmp = {}
-                tmp['pk'] = feedback.pk
-                tmp['open_id'] = feedback.voteuser.open_id
-                tmp['wx_username'] = feedback.voteuser.wx_username
-                tmp['avator'] = feedback.voteuser.avator
-                tmp['content'] = feedback.content
-                tmp['create_time'] = feedback.create_time
-                data.append(tmp)
-            ret['data'] = data
+            # data = []
+            # for feedback in feedbackObj:
+            #     tmp = {}
+            #     tmp['pk'] = feedback.pk
+            #     tmp['open_id'] = feedback.voteuser.open_id
+            #     tmp['wx_username'] = feedback.voteuser.wx_username
+            #     tmp['avator'] = feedback.voteuser.avator
+            #     tmp['content'] = feedback.content
+            #     tmp['create_time'] = feedback.create_time
+            #     data.append(tmp)
+            data = feedbackObj
+            data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
+            ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}

@@ -16,6 +16,9 @@ class User(models.Model):
     # 1: 正常 0: 其他
     status = models.IntegerField(default=1)
 
+    def natural_key(self):
+        return {'name': self.name, 'username': self.username}
+
 
 class Domain(models.Model):
     domain_name = models.CharField(max_length=50, unique=True)
@@ -31,13 +34,16 @@ class VoteUser(models.Model):
     create_time = models.IntegerField(null=False)
     avator = models.TextField(default='')
 
+    def natural_key(self):
+        return {'open_id': self.open_id, 'wx_username': self.wx_username, 'avator': self.avator}
+
 
 class VoteActivity(models.Model):
     create_user = models.ForeignKey(User, to_field='username', on_delete=models.CASCADE, related_name='user')
     vote_id = models.IntegerField(unique=True)
     flow = models.IntegerField(default=0)
     share = models.IntegerField(default=0)
-    img = models.IntegerField(default=0)
+    img = models.FileField(upload_to='img', blank=True, verbose_name='缩略图')
     income = models.IntegerField(default=0)
     domain = models.ForeignKey(Domain, to_field='domain_name', on_delete=models.CASCADE)
     create_time = models.IntegerField()
@@ -50,24 +56,26 @@ class VoteActivity(models.Model):
     allowed_vote_region = models.TextField(default='')
     visit_count = models.IntegerField(default=0)
     visit_count_multiple = models.IntegerField(default=1)
-    vote_count_restrict = models.TextField(default='')
+    vote_count_restrict = models.TextField(default='[]')
     today_start_voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE, null=True, related_name='today_start_voteuser')
     today_star_update_begin_time = models.IntegerField(default=0)
     today_star_update_end_time = models.IntegerField(default=0)
-    allowed_alone_everyday_vote_count = models.IntegerField(default=1)
-    allowed_alone_everyhour_vote_count = models.IntegerField(default=1)
-    open_today_star_with = models.IntegerField(default=1)
-    visible_no1_with = models.IntegerField(default=1)
-    enable_vote_to_me = models.IntegerField(default=1)
-    enable_comment = models.IntegerField(default=1)
-    enable_vote_cert_code = models.IntegerField(default=1)
+    allowed_alone_everyday_vote_count = models.IntegerField(default=0)
+    allowed_alone_everyhour_vote_count = models.IntegerField(default=0)
+    open_today_star_with = models.IntegerField(default=0)
+    visible_no1_with = models.IntegerField(default=0)
+    enable_vote_to_me = models.IntegerField(default=0)
+    enable_comment = models.IntegerField(default=0)
+    enable_vote_cert_code = models.IntegerField(default=0)
+    enable_prize = models.IntegerField(default=0)
+    enable_browser = models.IntegerField(default=0)
     auto_comment_voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE, null=True, related_name='auto_comment_voteuser')
     auto_comment_begin_time = models.IntegerField(default=0)
     auto_comment_end_time = models.IntegerField(default=0)
     auto_comment_everyday_begin_time = models.IntegerField(default=0)
     auto_comment_everyday_end_time = models.IntegerField(default=0)
-    auto_comment_space_minute = models.IntegerField(default=1)
-    auto_comment_everyday_count_strict = models.IntegerField(default=1)
+    auto_comment_space_minute = models.IntegerField(default=0)
+    auto_comment_everyday_count_strict = models.IntegerField(default=0)
 
 
 class Feedback(models.Model):

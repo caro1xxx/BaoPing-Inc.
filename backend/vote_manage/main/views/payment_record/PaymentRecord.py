@@ -17,23 +17,25 @@ class PaymentRecord(APIView):
             else:
                 paymentRecordObj = models.PaymentRecord.objects.filter()
 
-            data = []
-            for paymentRecord in paymentRecordObj:
-                tmp = {}
-                tmp['vote_user_wx_open_id'] = paymentRecord.voteuser.open_id
-                tmp['vote_user_wx_username'] = paymentRecord.voteuser.wx_username
-                tmp['vote_id'] = paymentRecord.vote_activity.vote_id
-                tmp['price'] = paymentRecord.price
-                tmp['prize_type'] = paymentRecord.prize_type
-                tmp['payment_order_id'] = paymentRecord.payment_order_id
-                tmp['payment_status'] = paymentRecord.payment_status
-                tmp['ip'] = paymentRecord.ip
-                tmp['phone_number'] = paymentRecord.phone_number
-                tmp['system'] = paymentRecord.system
-                tmp['network'] = paymentRecord.network
-                tmp['create_time'] = paymentRecord.create_time
-                data.append(tmp)
-            ret['data'] = data
+            # data = []
+            # for paymentRecord in paymentRecordObj:
+            #     tmp = {}
+            #     tmp['vote_user_wx_open_id'] = paymentRecord.voteuser.open_id
+            #     tmp['vote_user_wx_username'] = paymentRecord.voteuser.wx_username
+            #     tmp['vote_id'] = paymentRecord.vote_activity.vote_id
+            #     tmp['price'] = paymentRecord.price
+            #     tmp['prize_type'] = paymentRecord.prize_type
+            #     tmp['payment_order_id'] = paymentRecord.payment_order_id
+            #     tmp['payment_status'] = paymentRecord.payment_status
+            #     tmp['ip'] = paymentRecord.ip
+            #     tmp['phone_number'] = paymentRecord.phone_number
+            #     tmp['system'] = paymentRecord.system
+            #     tmp['network'] = paymentRecord.network
+            #     tmp['create_time'] = paymentRecord.create_time
+            #     data.append(tmp)
+            data = paymentRecordObj
+            data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
+            ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}

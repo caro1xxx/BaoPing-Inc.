@@ -10,7 +10,7 @@ from main.views.domain import Domain
 from main.views.applyprize import ApplyPrize
 from main.views.vote_record import VoteRecord
 from main.views.payment_record import PaymentRecord
-from main.views import Request404
+from main.views import Request404, TestView
 from vote_manage import settings
 from django.views.static import serve
 
@@ -33,5 +33,6 @@ urlpatterns = [
     url(r'^applyprize/$', ApplyPrize.ApplyPrize.as_view()),
     url(r'^voterecord/$', VoteRecord.VoteRecord.as_view()),
     url(r'^paymentrecord/$', PaymentRecord.PaymentRecord.as_view()),
+    url(r'^testfile/$', TestView.TestView.as_view()),
     url(r'$', Request404.Request404.as_view())
 ]

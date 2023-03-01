@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from django.core import serializers
 from django.http import JsonResponse
 from main import models
-from main.tools import generateCode6
+from main.tools import generateCode6, myPaginator
 import json
 from main.tools import Validate
 from main.views.vote_activity.VoteActivityOp import VoteActivityOp
@@ -14,27 +14,13 @@ class VoteActivity(APIView):
         try:
             value = request.GET.get('value', None)
 
-            if value in ['all', None]:
+            if not value:
                 obj =  models.VoteActivity.objects.all()
             else:
                 obj = models.VoteActivity.objects.filter(domain__contains=value)
 
-            data = []
-            for voteActivity in obj:
-                tmp = {}
-                tmp['name'] = voteActivity.create_user.name
-                tmp['username'] = voteActivity.create_user.username
-                tmp['domain'] = voteActivity.domain.domain_name
-                tmp['vote_name'] = voteActivity.name
-                tmp['flow'] = voteActivity.flow
-                tmp['share'] = voteActivity.share
-                tmp['img'] = voteActivity.img
-                tmp['income'] = voteActivity.income
-                tmp['vote_id'] = voteActivity.vote_id
-                tmp['create_time'] = voteActivity.create_time
-                tmp['expire_time'] = voteActivity.expire_time
-                data.append(tmp)
-            ret['data'] = data
+            data, ret['page_count'] = myPaginator(obj, 10, request.GET.get('page_num', 1))
+            ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
@@ -44,13 +30,19 @@ class VoteActivity(APIView):
     def post(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': '创建成功'}
         try:
-            data = json.loads(request.body).get('data', None)
+            # data = json.loads(request.body).get('data', None)
+            data ={}
+            data['vote_name'] = request.POST.get('vote_name', None)
+            data['create_user_username'] = request.POST.get('create_user_username', None)
+            data['create_time'] = request.POST.get('create_time', None)
+            data['expire_time'] = request.POST.get('expire_time', None)
+            data['img'] = request.FILES.get('img', None)
 
             validate = Validate()
             validate.addCheck('checkIsNotEmpty', data['vote_name'], '活动名称不能为空')
             validate.addCheck('checkIsNotEmpty', data['create_user_username'], '创建者不能为空')
             validate.addCheck('checkIsNotEmpty', data['create_time'], '活动开始时间不能为空')
-            validate.addCheck('checkIsNotEmpty', data['img'], '缩略图不能为空')
+            # validate.addCheck('checkIsNotEmpty', data['img'], '缩略图不能为空')
             validate.addCheck('checkIsNotEmpty', data['expire_time'], '活动结束时间不能为空')
             validate.addCheck('checkIsNumber', data['create_time'], '活动开始时间错误')
             validate.addCheck('checkIsNumber', data['expire_time'], '活动结束时间错误')
@@ -76,7 +68,7 @@ class VoteActivity(APIView):
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            # ret = {'code': 500, 'msg': 'Timeout',   'error': str(e)}
+            ret = {'code': 500, 'msg': 'Timeout',   'error': str(e)}
         return JsonResponse(ret)
 
     def put(self, request, *args, **kwargs):
@@ -114,7 +106,7 @@ class VoteActivity(APIView):
             
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
 
     def delete(self, request, *args, **kwargs):

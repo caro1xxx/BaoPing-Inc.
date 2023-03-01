@@ -15,7 +15,9 @@ class UserInfo(APIView):
         ret = {'code': 200, 'msg': 'ok'}
         try:
             # username = request.GET.get('username', None)
-            ret['data'] = serializers.serialize("json", models.User.objects.all())
+            data = models.User.objects.all()
+            data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
+            ret['data'] = serializers.serialize("json", data, serializers.serialize('json', data, use_natural_foreign_keys=True))
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
         return JsonResponse(ret)

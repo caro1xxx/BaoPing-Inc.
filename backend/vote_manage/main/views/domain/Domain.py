@@ -16,8 +16,9 @@ class Domain(APIView):
                 domainObj =  models.Domain.objects.all()
             else:
                 domainObj = models.Domain.objects.filter()
-
-            ret['data'] = serializers.serialize('json', domainObj)
+            
+            data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
+            ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
@@ -64,7 +65,7 @@ class Domain(APIView):
             domainName = json.loads(request.body).get('domain', None)
             key = json.loads(request.body).get('key', None)
             value = json.loads(request.body).get('value', None)
-
+            
             # 验证数据
             validate = Validate()
             validate.addCheck('checkIsNotEmpty', domainName, '域名不能为空')
