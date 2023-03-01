@@ -10,6 +10,10 @@
     />
     <AuthView v-if="!$store.state.isAuth" />
     <!-- <EditActivity /> -->
+    <!-- 全局域名编辑弹窗 -->
+    <UpdateRealm v-if="$store.state.isRealmUpdata" />
+    <!-- 奖品申请编辑弹窗 -->
+    <UpdatePrize v-if="$store.state.isPrizeUpdate" />
     <!-- <Loading v-show="$store.state.loadingState" /> -->
   </div>
 </template>
@@ -25,6 +29,8 @@ import EditActivity from "./components/EditActivity.vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
 import { ref } from "vue";
+import UpdateRealm from "./components/UpdateRealm.vue";
+import UpdatePrize from './components/UpdataPrize.vue'
 const $store = useStore();
 if (Cookies.get("token") === undefined) {
   $store.dispatch("authActions", false);
