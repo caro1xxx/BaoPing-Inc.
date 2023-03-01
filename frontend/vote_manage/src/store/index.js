@@ -40,7 +40,8 @@ export default createStore({
     // 全局域名保存数据
     realmData: {
       domain_name: '',
-      status: undefined,
+      // 默认为1
+      status: 1,
       expire_time: undefined,
       key: undefined,
     }
@@ -100,17 +101,18 @@ export default createStore({
       if (payload.key !== undefined) {
         // 编辑
         if (payload.key) {
-          state.realmData.expire_time = payload.expire_time,
-          state.realmData.status = payload.status,
-          state.realmData.domain_name = payload.domain_name
-          state.realmData.key = payload.key,
-          state.realmData.index = payload.index
-        //   新增
+          state.realmData.expire_time = payload.expire_time;
+          state.realmData.status = payload.status;
+          state.realmData.domain_name = payload.domain_name;
+          state.realmData.key = payload.key;
+          state.realmData.index = payload.index;
+        // 新增
         } else if (!payload.key) {
-          state.realmData.expire_time = payload.expire_time,
-          state.realmData.status = payload.status,
-          state.realmData.domain_name = payload.domain_name
-          state.realmData.key = payload.key
+          state.realmData.expire_time = payload.expire_time;
+          state.realmData.status = 1;
+          state.realmData.domain_name = payload.domain_name;
+          state.realmData.key = payload.key;
+          state.realmData.index = undefined;
         }
       }
     },

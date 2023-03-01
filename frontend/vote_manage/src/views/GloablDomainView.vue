@@ -11,14 +11,19 @@
       </el-button>
     </div>
     <el-table :data="realmAddData" class="home_body_table">
-      <el-table-column prop="id" label="编号" />
+      <el-table-column prop="id" label="编号" >
+        <template #default="scope">
+          <!-- <span>{{ getNum()[scope.$index] }}</span> -->
+          <span>{{ scope.$index }}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="domain_name" label="域名" />
       <el-table-column prop="expire_time" label="有效期">
         <template #default="scope">
           <span>{{ parseStampTime(scope.row.expire_time) }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="createdtime" label="创建时间" />
+      <!-- <el-table-column prop="createdtime" label="创建时间" /> -->
       <el-table-column prop="status" label="状态" />
       <el-table-column label="操作">
         <template #default="scope">
@@ -58,7 +63,7 @@ const getRealm = async () => {
     let Arr = []
     Arr = JSON.parse(result.data)
     Arr.map(item => {
-      realmAddData.push(item.fields)
+      realmAddData.push({...item.fields})
     })
   } else {
     //请求发送错误
@@ -92,6 +97,7 @@ const deleteRealm = async (value, index) => {
   // 关闭加载loading
   $store.commit("noticifyLoading", false);
 }
+
 watch(
   () => $store.state.realmData,
   (newVal) => {
@@ -100,9 +106,11 @@ watch(
       realmAddData[newVal.index].expire_time = newVal.expire_time,
       realmAddData[newVal.index].status = newVal.status
     } else if (newVal.domain_name) {
-      // 新增时状态默认为1
-      newVal.status = 1
-      realmAddData.push(newVal)
+      realmAddData.push({
+        domain_name: newVal.domain_name,
+        expire_time: newVal.expire_time,
+        status: newVal.status,
+      })
     }
   },
   {

@@ -20,10 +20,10 @@
                     <label>状态</label>
                     <el-select v-model="realmAddData.status" class="m-2" placeholder="请选择状态">
                         <el-option
-                        v-for="item in statusData"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                            v-for="item in statusData"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
                         />
                     </el-select>
                 </div>
@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-import { reactive, watch } from "vue";
+import { reactive } from "vue";
 import {  useStore } from "vuex"
 import { fether } from "@/utils/fether"
 import Cookies from 'js-cookie'
@@ -80,10 +80,9 @@ const sureRealmData = async () => {
         await $store.dispatch("GlobalMessageActions", '域名有效期未输入');
     } else {
     //     当获取的数据中有status字段时为编辑，否则为新增
-        if (realmAddData.status !== undefined) {
-            let result = await fether(`/domain/`, `put`, {
-                key: 'status',
-                value: realmAddData.status,
+        if (realmAddData.index === undefined) {
+            realmAddData.expire_time = new Date(realmAddData.expire_time).getTime() / 1000
+            let result = await fether(`/domain/`, `post`, {
                 token: Cookies.get("token"),
                 domain: realmAddData.domain_name,
                 expire_time: realmAddData.expire_time
@@ -93,8 +92,9 @@ const sureRealmData = async () => {
                 await $store.dispatch("GlobalMessageActions", result.msg);
             }
         } else {
-            realmAddData.expire_time = new Date(realmAddData.expire_time).getTime() / 1000
-            let result = await fether(`/domain/`, `post`, {
+            let result = await fether(`/domain/`, `put`, {
+                key: 'status',
+                value: realmAddData.status,
                 token: Cookies.get("token"),
                 domain: realmAddData.domain_name,
                 expire_time: realmAddData.expire_time
