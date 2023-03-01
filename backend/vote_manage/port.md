@@ -120,6 +120,16 @@ url：/officialaccount/
 }
 ```
 
+方法：get
+
+url：/login
+
+参数（示例）：
+```
+{
+    "token": "zxCPvHNrcp2GwOMEWLZshaIylR1UTdDg",
+}
+```
 
 
 方法：post
@@ -127,7 +137,19 @@ url：/officialaccount/
 url：/login
 
 参数（示例）：
-{"username": "", "pwd": ""}
+```
+{
+    "token": "zxCPvHNrcp2GwOMEWLZshaIylR1UTdDg",
+    "data": {
+        "name": "商户名",
+        "app_id": "fajhkdf413295",
+        "region": "Shanghai",
+        "wx_pay_pos_id": "wxgsfd343240",
+        "wx_pay_apiv2_secret_key": "wxpaygfnkdjg34",
+        "wx_pay_apiv3_secret_key": "wxpaygfnkdjg34"
+    }
+}
+```
 
 
 

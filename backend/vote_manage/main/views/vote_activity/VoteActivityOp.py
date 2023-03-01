@@ -24,9 +24,9 @@ class VoteActivityOp:
             return False, msg
         validate = Validate()
         validate.addCheck('checkIsNotEmpty', data.get('vote_everyday_begin_time', None), '每日投票开始时间不能为空')
-        validate.addCheck('checkIsNumber', data.get('vote_everyday_begin_time', None), '每日投票开始时间错误')
+        # validate.addCheck('checkIsNumber', data.get('vote_everyday_begin_time', None), '每日投票开始时间错误')
         validate.addCheck('checkIsNotEmpty', data.get('vote_everyday_end_time', None), '每日投票结束时间不能为空')
-        validate.addCheck('checkIsNumber', data.get('vote_everyday_end_time', None), '每日投票结束时间错误')
+        # validate.addCheck('checkIsNumber', data.get('vote_everyday_end_time', None), '每日投票结束时间错误')
         validate.addCheck('checkIsNotEmpty', data.get('vote_enroll_begin_time', None), '报名时间不能为空')
         validate.addCheck('checkIsNumber', data.get('vote_enroll_begin_time', None), '报名时间错误')
         validate.addCheck('checkIsNotEmpty', data.get('vote_enroll_end_time', None), '结束投票时间不能为空')
@@ -51,9 +51,9 @@ class VoteActivityOp:
                 return ok, msg
         validate = Validate()
         validate.addCheck('checkIsNotEmpty', data.get('today_star_update_begin_time', None), '今日之星开始时间不能为空')
-        validate.addCheck('checkIsNumber', data.get('today_star_update_begin_time', None), '今日之星开始时间错误')
+        # validate.addCheck('checkIsNumber', data.get('today_star_update_begin_time', None), '今日之星开始时间错误')
         validate.addCheck('checkIsNotEmpty', data.get('today_star_update_end_time', None), '今日之星结束时间不能为空')
-        validate.addCheck('checkIsNumber', data.get('today_star_update_end_time', None), '今日之星结束时间错误')
+        # validate.addCheck('checkIsNumber', data.get('today_star_update_end_time', None), '今日之星结束时间错误')
         validate.addCheck('checkIsNotEmpty', data.get('allowed_alone_everyday_vote_count', None), '单人每日投票上限不能为空')
         validate.addCheck('checkIsNumber', data.get('allowed_alone_everyday_vote_count', None), '单人每日投票上限错误')
         validate.addCheck('checkIsNotEmpty', data.get('allowed_alone_everyhour_vote_count', None), '单人每小时投票上限不能为空')

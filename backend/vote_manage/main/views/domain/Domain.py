@@ -17,6 +17,7 @@ class Domain(APIView):
             else:
                 domainObj = models.Domain.objects.filter()
             
+            data = domainObj
             data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
             ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
 

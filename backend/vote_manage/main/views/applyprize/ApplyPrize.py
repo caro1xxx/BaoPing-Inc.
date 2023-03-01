@@ -39,12 +39,12 @@ class ApplyPrize(APIView):
     def put(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': '修改成功'}
         try:
-            applyPrizeId = json.loads(request.body).get('apply_prize_id', None)
+            pk = json.loads(request.body).get('pk', None)
             status = json.loads(request.body).get('status', None)
 
             if status is None:
                 return JsonResponse({'code': 400, 'msg': 'status错误'})
-            obj = models.ApplyPrize.objects.get(pk=applyPrizeId)
+            obj = models.ApplyPrize.objects.get(pk=pk)
             if not obj:
                 return JsonResponse({'code': 400, 'msg': 'ID错误'})
                 
@@ -66,5 +66,5 @@ class ApplyPrize(APIView):
             feedbackObj.delete()
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
