@@ -39,14 +39,15 @@ class UserInfo(APIView):
         
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
 
     # 修改用户信息
     def put(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': '修改成功'}
         try:
-            userdata = json.loads(str(request.body, encoding='utf-8')).get('data', None)
+            # userdata = json.loads(str(request.body, encoding='utf-8')).get('data', None)
+            userdata = json.loads(request.body).get('data', None)
 
             ok, msg = UserOp().checkDataOnUpdate(userdata)
             if not ok:
@@ -61,7 +62,7 @@ class UserInfo(APIView):
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
 
     # 删除用户信息

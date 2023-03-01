@@ -20,7 +20,11 @@ class UserOp:
 
     def login(self, username, pwd):
         pwdMD5 = genearteMD5(pwd)
-        if not self.checkUsernameExist(username):
+        ok, msg = self.checkUsername(username)
+        if not ok:
+            return False, msg
+        ok, msg = self.checkUsernameExist(username)
+        if not ok:
             return False, self.ERROR1
         userObj = models.User.objects.get(username=username)
         # print(pwd, pwdMD5, userObj.pwd)
@@ -145,7 +149,7 @@ class UserOp:
     # 根据用户名和当前时间戳生成加密token
     def generatreToken(self, username):
         token = generateString32()
-        expire_time = getNowTimeStamp() + (7 * 24 * 60)
+        expire_time = getNowTimeStamp() + (7 * 24 * 60 * 60)
         tokenModels = models.Token.objects.create(value=token,expire_time=expire_time)
         tokenModels.save()
         return token
