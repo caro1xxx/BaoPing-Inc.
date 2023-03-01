@@ -1,24 +1,32 @@
 <template>
     <div class="body">
         <div class="body_content">
-            <div class="body_content_head">{{ $store.state.realmData.key === true ? `编辑` : `新增` }}</div>
+            <div class="body_content_head">编辑</div>
             <div class="body_content_body">
                 <div class="body_content_item">
-                    <label>域名</label>
-                    <el-input v-model="realmAddData.domain_name" :disabled="$store.state.realmData.key === true ? true : false" placeholder="请输入" />
+                    <label>openid(用户名)</label>
+                    <el-input v-model="prizeData.wx_username" placeholder="请输入" />
                 </div>
                 <div class="body_content_item">
-                    <label>有效期</label>
+                    <label>姓名</label>
+                    <el-input v-model="prizeData.name" placeholder="请输入" />
+                </div>
+                <div class="body_content_item">
+                    <label>手机号</label>
+                    <el-input v-model="prizeData.phone_number" placeholder="请输入" />
+                </div>
+                <div class="body_content_item">
+                    <label>申请时间</label>
                     <el-date-picker
-                        v-model="realmAddData.expire_time"
+                        v-model="prizeData.create_time"
                         type="datetime"
                         placeholder="请选择时间"
                         format="YYYY/MM/DD HH:mm:ss"
                     />
                 </div>
-                <div class="body_content_item" v-if="$store.state.realmData.key">
+                <div class="body_content_item">
                     <label>状态</label>
-                    <el-select v-model="realmAddData.status" class="m-2" placeholder="请选择状态">
+                    <el-select v-model="prizeData.status" class="m-2" placeholder="请选择状态">
                         <el-option
                             v-for="item in statusData"
                             :key="item.value"
@@ -38,23 +46,24 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive } from "vue"
 import {  useStore } from "vuex"
 import { fether } from "@/utils/fether"
 import Cookies from 'js-cookie'
 const $store = new useStore()
 const closePopup = ()=>{
-  $store.commit('undateRealmStatus', {
-    key: undefined
-  })
+  $store.commit('changePrizeStatus')
 }
 
 // 需要编辑的数据
-const realmAddData = reactive({
-    domain_name: $store.state.realmData.domain_name,
-    expire_time: $store.state.realmData.expire_time,
-    status: $store.state.realmData.status,
-    index: $store.state.realmData.index
+const prizeData = reactive({
+    wx_username: $store.state.prizeData.wx_username,
+    name: $store.state.prizeData.name,
+    status: $store.state.prizeData.status,
+    phone_number: $store.state.prizeData.phone_number,
+    create_time: $store.state.prizeData.create_time,
+    index: $store.state.prizeData.index,
+    pk: $store.state.prizeData.pk
 })
 
 // 状态数据
@@ -74,42 +83,29 @@ const sureRealmData = async () => {
     // 开启加载loading
     await $store.dispatch("NoticifyActions", true);
     // 判断值是否输入
-    if (!realmAddData.domain_name) {
-        await $store.dispatch("GlobalMessageActions", '域名未输入');
-    } else if (!realmAddData.expire_time) {
-        await $store.dispatch("GlobalMessageActions", '域名有效期未输入');
+    if (!prizeData.wx_username) {
+        await $store.dispatch("GlobalMessageActions", '用户名未输入');
+    } else if (!prizeData.phone_number) {
+        await $store.dispatch("GlobalMessageActions", '手机号未输入');
     } else {
-    //     当获取的数据中有status字段时为编辑，否则为新增
-        if (realmAddData.index === undefined) {
-            realmAddData.expire_time = new Date(realmAddData.expire_time).getTime() / 1000
-            let result = await fether(`/domain/`, `post`, {
-                token: Cookies.get("token"),
-                domain: realmAddData.domain_name,
-                expire_time: realmAddData.expire_time
-            })
-            if (result.code === 200) {
-                $store.commit('preserveRealmData', realmAddData)
-                await $store.dispatch("GlobalMessageActions", result.msg);
-            }
-        } else {
-            if (typeof realmAddData.expire_time === 'object') {
-            realmAddData.expire_time = new Date(realmAddData.expire_time).getTime() / 1000
+        if (typeof prizeData.create_time === 'object') {
+            prizeData.create_time = new Date(prizeData.create_time).getTime() / 1000
         }
-            let result = await fether(`/domain/`, `put`, {
-                key: 'status',
-                value: realmAddData.status,
-                token: Cookies.get("token"),
-                domain: realmAddData.domain_name,
-                expire_time: realmAddData.expire_time
-            })
-            if (result.code === 200) {
-                $store.commit('preserveRealmData', realmAddData)
-                await $store.dispatch("GlobalMessageActions", result.msg);
-            }
+        let result = await fether(`/applyprize/`, `put`, {
+            token: Cookies.get("token"),
+            wx_username: prizeData.wx_username,
+            name: prizeData.name,
+            phone_number: prizeData.phone_number,
+            pk: prizeData.pk,
+            status: prizeData.status,
+            create_time: prizeData.create_time
+        })
+        if (result.code === 200) {
+            $store.commit('changePrizeStatus', prizeData)
         }
-    //     关闭加载loading
+        await $store.dispatch("GlobalMessageActions", result.msg);
+        // 关闭加载loading
         $store.commit("noticifyLoading", false);
-        $store.commit('undateRealmStatus')
     }
 }
 </script>
@@ -156,8 +152,6 @@ const sureRealmData = async () => {
         font-size: 13px;
         margin-bottom: 5px;
     }
-
-    // 修改elementui样式
     :deep(.el-date-editor),
     :deep(.el-select) {
         width: 100%;

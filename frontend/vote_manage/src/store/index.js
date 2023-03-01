@@ -44,6 +44,18 @@ export default createStore({
       status: 1,
       expire_time: undefined,
       key: undefined,
+    },
+    // 奖品申请编辑弹窗是否开启
+    isPrizeUpdate: false,
+    // 奖品申请保存数据
+    prizeData: {
+      wx_username: '',
+      name: '',
+      phone_number: '',
+      create_time: '',
+      status: undefined,
+      index: undefined,
+      pk: undefined
     }
   },
   getters: {},
@@ -125,6 +137,19 @@ export default createStore({
         state.realmData.index = payload.index
       }
     },
+    // 改变奖品申请编辑弹窗开启或关闭
+    changePrizeStatus(state, payload) {
+      state.isPrizeUpdate =!state.isPrizeUpdate;
+      if (payload) {
+        state.prizeData.wx_username = payload.wx_username;
+        state.prizeData.name = payload.name;
+        state.prizeData.phone_number = payload.phone_number;
+        state.prizeData.status = payload.status;
+        state.prizeData.create_time = payload.create_time;
+        state.prizeData.index = payload.index;
+        state.prizeData.pk = payload.pk
+      }
+    }
   },
   actions: {
     SubNavBarActions(context, payload) {
