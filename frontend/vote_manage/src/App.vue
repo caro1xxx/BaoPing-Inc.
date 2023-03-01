@@ -10,8 +10,6 @@
     />
     <AuthView v-if="!$store.state.isAuth" />
     <!-- <EditActivity /> -->
-    <!-- 全局域名新增弹窗 -->
-    <AddRealm v-if="$store.state.isRealmAddOpen" />
     <!-- 全局域名编辑弹窗 -->
     <UpdateRealm v-if="$store.state.isRealmUpdata" />
     <!-- <Loading v-show="$store.state.loadingState" /> -->
@@ -26,7 +24,6 @@ import EditPopup from "./components/EditPopup.vue";
 import SubNavBar from "./components/SubNavBar.vue";
 import AuthView from "./views/AuthView.vue";
 import EditActivity from "./components/EditActivity.vue";
-import AddRealm from './components/AddRealm.vue'
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
 import { ref } from "vue";
