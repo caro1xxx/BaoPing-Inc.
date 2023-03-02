@@ -12,7 +12,7 @@
         <el-table-column prop="wx_username" label="openid(用户名)" />
         <el-table-column prop="vote_name" label="票数">
           <template #default="scope">
-            <span>1</span>
+            <div>1</div>
           </template>
         </el-table-column>
         <el-table-column prop="ip" label="ip" />
@@ -50,17 +50,9 @@ const getVoteData = async () => {
   if (result.code === 200) {
     let Arr = []
     Arr = JSON.parse(result.data)
-    let newObj = {}
-    for (let i = 0; i < Arr.length; i++) {
-      newObj.wx_username = Arr[i].fields.voteuser.wx_username,
-      newObj.open_id = Arr[i].fields.voteuser.open_id,
-      newObj.ip = Arr[i].fields.ip,
-      newObj.phone_model = Arr[i].fields.phone_model,
-      newObj.system = Arr[i].fields.system,
-      newObj.network = Arr[i].fields.network,
-      newObj.pk = Arr[i].pk
-      voteNotesData.push(newObj)
-    }
+    Arr.map(item => {
+      voteNotesData.push({...item.fields, pk: item.pk, wx_username: item.fields.voteuser.wx_username})
+    })
   } else {
     // 请求发送错误
     await $store.dispatch("refreshErroActions");

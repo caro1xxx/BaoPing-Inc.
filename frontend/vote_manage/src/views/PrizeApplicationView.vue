@@ -50,17 +50,9 @@ const getPrize = async () => {
   if (result.code === 200) {
     let Arr = []
     Arr = JSON.parse(result.data)
-    let newObj = {}
-    for (let i = 0; i < Arr.length; i++) {
-      newObj.create_time = Arr[i].fields.create_time,
-      newObj.name = Arr[i].fields.name,
-      newObj.phone_number = Arr[i].fields.phone_number,
-      newObj.status = Arr[i].fields.status,
-      newObj.open_id = Arr[i].fields.voteuser.open_id,
-      newObj.wx_username = Arr[i].fields.voteuser.wx_username,
-      newObj.pk = Arr[i].pk
-      prizeData.push(newObj)
-    }
+    Arr.map(item => {
+      prizeData.push({...item.fields, pk: item.pk, wx_username: item.fields.voteuser.wx_username})
+    })
   } else {
     //请求发送错误
     await $store.dispatch("refreshErroActions");
@@ -95,8 +87,15 @@ const deletePrize = async (value, index) => {
 }
 
 const getTime = (value)=> {
-  let d = new Date(value * 1000)
-  return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+  if (value === 0) {
+    return '1970/1/1 0:0'
+  } else if (String(value).length > 10) {
+    let d = new Date(value)
+    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+  } else {
+    let d = new Date(value * 1000)
+    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+  }
 }
 
 
