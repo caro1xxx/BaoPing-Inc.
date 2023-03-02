@@ -3,55 +3,25 @@
     <div class="system_main_body">
       <Search />
       <div class="title_style" @click="editUser">反馈信息</div>
-      <div class="home_table">
-        <div class="home_table_grid">
-          <div
-            v-for="(item, index) in tableData"
-            class="home_table_item"
-            @mouseenter="onClickMove(index, true)"
-            @mouseleave="onClickMove(index, false)"
-          >
-            <div class="home_table_item_top">
-              <img :src="require(`../assets/img/avator/${item.avator}.png`)" />
-              <div>{{ item.wx_username }}</div>
-            </div>
-            <div style="margin-left: 30px">{{ item.content }}</div>
-            <div
-              style="
-                margin-top: 5px;
-                color: #cecece;
-                font-size: 10px;
-                text-align: end;
-              "
-            >
-              反馈时间:{{ item.create_time }}
-            </div>
-            <div class="home_table_item_move" v-show="item.isMove">
-              <svg
-                @click="deleteFeedback(item.pk)"
-                t="1677328484608"
-                class="icon"
-                viewBox="0 0 1024 1024"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                p-id="10871"
-                width="30"
-                height="30"
-              >
-                <path
-                  d="M512 512m-512 0a512 512 0 1 0 1024 0 512 512 0 1 0-1024 0Z"
-                  fill="#FDEBED"
-                  p-id="10872"
-                ></path>
-                <path
-                  d="M729.6 384H294.4c-7.68 0-12.8-5.12-12.8-12.8v-25.6c0-7.68 5.12-12.8 12.8-12.8h115.2v-25.6c0-14.08 11.52-25.6 25.6-25.6h153.6c14.08 0 25.6 11.52 25.6 25.6v25.6h115.2c7.68 0 12.8 5.12 12.8 12.8v25.6c0 7.68-5.12 12.8-12.8 12.8z m-371.2 38.4h307.2c28.16 0 51.2 23.04 51.2 51.2v217.6c0 28.16-23.04 51.2-51.2 51.2H358.4c-28.16 0-51.2-23.04-51.2-51.2V473.6c0-28.16 23.04-51.2 51.2-51.2z m192 243.2c0 7.68 5.12 12.8 12.8 12.8s12.8-5.12 12.8-12.8V537.6c0-7.68-5.12-12.8-12.8-12.8s-12.8 5.12-12.8 12.8v128z m-102.4 0c0 7.68 5.12 12.8 12.8 12.8s12.8-5.12 12.8-12.8V537.6c0-7.68-5.12-12.8-12.8-12.8s-12.8 5.12-12.8 12.8v128z"
-                  fill="#EC3A4E"
-                  p-id="10873"
-                ></path>
-              </svg>
-            </div>
-          </div>
-        </div>
+      <div style="padding: 10px; background-color: white; border-radius: 3px">
+        <el-table
+          :data="tableData"
+          class="body_system_table"
+          style="width: 100%"
+        >
+          <el-table-column prop="avator" label="头像" width="180">
+            <template #default="scope">
+              <img
+                :src="HOST + '/media/avator/' + scope.row.avator + '.png'"
+                alt=""
+              />
+            </template>
+          </el-table-column>
+          <el-table-column prop="create_time" label="反馈时间" width="180" />
+          <el-table-column prop="content" label="内容" />
+          <el-table-column prop="open_id" label="oepnid" />
+          <el-table-column prop="wx_username" label="微信名称" />
+        </el-table>
       </div>
     </div>
   </div>
@@ -64,6 +34,7 @@ import { reactive, watch } from "vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
 import { parseStampTime } from "../utils/stampTime";
+import { HOST } from "../ENV";
 const $store = new useStore();
 // 表数据
 const tableData = reactive([]);
@@ -76,11 +47,15 @@ const getFeedbackList = async () => {
     `/feedback/?token=${Cookies.get("token")}&value=all`
   );
   if (result.code === 200) {
-    //serve
-    result.data.forEach((item) => {
+    let JSONResult = JSON.parse(result.data);
+    console.log(JSONResult);
+    JSONResult.forEach((item) => {
       tableData.push({
-        ...item,
-        create_time: parseStampTime(item.create_time),
+        content: item.fields.content,
+        create_time: parseStampTime(item.fields.create_time),
+        avator: item.fields.voteuser.avator,
+        open_id: item.fields.voteuser.open_id,
+        wx_username: item.fields.voteuser.wx_username,
       });
     });
   } else {
@@ -138,6 +113,10 @@ getFeedbackList();
 }
 .system_main_body {
   padding: 20px 20px;
+}
+.title_style {
+  font-weight: bold;
+  margin: 20px 0px;
 }
 .home_table {
   margin-top: 20px;
@@ -198,5 +177,8 @@ getFeedbackList();
     margin: 0px 10px;
     cursor: pointer;
   }
+}
+.body_system_table {
+  height: calc(78vh);
 }
 </style>

@@ -142,6 +142,8 @@
       ></path>
     </svg>
     <svg
+      @mouseenter="onMouseEnterAvator"
+      @mouseleave="onMouseLeaveAvator"
       t="1677319721186"
       class="icon avator"
       viewBox="0 0 1024 1024"
@@ -237,14 +239,50 @@
         p-id="14322"
       ></path>
     </svg>
+    <div
+      v-if="userInfo.isEnter"
+      @mouseenter="
+        () => {
+          userInfo.isMoveOptions = true;
+        }
+      "
+      @mouseleave="
+        () => {
+          userInfo.isMoveOptions = false;
+          userInfo.isEnter = false;
+        }
+      "
+      class="userInfo"
+    >
+      <div>姓名:</div>
+      <div>用户名:</div>
+      <div>权限:</div>
+      <div>最近登录时间:</div>
+      <div
+        class="logout"
+        @click="
+          () => {
+            jsCookie.remove('token');
+            $router.go(0);
+          }
+        "
+      >
+        退出登录
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
+import { reactive } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import jsCookie from "js-cookie";
 const $store = new useStore();
 const $router = new useRouter();
+
+const userInfo = reactive({ isEnter: false, isMoveOptions: false });
+
 const goPage = (index) => {
   switch (index) {
     case 0:
@@ -331,22 +369,27 @@ const goPage = (index) => {
       $store.dispatch("SubNavBarActions", {
         item: [
           {
-            name: "概括",
-            description: "以直观的方式和图标显示总体运营数据",
-            path: "/order/overview",
-          },
-          {
             name: "支付记录",
             description: "以直观的方式和图标显示总体运营数据",
             path: "/order/paymentrecord",
           },
         ],
-        navName: "投票管理",
+        navName: "订单系统",
       });
-      $router.push("/order/overview");
+      $router.push("/order/paymentrecord");
       break;
     case 6:
-      $router.push("/FanManager");
+      $store.dispatch("SubNavBarActions", {
+        item: [
+          {
+            name: "投票选手",
+            description: "以直观的方式和图标显示总体运营数据",
+            path: "/order/voteparent",
+          },
+        ],
+        navName: "选手管理",
+      });
+      $router.push("/parent/voteparent");
       break;
     case 7:
       $router.push("/");
@@ -370,6 +413,16 @@ $store.dispatch("SubNavBarActions", {
   navName: "数据信息",
 });
 $router.push("/");
+
+// 鼠标移入头像
+const onMouseEnterAvator = () => {
+  userInfo.isEnter = true;
+};
+
+const onMouseLeaveAvator = () => {
+  if (!userInfo.isMoveOptions) return;
+  userInfo.isEnter = false;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -394,6 +447,29 @@ $router.push("/");
     bottom: 10px;
     left: 15px;
     right: 15px;
+  }
+}
+.userInfo {
+  width: 150px - 20px;
+  padding: 10px;
+  position: absolute;
+  background-color: #fff;
+  bottom: 20px;
+  left: 40px;
+  border-radius: 3px;
+  box-shadow: 0 4px 4px 0 rgba(151, 151, 151, 0.2),
+    0 4px 10px 0 rgba(151, 151, 151, 0.2);
+  cursor: pointer;
+  color: #aaa;
+  .logout {
+    margin-top: 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    text-align: center;
+    border: 0.5px solid red;
+    background-color: rgb(253, 168, 168);
+    color: red;
+    cursor: pointer;
   }
 }
 </style>

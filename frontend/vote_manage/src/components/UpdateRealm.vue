@@ -52,11 +52,11 @@ const closePopup = ()=>{
 // 需要编辑的数据
 const realmAddData = reactive({
     domain_name: $store.state.realmData.domain_name,
-    expire_time: $store.state.realmData.expire_time,
+    // 将时间回显为正确时间
+    expire_time: new Date($store.state.realmData.expire_time) * 1000,
     status: $store.state.realmData.status,
     index: $store.state.realmData.index
 })
-
 // 状态数据
 const statusData = reactive([
     {
@@ -92,9 +92,12 @@ const sureRealmData = async () => {
                 await $store.dispatch("GlobalMessageActions", result.msg);
             }
         } else {
+            // 将时间戳进行处理保留10位
             if (typeof realmAddData.expire_time === 'object') {
-            realmAddData.expire_time = new Date(realmAddData.expire_time).getTime() / 1000
-        }
+                realmAddData.expire_time = new Date(realmAddData.expire_time).getTime() / 1000
+            } else if (String(realmAddData.expire_time).length > 10 ){
+                realmAddData.expire_time = realmAddData.expire_time / 1000
+            }
             let result = await fether(`/domain/`, `put`, {
                 key: 'status',
                 value: realmAddData.status,

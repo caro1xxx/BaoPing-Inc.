@@ -2,8 +2,9 @@
   <div class="home">
     <Search />
     <div class="home_title">
-      <div>投票活动</div>
+      <div @click="generateQR">投票活动</div>
       <svg
+        @click="getActivityDetail"
         t="1677544620358"
         class="icon add"
         viewBox="0 0 1024 1024"
@@ -23,22 +24,36 @@
     <div class="home_body">
       <div class="home_body_for" v-for="(item, index) in voteList" :key="index">
         <div class="home_body_item_top">
-          <img src="../assets/img/avator/1.png" width="25" height="25" alt="" />
-          <div>{{ item.name }}</div>
+          <img
+            :src="HOST + '/media/' + item.fields.img"
+            width="25"
+            height="25"
+            alt=""
+          />
+          <div>{{ item.fields.name }}</div>
         </div>
         <div class="home_body_item_body">
-          <div>创建者:{{ item.create_user }}</div>
-          <div>流量:{{ item.flow }}</div>
-          <div>分享:{{ item.share }}</div>
-          <div>收益:{{ item.income }}</div>
-          <div>归属域名:{{ item.domain }}</div>
-          <div>活动参数(ID):{{ item.params }}</div>
+          <div>创建者:{{ item.fields.create_user.name }}</div>
+          <div>流量:{{ item.fields.flow }}</div>
+          <div>分享:{{ item.fields.share }}</div>
+          <div>收益:{{ item.fields.income }}</div>
+          <div>归属域名:{{ item.fields.domain }}</div>
+          <div>活动参数(ID):{{ item.fields.vote_id }}</div>
           <div class="home_body_item_time">
-            {{ item.create_time }} - {{ item.create_time }}
+            {{ parseStampTime(item.fields.create_time) }} -
+            {{ parseStampTime(item.fields.expire_time) }}
           </div>
         </div>
+        <div class="qrcode" v-if="item.isQr">
+          <vue-qrcode
+            :value="'http://' + item.fields.domain + '/' + item.fields.vote_id"
+            @change="onDataUrlChange"
+          />
+        </div>
         <div class="home_body_item_options">
+          <!-- 二维码 -->
           <svg
+            @click="onClickQrCode(item.fields.vote_id)"
             t="1677467153459"
             class="icon"
             viewBox="0 0 1024 1024"
@@ -54,7 +69,13 @@
               p-id="1584"
             ></path>
           </svg>
+          <!-- 用户 -->
           <svg
+            @click="
+              $store.commit('changeVoteUserRecord', {
+                vote_id: item.fields.vote_id,
+              })
+            "
             t="1677467273255"
             class="icon"
             viewBox="0 0 1024 1024"
@@ -80,7 +101,13 @@
               p-id="3545"
             ></path>
           </svg>
+          <!-- 设置 -->
           <svg
+            @click="
+              () => {
+                getActivityDetail(item.fields.vote_id);
+              }
+            "
             t="1677467349137"
             class="icon"
             viewBox="0 0 1024 1024"
@@ -101,7 +128,13 @@
               p-id="5586"
             ></path>
           </svg>
+          <!-- 订单 -->
           <svg
+            @click="
+              $store.commit('changePayOrderRecord', {
+                vote_id: item.fields.vote_id,
+              })
+            "
             t="1677467520374"
             class="icon"
             viewBox="0 0 1024 1024"
@@ -152,16 +185,63 @@
 <script setup>
 import Search from "@/components/Search.vue";
 import { fether } from "@/utils/fether";
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
+import { parseStampTime } from "../utils/stampTime";
+import jsCookie from "js-cookie";
+import { useStore } from "vuex";
+import { HOST } from "../ENV";
+import VueQrcode from "vue-qrcode";
 
+const $store = new useStore();
 const voteList = reactive([]);
 
+// 获取活动列表
 const getVoteList = async () => {
-  let result = await fether("/vote");
-  for (let i = 0; i < 15; i++) {
-    voteList.push(result.data);
+  voteList.length = 0;
+  // 开启加载loading
+  await $store.dispatch("NoticifyActions", true);
+  let result = await fether(`/voteactivity/?token=${jsCookie.get("token")}`);
+  if (result.code === 200) {
+    let JSONResult = JSON.parse(result.data);
+    JSONResult.forEach((item) => {
+      voteList.push({ ...item, isQr: false });
+    });
+    localStorage.setItem("vote", JSON.stringify(voteList));
+  } else {
+    // 请求发送错误
+    await $store.dispatch("refreshErroActions");
+    await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
+  }
+  // 关闭加载loading
+  $store.commit("noticifyLoading", false);
+};
+
+// 获取活动详细信息
+const getActivityDetail = (vote_id) => {
+  if (vote_id instanceof Object) {
+    $store.commit("edidVoteManageSave", { type: "post", target: "" });
+  } else {
+    $store.commit("edidVoteManageSave", { type: "put", target: vote_id });
   }
 };
+
+// 打开二维码
+const onClickQrCode = (target) => {
+  voteList.forEach((item, index) => {
+    if (item.fields.vote_id === target) {
+      voteList[index].isQr = !voteList[index].isQr;
+      console.log(voteList[index].isQr);
+    }
+  });
+};
+
+watch(
+  () => $store.state.voteManageAddPopup,
+  (newVal) => {
+    if (!newVal) getVoteList();
+  }
+);
+
 getVoteList();
 </script>
 
@@ -234,6 +314,7 @@ getVoteList();
 }
 .home_body_for {
   width: 80%;
+  height: 240px;
   position: relative;
   background-color: white;
   box-shadow: 0 4px 4px 0 rgba(236, 236, 236, 0.2),
@@ -244,5 +325,15 @@ getVoteList();
   margin-top: 10px;
   font-size: 10px;
   color: #ababab;
+}
+.qrcode {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0px 5px 5px 0px;
 }
 </style>

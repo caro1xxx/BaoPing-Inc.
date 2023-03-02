@@ -9,12 +9,17 @@
       :data="$store.state.editPopProps"
     />
     <AuthView v-if="!$store.state.isAuth" />
+    <EditActivity v-if="$store.state.voteManagePopup.state" />
+    <AddActivity v-if="$store.state.voteManageAddPopup" />
     <!-- <EditActivity /> -->
     <!-- 全局域名编辑弹窗 -->
     <UpdateRealm v-if="$store.state.isRealmUpdata" />
     <!-- 奖品申请编辑弹窗 -->
     <UpdatePrize v-if="$store.state.isPrizeUpdate" />
-    <!-- <Loading v-show="$store.state.loadingState" /> -->
+    <!-- 投票管理页面 与活动相关联的投票用户 -->
+    <VoteUserActivity v-if="$store.state.voteManagerUserRecord" />
+    <!-- 投票管理页面 与活动相关联的订单记录 -->
+    <VotePayOrder v-if="$store.state.voteManagerPayOrder" />
   </div>
 </template>
 
@@ -26,11 +31,13 @@ import EditPopup from "./components/EditPopup.vue";
 import SubNavBar from "./components/SubNavBar.vue";
 import AuthView from "./views/AuthView.vue";
 import EditActivity from "./components/EditActivity.vue";
+import AddActivity from "./components/AddActivity.vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
-import { ref } from "vue";
 import UpdateRealm from "./components/UpdateRealm.vue";
-import UpdatePrize from './components/UpdataPrize.vue'
+import UpdatePrize from "./components/UpdataPrize.vue";
+import VoteUserActivity from "./components/VoteUserActivity.vue";
+import VotePayOrder from "./components/VotePayOrder.vue";
 const $store = useStore();
 if (Cookies.get("token") === undefined) {
   $store.dispatch("authActions", false);
