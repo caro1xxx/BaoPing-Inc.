@@ -17,20 +17,39 @@
         </div>
       </div>
     </div>
+    <div class="botton">
+      <div class="botton_box">
+        <StatisticalChart :data="boxChange" />
+      </div>
+      <div class="botton_box">
+        <StatisticalChartOne :data="boxChange" />
+      </div>
+      <div class="botton_box">
+        <StatisticalChartTwo :data="boxChange" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import Search from "@/components/Search.vue";
-import { reactive } from "vue";
+import { reactive, onMounted } from "vue";
 import { fether } from "@/utils/fether";
 import { useStore } from "vuex";
 import jsCookie from "js-cookie";
+import StatisticalChart from '../components/StatisticalChart.vue'
+import StatisticalChartOne from '../components/StatisticalChartOne.vue'
+import StatisticalChartTwo from '../components/StatisticalChartTwo.vue'
 const $store = new useStore();
 const OverviewData = reactive({
   today_income: "",
   yesterday_income: "",
 });
+
+let boxChange = reactive({
+  width: 0,
+  height: 0
+})
 
 // 获取数据
 const getDataOverView = async () => {
@@ -51,6 +70,14 @@ const getDataOverView = async () => {
 };
 
 getDataOverView();
+
+onMounted(() => {
+  let boxs = document.getElementsByClassName('botton_box')
+  // setInterval(() => {
+  //   boxChange.width = boxs[0].offsetWidth
+  //   boxChange.height = boxs[0].offsetHeight
+  // }, 3000)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -92,5 +119,13 @@ getDataOverView();
 .home_top_title_order {
   width: 25%;
   margin-left: 20px;
+}
+.botton{
+  height: calc(80vh - 168px);
+  display: flex;
+  div{
+    flex: 1;
+    padding: 10px;
+  }
 }
 </style>
