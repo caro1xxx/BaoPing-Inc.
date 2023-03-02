@@ -13,7 +13,7 @@
             @mouseleave="onClickMove(index, false)"
           >
             <div class="home_table_item_top">
-              <img :src="require(`../assets/img/avator/${item.avator}.png`)" />
+              <img :src="HOST + '/media/avator/' + item.avator + '.png'" />
               <div>{{ item.name }}</div>
             </div>
             <div>邮箱:{{ item.email }}</div>
@@ -101,6 +101,7 @@ import { fether } from "@/utils/fether";
 import { reactive, watch } from "vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
+import { HOST } from "@/ENV";
 const $store = new useStore();
 // 表头
 const tableHead = reactive([
@@ -123,20 +124,16 @@ const getUserInfoList = async () => {
   await $store.dispatch("NoticifyActions", true);
   let result = await fether(
     // 获取vuex中的username
-    `/userinfo/?username=${$store.state.userInfo.username}&token=${Cookies.get(
+    `/userinfo/?username=${Cookies.get("username")}&token=${Cookies.get(
       "token"
     )}`
   );
   if (result.code === 200) {
     //serve
-    // let JSONResult = await JSON.parse(result.data);
-    // JSONResult.forEach((item) => {
-    //   tableData.push(item.fields);
-    // });
-    //mock
-    for (let i = 0; i < 50; i++) {
-      tableData.push({ ...result.data, isMove: false });
-    }
+    let JSONResult = await JSON.parse(result.data);
+    JSONResult.forEach((item) => {
+      tableData.push(item.fields);
+    });
   } else {
     // 请求发送错误
     await $store.dispatch("refreshErroActions");
@@ -219,6 +216,10 @@ getUserInfoList();
   width: calc(100vw - 250px);
   height: calc(100vh);
   font-size: 20px;
+}
+.title_style {
+  font-weight: bold;
+  margin-top: 20px;
 }
 .system_main_body {
   padding: 20px 20px;

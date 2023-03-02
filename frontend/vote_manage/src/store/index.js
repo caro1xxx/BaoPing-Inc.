@@ -62,6 +62,12 @@ export default createStore({
       index: undefined,
       pk: undefined,
     },
+    // 活动管理页面 相关联的投票用户列表状态
+    voteManagerUserRecord: false,
+    voteManagerUserRecordVoteid: "",
+    // 活动管理页面,相关联的支付订单
+    voteManagerPayOrder: false,
+    voteManagerPayOrderVoteid: "",
   },
   getters: {},
   mutations: {
@@ -163,6 +169,18 @@ export default createStore({
         state.prizeData.create_time = payload.create_time;
         state.prizeData.index = payload.index;
         state.prizeData.pk = payload.pk;
+      }
+    },
+    changeVoteUserRecord(state, payload) {
+      state.voteManagerUserRecord = !state.voteManagerUserRecord;
+      if (payload) {
+        state.voteManagerUserRecordVoteid = payload.vote_id;
+      }
+    },
+    changePayOrderRecord(state, payload) {
+      state.voteManagerPayOrder = !state.voteManagerPayOrder;
+      if (payload) {
+        state.voteManagerPayOrderVoteid = payload.vote_id;
       }
     },
   },

@@ -1,5 +1,5 @@
 export const parseStampTime = (stamp) => {
-  const D = new Date(stamp) * 1000;
+  const D = new Date(stamp * 1000);
   console.log(D);
   return `${D.getFullYear()}/${D.getMonth()}/${D.getDay()} ${D.getHours()}:${D.getMinutes()}`;
 };

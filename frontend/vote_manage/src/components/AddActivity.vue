@@ -126,11 +126,15 @@ const save = () => {
   fetch(`${HOST}/voteactivity/`, {
     method: "post",
     body: d,
-    // headers: { "Content-Type": "application/json" },
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
+      if (data.code === 200) {
+        $store.dispatch("voteManagerActions", {
+          type: "post",
+          target: "",
+        });
+      }
     });
 };
 </script>

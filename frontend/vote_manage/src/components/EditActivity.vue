@@ -77,18 +77,14 @@
           </div>
         </div>
       </div>
-      <!-- 投票页面样式 -->
+      <!-- 模板 -->
       <div class="body_body_body" v-else-if="head[1].isClick">
-        <div class="body_body_style">
-          <div class="body_body_style_body">
-            <div
-              class="child_top"
-              @click="onSelectStyle('topImg')"
-              :style="{ border: voteStyle.topImg ? '2px dashed #2460e5' : '' }"
-            >
-              1
-            </div>
-          </div>
+        <div class="body_body_item">
+          <label>选择模板</label>
+          <el-radio-group v-model="pageTemplate" class="ml-4">
+            <el-radio label="1" size="large">模板1</el-radio>
+            <el-radio label="2" size="large">模板2</el-radio>
+          </el-radio-group>
         </div>
       </div>
       <div class="body_body_body" v-else-if="head[2].isClick">
@@ -233,7 +229,7 @@
 <script setup>
 import { fether } from "@/utils/fether";
 import jsCookie from "js-cookie";
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { useStore } from "vuex";
 import { stampToUTCtime, timeToStamp } from "../utils/stampTime";
 const $store = new useStore();
@@ -244,6 +240,7 @@ const getStorage = () => {
   for (let i = 0; i < result.length; i++) {
     if (result[i].fields.vote_id === $store.state.voteManagePopup.target) {
       let obj = { ...result[i].fields };
+      pageTemplate.value = obj.template_id + "";
       activitySettingOptions[0].value[0] = stampToUTCtime(obj.create_time);
       activitySettingOptions[0].value[1] = stampToUTCtime(obj.expire_time);
       activitySettingOptions[1].value[0] = stampToUTCtime(
@@ -262,7 +259,7 @@ const getStorage = () => {
       activitySettingOptions[4].value = obj.allowed_vote_region
         ? obj.allowed_vote_region
         : "全国";
-      activitySettingOptions[5].value = obj.flow;
+      activitySettingOptions[5].value = obj.visit_count;
       activitySettingOptions[6].value = obj.visit_count_multiple;
       voteSetting[0].value = obj.vote_count_restrict;
       voteSetting[1].value = obj.today_start_voteuser
@@ -277,12 +274,12 @@ const getStorage = () => {
       voteSetting[3].value = obj.allowed_alone_everyday_vote_count;
       voteSetting[4].value = obj.allowed_alone_everyhour_vote_count;
       voteSetting[5].value = obj.open_today_star_with;
-      voteSetting[6].value = obj.visible_no1_with;
-      voteSetting[7].value = obj.enable_vote_to_me;
-      voteSetting[8].value = obj.enable_comment;
-      voteSetting[9].value = obj.enable_vote_cert_code;
-      voteSetting[10].value = obj.enable_prize;
-      voteSetting[11].value = obj.enable_browser;
+      voteSetting[6].value = obj.visible_no1_with === 1 ? true : false;
+      voteSetting[7].value = obj.enable_vote_to_me === 1 ? true : false;
+      voteSetting[8].value = obj.enable_comment === 1 ? true : false;
+      voteSetting[9].value = obj.enable_vote_cert_code === 1 ? true : false;
+      voteSetting[10].value = obj.enable_prize === 1 ? true : false;
+      voteSetting[11].value = obj.enable_browser === 1 ? true : false;
       autoMation[0].value = obj.auto_comment_voteuser
         ? auto_comment_voteuser
         : "空";
@@ -301,17 +298,10 @@ const getStorage = () => {
   }
 };
 
-const clg = () => {
-  console.log(
-    new Date(Date.parse(activitySettingOptions[1].value[0].toString())),
-    new Date(Date.parse(activitySettingOptions[1].value[1].toString()))
-  );
-};
-
 // bar
 const head = reactive([
   { name: "活动设置", key: 1, isClick: true, label: "activity_settings" },
-  { name: "活动样式", key: 2, isClick: false, label: "style" },
+  { name: "页面模板", key: 2, isClick: false, label: "style" },
   { name: "投票设置", key: 3, isClick: false, label: "vote_settings" },
   { name: "自动化", key: 4, isClick: false, label: "auto_comment_settings" },
 ]);
@@ -331,7 +321,6 @@ const activitySettingOptions = reactive([
   { label: "浏览量", key: 8, value: "", type: "number" },
   { label: "浏览倍数", key: 9, value: "", type: "number" },
 ]);
-
 // 投票设置
 const voteSetting = reactive([
   {
@@ -352,6 +341,8 @@ const voteSetting = reactive([
   { label: "礼物", key: 11, value: "", type: "radio" },
   { label: "浏览器投票", key: 12, value: "", type: "radio" },
 ]);
+// 模板
+const pageTemplate = ref(1);
 // 自动化
 const autoMation = reactive([
   { label: "自动评论选手id(openid)", key: 1, value: "", type: "text" },
@@ -360,8 +351,6 @@ const autoMation = reactive([
   { label: "每*分钟1条评论", key: 2, value: "", type: "number" },
   { label: "每日评论上限", key: 3, value: "", type: "number" },
 ]);
-
-const voteStyle = reactive({ topImg: false });
 
 // 点击head
 const onClickBar = (key) => {
@@ -372,17 +361,6 @@ const onClickBar = (key) => {
       head[index].isClick = false;
     }
   });
-};
-
-// 鼠标移入
-const onSelectStyle = (target) => {
-  for (let i in voteStyle) {
-    if (i === target) {
-      voteStyle[i] = !voteStyle[i];
-    } else {
-      voteStyle[i] = false;
-    }
-  }
 };
 
 // 保存数据
@@ -428,13 +406,46 @@ const saveEditData = async () => {
           enable_browser: voteSetting[11].value ? 1 : 0,
         };
       } else if (i.label === "auto_comment_settings") {
+        data = {
+          content: "auto_comment_settings",
+          vote_id: $store.state.voteManagePopup.target,
+          auto_comment_voteuser_open_id:
+            autoMation[0].value === "空" ? "" : autoMation[0].value,
+          auto_comment_begin_time: timeToStamp(autoMation[1].value[0]),
+          auto_comment_end_time: timeToStamp(autoMation[1].value[1]),
+          auto_comment_everyday_begin_time: timeToStamp(autoMation[2].value[0]),
+          auto_comment_everyday_end_time: timeToStamp(autoMation[2].value[1]),
+          auto_comment_space_minute: autoMation[3].value,
+          auto_comment_everyday_count_strict: autoMation[4].value,
+        };
       } else {
+        data = {
+          content: "template",
+          template_id: pageTemplate.value,
+          vote_id: $store.state.voteManagePopup.target,
+        };
       }
       let result = await fether("/voteactivity/", "put", {
         token: jsCookie.get("token"),
         data: data,
       });
-      console.log(result);
+      if (result.code === 200) {
+        // 保存成功提醒
+        await $store.dispatch("GlobalMessageActions", "操作成功");
+        let localData = JSON.parse(localStorage.getItem("vote"));
+        for (let i = 0; i < localData.length; i++) {
+          if (
+            localData[i].fields.vote_id === $store.state.voteManagePopup.target
+          ) {
+            localData[i].fields = { ...localData[i].fields, ...data };
+            localStorage.setItem("vote", JSON.stringify(localData));
+            break;
+          }
+        }
+      } else {
+        // 请求发送错误
+        await $store.dispatch("GlobalMessageActions", "操作失败,请重试");
+      }
     }
   }
 };
@@ -501,31 +512,6 @@ getStorage();
 .limit {
   width: 20%;
   margin: 0px 5px;
-}
-.body_body_style {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.body_body_style_body {
-  width: 80%;
-  height: 700px;
-  background-color: green;
-}
-.child_top {
-  height: 150px;
-  background: rgb(252, 219, 11);
-  background: linear-gradient(
-    90deg,
-    rgba(252, 219, 11, 1) 0%,
-    rgba(238, 180, 47, 1) 35%,
-    rgba(209, 255, 0, 1) 100%
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  color: white;
 }
 .close {
   position: absolute;
