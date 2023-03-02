@@ -101,6 +101,11 @@ class VoteActivity(APIView):
                     return JsonResponse({'code': 400, 'msg': msg})
                 voteActivityOp.updateAutoCommentData(data)
 
+            elif content == 'template':
+                ok, msg = voteActivityOp.checkTemplateData(data)
+                if not ok:
+                    return JsonResponse({'code': 400, 'msg': msg})
+                voteActivityOp.updateTemplateData(data)
             else:
                 return JsonResponse({'code': 400, 'msg': '参数错误'})
             

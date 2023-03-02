@@ -148,8 +148,10 @@ def b64Decode(data):
     return data
 
 def myPaginator(data, maxSize, pageNum):
-    print(type(data))
-    paginator = Paginator(data.order_by('pk'), maxSize)
+    if type(list()) == type(data):
+        paginator = Paginator(data, maxSize)
+    else:
+        paginator = Paginator(data.order_by('pk'), maxSize)
     pageNum = int(pageNum)
     pageCount = paginator.count
     if pageNum > pageCount:

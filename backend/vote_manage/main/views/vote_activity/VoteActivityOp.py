@@ -101,6 +101,16 @@ class VoteActivityOp:
             return ok, msg
         ok, msg = self.checkVoteuserIsExist(data.get('auto_comment_voteuser_open_id', None))
         return ok, msg
+    
+    def checkTemplateData(self, data):
+        ok, msg = self.checkVoteIdIsExist(data.get('vote_id', None))
+        if not ok:
+            return False, msg
+        validate = Validate()
+        validate.addCheck('checkIsNotEmpty', data.get('template_id', None), '模版ID不能为空')
+        validate.addCheck('checkIsNumber', data.get('template_id', None), '模版ID错误')
+        ok, msg = validate.startCheck()
+        return ok, msg
 
     def updateActivityData(self, data):
         voteActivityObj = models.VoteActivity.objects.filter(vote_id=data.get('vote_id', None)).first()
@@ -142,3 +152,16 @@ class VoteActivityOp:
             voteActivityObj.auto_comment_space_minute = data.get('auto_comment_space_minute', None)
             voteActivityObj.auto_comment_everyday_count_strict = data.get('auto_comment_everyday_count_strict', None)
             voteActivityObj.save()
+
+    def updateTemplateData(self, data):
+        voteActivityObj = models.VoteActivity.objects.filter(vote_id=data.get('vote_id', None)).first()
+        voteActivityObj.template_id = data.get('template_id', None)
+        voteActivityObj.save()
+
+    def queryAllVoteuser(self, vote_id):
+        voteuserObj = models.VoteUser.objects.filter(voteactivity__vote_id=vote_id).distinct()
+        return voteuserObj
+    
+    def queryAllPayment(self, vote_id):
+        paymentRecordObj = models.PaymentRecord.objects.filter(vote_activity_id=vote_id)
+        return paymentRecordObj

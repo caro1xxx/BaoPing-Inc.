@@ -137,7 +137,7 @@ url：/login
 url：/login
 
 参数（示例）：
-```
+```json
 {
     "token": "zxCPvHNrcp2GwOMEWLZshaIylR1UTdDg",
     "data": {
@@ -148,6 +148,68 @@ url：/login
         "wx_pay_apiv2_secret_key": "wxpaygfnkdjg34",
         "wx_pay_apiv3_secret_key": "wxpaygfnkdjg34"
     }
+}
+```
+
+
+
+方法：get
+
+url：/paymentrecord/
+
+参数（示例）：
+
+```json
+{
+    "token": "zxCPvHNrcp2GwOMEWLZshaIylR1UTdDg",
+    "value": "all/serch key搜索关键字/不传", 
+  	"page_num": "页码/不传"
+}
+```
+
+
+
+方法：delete
+
+url：/paymentrecord/
+
+参数（示例）：
+
+```json
+{
+    "token": "zxCPvHNrcp2GwOMEWLZshaIylR1UTdDg",
+    "pk": ""
+}
+```
+
+
+
+方法：get
+
+url：/voterecord/
+
+参数（示例）：
+
+```json
+{
+    "token": "zxCPvHNrcp2GwOMEWLZshaIylR1UTdDg",
+    "value": "all/serch key搜索关键字/不传", 
+  	"page_num": "页码/不传"
+}
+```
+
+
+
+方法：delete
+
+url：/voterecord/
+
+参数（示例）：
+
+```json
+{
+    "token": "zxCPvHNrcp2GwOMEWLZshaIylR1UTdDg",
+    "pk": ""
 }
 ```
 

@@ -12,24 +12,12 @@ class VoteRecord(APIView):
         ret = {'code': 200, 'msg': 'ok'}
         try:
             value = request.GET.get('value', None)
+            vote_id = request.GET.get('vote_id', None)
 
             if value in ['all', None, '']:
-                voteRecordObj =  models.VoteRecord.objects.all()
+                voteRecordObj =  models.VoteRecord.objects.all() if vote_id is None else models.VoteRecord.objects.filter(vote_activity_id=vote_id)
             else:
-                voteRecordObj = models.VoteRecord.objects.filter(voteuser__wx_username__contains=value)
-
-            # data = []
-            # for voteRecord in voteRecordObj:
-            #     tmp = {}
-            #     tmp['vote_user_wx_open_id'] = voteRecord.voteuser.open_id
-            #     tmp['vote_user_wx_username'] = voteRecord.voteuser.wx_username
-            #     tmp['vote_id'] = voteRecord.vote_activity.vote_id
-            #     tmp['ip'] = voteRecord.ip
-            #     tmp['phone_number'] = voteRecord.phone_number
-            #     tmp['system'] = voteRecord.system
-            #     tmp['network'] = voteRecord.network
-            #     tmp['create_time'] = voteRecord.create_time
-            #     data.append(tmp)
+                voteRecordObj = models.VoteRecord.objects.filter(voteuser__wx_username__contains=value) if vote_id is None else models.VoteRecord.objects.filter(voteuser__wx_username__contains=value, vote_activity_id=vote_id)
 
             data = voteRecordObj
             data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
@@ -44,16 +32,16 @@ class VoteRecord(APIView):
         ret = {'code': 200, 'msg': '删除成功'}
         try:
             # 接收数据
-            voteRecordId = json.loads(request.body).get('vote_record_id', None)
+            pk = json.loads(request.body).get('pk', None)
             
             # 验证参数
             validate = Validate()
-            validate.addCheck('checkIsNotEmpty', voteRecordId, 'record_id不能为空')
-            validate.addCheck('checkIsNumber', voteRecordId, 'record_id错误')
+            validate.addCheck('checkIsNotEmpty', pk, 'pk不能为空')
+            validate.addCheck('checkIsNumber', pk, 'pk错误')
             ok, msg = validate.startCheck()
             if not ok:
                 return JsonResponse({'code': 400, 'msg': msg})
-            voteRecordObj = models.VoteRecord.objects.filter(pk=voteRecordId).first()
+            voteRecordObj = models.VoteRecord.objects.filter(pk=pk).first()
             if not voteRecordObj:
                 return JsonResponse({'code': 400, 'msg': '记录不存在'})         
 

@@ -76,6 +76,15 @@ class VoteActivity(models.Model):
     auto_comment_everyday_end_time = models.IntegerField(default=0)
     auto_comment_space_minute = models.IntegerField(default=0)
     auto_comment_everyday_count_strict = models.IntegerField(default=0)
+    template_id = models.IntegerField(default=0)
+    vote_voteusers = models.ManyToManyField(
+        VoteUser,
+        through='VoteRecord',
+        through_fields=('vote_activity', 'voteuser')
+    )
+    # payment_voteusers = models.ManyToManyField(
+    #     PaymentRecord,
+    # )
 
 
 class Feedback(models.Model):
@@ -124,6 +133,7 @@ class VoteRecord(models.Model):
     vote_activity = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
     ip = models.TextField(default='')
     phone_number = models.TextField(default='')
+    phone_model = models.TextField(default='')
     system = models.TextField(default='')
     network = models.TextField(default='')
 
@@ -135,6 +145,7 @@ class PaymentRecord(models.Model):
     create_time = models.IntegerField(null=False)
     ip = models.TextField(default='')
     phone_number = models.TextField(default='')
+    phone_model = models.TextField(default='')
     system = models.TextField(default='')
     network = models.TextField(default='')  
     prize_type = models.TextField(default='')
