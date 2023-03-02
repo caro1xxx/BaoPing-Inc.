@@ -52,5 +52,4 @@ class StaticsOp:
             staticsObj.yesterday_income = self.queryYesterdayIncome(nowTime)
         staticsObj.update_time = nowTime    
         staticsObj.save()
-        print(staticsObj)
         return staticsObj
