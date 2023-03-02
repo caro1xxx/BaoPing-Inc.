@@ -37,7 +37,6 @@ const getAthleteData = async () => {
   if (result.code === 200) {
     let Arr = []
     Arr = JSON.parse(result.data)
-    console.log(Arr);
     Arr.map(item => {
       athleteData.push({...item.fields, pk: item.pk})
     })

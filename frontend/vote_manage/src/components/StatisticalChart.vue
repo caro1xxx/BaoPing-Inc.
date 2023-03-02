@@ -1,44 +1,52 @@
 <template>
-  <div id="siderbar_statistical_chart"></div>
+  <div id="siderbar_statistical_chart" :style="{width: `${props.data.width}px`, height: `${props.data.height}px`}"></div>
 </template>
 
-<script>
-import * as echarts from "echarts";
+<script setup>
+import * as echarts from "echarts"
+import { reactive, onMounted, defineProps  } from "vue";
 
-export default {
-  data() {
-    return {};
+// 接收数据
+const props = defineProps({
+  data: {
+    width: Number,
+    height: Number,
   },
-  mounted() {
-    const chartDom = document.getElementById("siderbar_statistical_chart");
-    const myChart = echarts.init(chartDom);
-    var option;
+});
 
-    option = {
-      xAxis: {
-        type: "category",
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      },
-      yAxis: {
-        type: "value",
-      },
-      series: [
-        {
-          data: [120, 200, 150, 80, 70, 110, 130],
-          type: "bar",
-        },
-      ],
-    };
-
-    option && myChart.setOption(option);
-  },
-};
+console.log();
+onMounted(() => {
+  const isBroken = reactive(['1月', '2月', '3月', '4月', '5月'])
+  const isBrokenValue = reactive([20, 41, 15, 33, 25])
+  const chartDom = document.getElementById('siderbar_statistical_chart');
+  var myChart = echarts.init(chartDom);
+  var option;
+  option = {
+    title: {
+      text: '标题'
+    },
+    tooltip: {
+      trigger: 'axis'
+    },
+    xAxis: {
+      type: 'category',
+      data: isBroken
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [
+      {
+        data: isBrokenValue,
+        type: 'line'
+      }
+    ]
+  };
+  
+  option && myChart.setOption(option);
+})
 </script>
 
 <style lang="scss" scoped>
-#siderbar_statistical_chart {
-  margin: 0px 20px;
-  width: 300px;
-  height: 300px;
-}
+
 </style>
