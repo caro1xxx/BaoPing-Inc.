@@ -89,14 +89,14 @@ const router = useRouter();
 const $store = useStore();
 // 头像列表
 const avatorList = reactive([
-  { id: 22, img: require("../assets/img/22.png"), select: false },
-  { id: 23, img: require("../assets/img/23.png"), select: false },
-  { id: 24, img: require("../assets/img/24.png"), select: false },
-  { id: 25, img: require("../assets/img/25.png"), select: false },
-  { id: 26, img: require("../assets/img/26.png"), select: false },
-  { id: 27, img: require("../assets/img/27.png"), select: false },
-  { id: 28, img: require("../assets/img/28.png"), select: false },
-  { id: 29, img: require("../assets/img/29.png"), select: false },
+  { id: 22, img: require("../assets/img/avator/1.png"), select: false },
+  { id: 23, img: require("../assets/img/avator/2.png"), select: false },
+  { id: 24, img: require("../assets/img/avator/3.png"), select: false },
+  { id: 25, img: require("../assets/img/avator/4.png"), select: false },
+  { id: 26, img: require("../assets/img/avator/5.png"), select: false },
+  { id: 27, img: require("../assets/img/avator/6.png"), select: false },
+  { id: 28, img: require("../assets/img/avator/7.png"), select: false },
+  { id: 29, img: require("../assets/img/avator/8.png"), select: false },
 ]);
 
 // 点击记住
