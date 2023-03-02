@@ -14,9 +14,22 @@ class UserOp:
         self.ERROR1 = '用户名或密码错误'
             
     def onLoginSuccess(self, userObj):
+        token = userObj.token
         userObj.last_login_time = getNowTimeStamp()
         userObj.token = self.generatreToken(userObj.username)
         userObj.save()
+        # 登陆成功删除旧token
+        tokenObj = models.Token.objects.filter(value=token).first()
+        if tokenObj:
+            tokenObj.delete()
+
+    def loginWithToken(self, token):
+        userObj = models.User.objects.filter(token=token).first()
+        if userObj:
+            self.onLoginSuccess(userObj)
+            return True, userObj
+        else:
+            return False, 'token已过期'
 
     def login(self, username, pwd):
         pwdMD5 = genearteMD5(pwd)
@@ -150,7 +163,7 @@ class UserOp:
     def generatreToken(self, username):
         token = generateString32()
         expire_time = getNowTimeStamp() + (7 * 24 * 60 * 60)
-        tokenModels = models.Token.objects.create(value=token,expire_time=expire_time)
+        tokenModels = models.Token.objects.create(value=token, expire_time=expire_time)
         tokenModels.save()
         return token
 
@@ -169,7 +182,18 @@ class UserOp:
             userdata['auth'] = 1
             userdata['token'] = self.generatreToken(userdata['username'])
             userdata['status'] = 1
-            userObj = models.User.objects.create(name = userdata['name'], username = userdata['username'], pwd= userdata['pwd'], create_time = userdata['create_time'], last_login_time = userdata['last_login_time'], email = userdata['email'], auth = userdata['auth'], avator = userdata['avator'], token = userdata['token'], status = userdata['status'])
+            userObj = models.User.objects.create(
+                name = userdata['name'],
+                username = userdata['username'], 
+                pwd= userdata['pwd'], 
+                create_time = userdata['create_time'], 
+                last_login_time = userdata['last_login_time'], 
+                email = userdata['email'], 
+                auth = userdata['auth'], 
+                avator = userdata['avator'], 
+                token = userdata['token'], 
+                status = userdata['status']
+            )
             userObj.save()
             return True, None
         except Exception as e:

@@ -11,49 +11,36 @@ class PaymentRecord(APIView):
         ret = {'code': 200, 'msg': 'ok'}
         try:
             value = request.GET.get('value', None)
+            vote_id = request.GET.get('vote_id', None)
 
             if value in ['all', None, '']:
-                paymentRecordObj =  models.PaymentRecord.objects.all()
+                paymentRecordObj =  models.PaymentRecord.objects.all() if vote_id is None else models.PaymentRecord.objects.filter(vote_activity_id=vote_id)
             else:
-                paymentRecordObj = models.PaymentRecord.objects.filter()
+                paymentRecordObj = models.PaymentRecord.objects.filter() if vote_id is None else models.PaymentRecord.objects.filter(vote_activity_id=vote_id)
 
-            data = []
-            for paymentRecord in paymentRecordObj:
-                tmp = {}
-                tmp['vote_user_wx_open_id'] = paymentRecord.voteuser.open_id
-                tmp['vote_user_wx_username'] = paymentRecord.voteuser.wx_username
-                tmp['vote_id'] = paymentRecord.vote_activity.vote_id
-                tmp['price'] = paymentRecord.price
-                tmp['prize_type'] = paymentRecord.prize_type
-                tmp['payment_order_id'] = paymentRecord.payment_order_id
-                tmp['payment_status'] = paymentRecord.payment_status
-                tmp['ip'] = paymentRecord.ip
-                tmp['phone_number'] = paymentRecord.phone_number
-                tmp['system'] = paymentRecord.system
-                tmp['network'] = paymentRecord.network
-                tmp['create_time'] = paymentRecord.create_time
-                data.append(tmp)
-            ret['data'] = data
+            data = paymentRecordObj
+            data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
+            ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
 
     def delete(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': '删除成功'}
         try:
             # 接收数据
-            paymentRecordId = json.loads(request.body).get('payment_record_id', None)
+            pk = json.loads(request.body).get('pk', None)
             
             # 验证参数
             validate = Validate()
-            validate.addCheck('checkIsNotEmpty', paymentRecordId, 'record_id不能为空')
-            validate.addCheck('checkIsNumber', paymentRecordId, 'record_id错误')
+            validate.addCheck('checkIsNotEmpty', pk, 'pk不能为空')
+            validate.addCheck('checkIsNumber', pk, 'pk错误')
             ok, msg = validate.startCheck()
             if not ok:
                 return JsonResponse({'code': 400, 'msg': msg})
-            voteRecordObj = models.PaymentRecord.objects.filter(pk=paymentRecordId).first()
+            voteRecordObj = models.PaymentRecord.objects.filter(pk=pk).first()
             if not voteRecordObj:
                 return JsonResponse({'code': 400, 'msg': '记录不存在'})         
 
