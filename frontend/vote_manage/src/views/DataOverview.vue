@@ -2,47 +2,55 @@
   <div class="home">
     <Search />
     <div class="home_title">数据概括</div>
+    <div class="top">
+      <div class="home_top_title">
+        <div class="home_top_title_font">今日</div>
+        <div class="home_top_title_content">
+          ¥{{ OverviewData.today_income }}.00
+        </div>
+      </div>
+      <div style="border-left: 0.5px solid #c5c5c565"></div>
+      <div class="home_top_title">
+        <div class="home_top_title_font">昨日</div>
+        <div class="home_top_title_content">
+          ¥{{ OverviewData.yesterday_income }}.00
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import Search from "@/components/Search.vue";
 import { reactive } from "vue";
+import { fether } from "@/utils/fether";
+import { useStore } from "vuex";
+import jsCookie from "js-cookie";
+const $store = new useStore();
+const OverviewData = reactive({
+  today_income: "",
+  yesterday_income: "",
+});
 
-// 数据列表
-const dataList = reactive([
-  { title: "总访问量", value: 3000 },
-  { title: "总访问量", value: 2000 },
-  { title: "总访问量", value: 9999 },
-]);
+// 获取数据
+const getDataOverView = async () => {
+  // 开启加载loading
+  await $store.dispatch("NoticifyActions", true);
+  let result = await fether(`/statics/?token=${jsCookie.get("token")}`);
+  if (result.code === 200) {
+    let JSONResult = JSON.parse(result.data)[0].fields;
+    OverviewData.today_income = JSONResult.today_income;
+    OverviewData.yesterday_income = JSONResult.yesterday_income;
+  } else {
+    // 请求发送错误
+    await $store.dispatch("refreshErroActions");
+    await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
+  }
+  // 关闭加载loading
+  $store.commit("noticifyLoading", false);
+};
 
-// 第二排数据列表
-const dataListBot = reactive([
-  { title: "总访问量", value: 122 },
-  { title: "总访问量", value: 1000 },
-  { title: "总访问量", value: 1000 },
-  { title: "总访问量", value: 1000 },
-]);
-// 表头数据
-const tableHead = reactive([
-  { name: "活动ID" },
-  { name: "域名" },
-  { name: "访问流量" },
-  { name: "状态" },
-]);
-
-// 表数据
-const tableData = reactive([
-  { id: "#1", domain: "http://www.baidu.com", flow: "1.2k", state: false },
-  { id: "#2", domain: "http://www.baidu.com", flow: "1.2k", state: true },
-  { id: "#3", domain: "http://www.baidu.com", flow: "1.2k", state: true },
-  { id: "#4", domain: "http://www.baidu.com", flow: "1.2k", state: false },
-  { id: "#4", domain: "http://www.baidu.com", flow: "1.2k", state: false },
-  { id: "#4", domain: "http://www.baidu.com", flow: "1.2k", state: false },
-  { id: "#4", domain: "http://www.baidu.com", flow: "1.2k", state: false },
-  { id: "#4", domain: "http://www.baidu.com", flow: "1.2k", state: false },
-  { id: "#4", domain: "http://www.baidu.com", flow: "1.2k", state: false },
-]);
+getDataOverView();
 </script>
 
 <style lang="scss" scoped>
@@ -56,5 +64,33 @@ const tableData = reactive([
   font-size: 20px;
   font-weight: bold;
   margin: 20px 0px;
+}
+.top {
+  display: flex;
+  .home_top_title {
+    width: 50%;
+    margin-left: 20px;
+    border-bottom: 0.5px solid #c5c5c565;
+  }
+
+  .home_top_title_content {
+    height: calc(20vh);
+    font-size: 100px;
+    font-weight: bold;
+    line-height: calc(20vh);
+  }
+}
+.home_top_title_font {
+  font-size: 15px;
+}
+.midd {
+  display: flex;
+}
+.home_top_title_sum {
+  width: 50%;
+}
+.home_top_title_order {
+  width: 25%;
+  margin-left: 20px;
 }
 </style>
