@@ -168,5 +168,6 @@ def isSameDay(timestamp1, timestamp2):
             abs(d1 - d2) <= timedelta(hours=24))
 
 def getTodayBeginTimeStamp(nowTime):
-    return int(time.time()) -int(time.time()-time.timezone) %86400 
+    return nowTime - (nowTime- time.timezone)%86400
+
 

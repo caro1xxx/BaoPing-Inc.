@@ -12,8 +12,8 @@ class StaticsOp:
             create_time__gt = beginTime,
             create_time__lte = endTime,
             payment_status = 1
-        ).aggregate(sum_income=Sum('price'))['sum_income']
-        return sumIncome
+        ).aggregate(sum_income=Sum('price'))
+        return sumIncome['sum_income'] if sumIncome['sum_income'] else 0
     
     def queryYesterdayIncome(self, nowTime):
         todayBeginTime = getTodayBeginTimeStamp(nowTime)
@@ -44,17 +44,13 @@ class StaticsOp:
         nowTime = getNowTimeStamp()
         staticsObj = models.Statics.objects.all().first()
         updateTime = staticsObj.update_time
-        print(staticsObj)
         if isSameDay(updateTime, nowTime):
-            print(1)
             addIncome = self.queryTimedeltaIncome(updateTime, nowTime)
-            print('add', addIncome)
             staticsObj.today_income += addIncome
         else:
-            print(2)
-            print(self.queryTodayIncome(nowTime))
             staticsObj.today_income = self.queryTodayIncome(nowTime)
             staticsObj.yesterday_income = self.queryYesterdayIncome(nowTime)
-        staticsObj.update_time = nowTime
+        staticsObj.update_time = nowTime    
         staticsObj.save()
+        print(staticsObj)
         return staticsObj

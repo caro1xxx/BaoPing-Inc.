@@ -17,12 +17,12 @@ class Statics(APIView):
             staticsOp = StaticsOp()
             if staticsObj is None:
                 staticsObj = staticsOp.initStatics()
-                ret['data'] = staticsObj 
-                return JsonResponse(ret)
+                ret['data'] = serializers.serialize('json', [staticsObj]) 
             else:
                 staticsObj = staticsOp.updateStatics()
-                ret['data'] = staticsObj 
-                return JsonResponse(ret)          
+                ret['data'] = serializers.serialize('json', [staticsObj]) 
+            print(ret['data'])
+            return JsonResponse(ret)          
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
