@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main'
+    'main',
+    'django_crontab'
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True  #跨域访问
@@ -169,3 +170,8 @@ CACHES = {
         }
     }
 }
+
+
+# CRONJOBS = [
+#     ('0 0 * * *', 'base.crontabs.confdict_handle', ' >> /tmp/logs/confdict_handle.log'), # 注意：/tmp/base_api 目录要手动创建
+# ]

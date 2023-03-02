@@ -17,9 +17,10 @@ class UserInfo(APIView):
             # username = request.GET.get('username', None)
             data = models.User.objects.all()
             data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
-            ret['data'] = serializers.serialize("json", data, serializers.serialize('json', data, use_natural_foreign_keys=True))
+            ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
         
     # 新增一条用户信息

@@ -6,6 +6,7 @@ import string
 import base64
 from Crypto.Cipher import AES
 from django.core.paginator import Paginator
+from datetime import datetime, timedelta
 
 # 验证类，通过addCheck()增加验证规则，start()进行统一验证
 # 验证类的check开头的方法，如果验证通过为True，否则为False
@@ -159,3 +160,13 @@ def myPaginator(data, maxSize, pageNum):
     else:
         data = paginator.page(int(pageNum))
     return data, pageCount
+
+def isSameDay(timestamp1, timestamp2):
+    d1 = datetime.fromtimestamp(timestamp1)
+    d2 = datetime.fromtimestamp(timestamp2)
+    return (d1.date() == d2.date() and
+            abs(d1 - d2) <= timedelta(hours=24))
+
+def getTodayBeginTimeStamp(nowTime):
+    return int(time.time()) -int(time.time()-time.timezone) %86400 
+

@@ -151,3 +151,9 @@ class PaymentRecord(models.Model):
     prize_type = models.TextField(default='')
     payment_order_id = models.TextField(default='')
     payment_status = models.IntegerField(default=0)
+
+
+class Statics(models.Model):
+    today_income = models.IntegerField(default=0)
+    yesterday_income = models.IntegerField(default=0)
+    update_time = models.IntegerField(default=0)
