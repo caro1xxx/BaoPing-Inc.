@@ -9,6 +9,22 @@ from main.views.user.UserOp import UserOp
 
 
 class Login(APIView):
+    def get(self, request, *arg, **kwargs):
+        ret = {'code': 200, 'msg': 'ok'}
+        try:
+            token = request.GET.get('token', None)
+            userOp = UserOp()
+            ok, data = userOp.loginWithToken(token)
+            if ok:
+                ret['data'] = serializers.serialize("json",models.User.objects.filter(username=data.username))
+            else:
+                ret['code'] = 400
+                ret['msg'] = data
+        except Exception as e:
+            ret = {'code': 500, 'msg': 'Timeout'}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+        return JsonResponse(ret)
+
     def post(self, request, *arg, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
@@ -23,5 +39,5 @@ class Login(APIView):
                 ret['msg'] = data
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
