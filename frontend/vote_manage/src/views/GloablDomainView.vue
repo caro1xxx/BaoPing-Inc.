@@ -1,42 +1,48 @@
 <template>
   <div class="home">
     <Search />
-    <div class="home_title">全局域名</div>
-    <div class="home_body">
-      <el-button text @click="openDialog()">
-        <svg t="1677473562522" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2330" width="20" height="20">
-        <path d="M512 992C246.912 992 32 777.088 32 512 32 246.912 246.912 32 512 32c265.088 0 480 214.912 480 480 0 265.088-214.912 480-480 480z m0-64c229.76 0 416-186.24 416-416S741.76 96 512 96 96 282.24 96 512s186.24 416 416 416z" fill="#2460E5" p-id="2331"></path>
-        <path d="M256 544a32 32 0 0 1 0-64h512a32 32 0 0 1 0 64H256z" fill="#2460E5" p-id="2332"></path>
-        <path d="M480 256a32 32 0 0 1 64 0v512a32 32 0 0 1-64 0V256z" fill="#2460E5" p-id="2333"></path></svg>
-      </el-button>
+    <div class="home_title">
+      <span>全局域名</span>
+        <svg
+        @click="openDialog"
+        t="1677544620358"
+        class="icon add"
+        viewBox="0 0 1024 1024"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        p-id="1501"
+        width="25"
+        height="25"
+      >
+        <path
+          d="M514.048 62.464q93.184 0 175.616 35.328t143.872 96.768 96.768 143.872 35.328 175.616q0 94.208-35.328 176.128t-96.768 143.36-143.872 96.768-175.616 35.328q-94.208 0-176.64-35.328t-143.872-96.768-96.768-143.36-35.328-176.128q0-93.184 35.328-175.616t96.768-143.872 143.872-96.768 176.64-35.328zM772.096 576.512q26.624 0 45.056-18.944t18.432-45.568-18.432-45.056-45.056-18.432l-192.512 0 0-192.512q0-26.624-18.944-45.568t-45.568-18.944-45.056 18.944-18.432 45.568l0 192.512-192.512 0q-26.624 0-45.056 18.432t-18.432 45.056 18.432 45.568 45.056 18.944l192.512 0 0 191.488q0 26.624 18.432 45.568t45.056 18.944 45.568-18.944 18.944-45.568l0-191.488 192.512 0z"
+          p-id="1502"
+          fill="#2460e5"
+        ></path>
+      </svg>
     </div>
-    <el-table :data="realmAddData" class="home_body_table">
+    <div class="home_body_table_wrap">
+      <el-table :data="realmAddData" class="home_body_table">
       <el-table-column prop="id" label="编号" >
         <template #default="scope">
-          <!-- <span>{{ getNum()[scope.$index] }}</span> -->
           <span>{{ scope.$index }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="domain_name" label="域名" />
       <el-table-column prop="expire_time" label="有效期">
         <template #default="scope">
-          <span>{{ parseStampTime(scope.row.expire_time) }}</span>
+          <span v-if="scope.row.expire_time">{{ getTime(scope.row.expire_time) }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column prop="createdtime" label="创建时间" /> -->
       <el-table-column prop="status" label="状态" />
       <el-table-column label="操作">
         <template #default="scope">
-          <svg @click="deleteRealm(scope.row, scope.$index)" t="1677475434506" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6493" id="mx_n_1677475434509" width="20" height="20">
-            <path d="M607.897867 768.043004c-17.717453 0-31.994625-14.277171-31.994625-31.994625L575.903242 383.935495c0-17.717453 14.277171-31.994625 31.994625-31.994625s31.994625 14.277171 31.994625 31.994625l0 351.94087C639.892491 753.593818 625.61532 768.043004 607.897867 768.043004z" fill="#F40606" p-id="6494">
-            </path><path d="M415.930119 768.043004c-17.717453 0-31.994625-14.277171-31.994625-31.994625L383.935495 383.935495c0-17.717453 14.277171-31.994625 31.994625-31.994625 17.717453 0 31.994625 14.277171 31.994625 31.994625l0 351.94087C447.924744 753.593818 433.647573 768.043004 415.930119 768.043004z" fill="#F40606" p-id="6495">
-            </path><path d="M928.016126 223.962372l-159.973123 0L768.043004 159.973123c0-52.980346-42.659499-95.983874-95.295817-95.983874L351.94087 63.989249c-52.980346 0-95.983874 43.003528-95.983874 95.983874l0 63.989249-159.973123 0c-17.717453 0-31.994625 14.277171-31.994625 31.994625s14.277171 31.994625 31.994625 31.994625l832.032253 0c17.717453 0 31.994625-14.277171 31.994625-31.994625S945.73358 223.962372 928.016126 223.962372zM319.946246 159.973123c0-17.545439 14.449185-31.994625 31.994625-31.994625l320.806316 0c17.545439 0 31.306568 14.105157 31.306568 31.994625l0 63.989249L319.946246 223.962372 319.946246 159.973123 319.946246 159.973123z" fill="#F40606" p-id="6496">
-            </path><path d="M736.048379 960.010751 288.123635 960.010751c-52.980346 0-95.983874-43.003528-95.983874-95.983874L192.139761 383.591466c0-17.717453 14.277171-31.994625 31.994625-31.994625s31.994625 14.277171 31.994625 31.994625l0 480.435411c0 17.717453 14.449185 31.994625 31.994625 31.994625l448.096758 0c17.717453 0 31.994625-14.277171 31.994625-31.994625L768.215018 384.795565c0-17.717453 14.277171-31.994625 31.994625-31.994625s31.994625 14.277171 31.994625 31.994625l0 479.231312C832.032253 916.835209 789.028725 960.010751 736.048379 960.010751z" fill="#F40606" p-id="6497">
-            </path></svg>
-            <el-button @click="undataData(scope.row, scope.$index)" type="primary">编辑</el-button>
+            <span @click="deleteRealm(scope.row, scope.$index)" style="color: red;">删除</span>
+            <span @click="undataData(scope.row, scope.$index)" style="color: #409eff;">编辑</span>
         </template>
       </el-table-column>
     </el-table>
+    </div>
   </div>
 </template>
 
@@ -45,7 +51,6 @@ import Search from "@/components/Search.vue"
 import { fether } from "@/utils/fether"
 import { reactive,watch } from "vue"
 import {  useStore } from "vuex"
-import { parseStampTime } from '../utils/stampTime'
 import Cookies from 'js-cookie'
 const $store = new useStore()
 
@@ -98,6 +103,15 @@ const deleteRealm = async (value, index) => {
   $store.commit("noticifyLoading", false);
 }
 
+const getTime = (value)=> {
+  if (value === 0) {
+    return '1970/1/1 0:0'
+  } else {
+    let d = new Date(value * 1000)
+    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+  }
+}
+
 watch(
   () => $store.state.realmData,
   (newVal) => {
@@ -139,8 +153,13 @@ const openDialog = () => {
   font-size: 20px;
   font-weight: bold;
   margin: 20px 0px;
-  cursor: pointer;
-  user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  span,svg{    
+    cursor: pointer;
+    user-select: none;
+  }
 }
 .home_body{
   display: flex;
@@ -153,13 +172,21 @@ svg{
   margin-right: 15px;
 }
 .home_body_table{
-  height: calc(100vh - 178px);
-  margin-top: 10px;
+  height: calc(100vh - 168px);
   border-radius: 3px;
+  span{
+    cursor: pointer;
+    user-select: none;
+    margin: 0px 10px;
+  }
 }
 .home_body_table::-webkit-scrollbar {
   display: none;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+.home_body_table_wrap{
+  padding: 10px;
+  background-color: white;
 }
 </style>

@@ -7,7 +7,7 @@
         <div class="grid">
           <div>
             <div class="systemthing-content-title">公众号名称</div>
-            <div><input type="text" class="smalllinput" v-model="officialdata.data.name"></div>
+            <div><input type="text" class="smalllinput" v-model="officialdata.data.officialcount_name"></div>
           </div>
           <div>
             <div class="systemthing-content-title">Appid</div>
@@ -19,17 +19,17 @@
           </div>
           <div>
             <div class="systemthing-content-title">微信支付商户号</div>
-            <div><input type="text" class="smalllinput" v-model="officialdata.data.wx_pay_pos_id"></div>
+            <div><input type="text" class="smalllinput" v-model="officialdata.data.wxpay_pos_id"></div>
           </div>
         </div>
         <div class="grid1">
         <div class="span-col-2">
           <div class="systemthing-content-title">微信支付APIv2密钥</div>
-          <div><input type="text" class="biginput" v-model="officialdata.data.wx_pay_apiv2_secret_key"></div>
+          <div><input type="text" class="biginput" v-model="officialdata.data.wxpay_apiv2_secret_key"></div>
         </div>
         <div class="span-col-2">
           <div class="systemthing-content-title">微信支付APIv3密钥</div>
-          <div><input type="text" class="biginput" v-model="officialdata.data.wx_pay_apiv3_secret_key"></div>
+          <div><input type="text" class="biginput" v-model="officialdata.data.wxpay_apiv3_secret_key"></div>
         </div>
         <div>
           <button @click="preserve()">保存</button>
@@ -56,11 +56,11 @@ const $store = new useStore();
 const officialdata = reactive({
   data:{
     app_id: '',
-    name: '',
+    officialcount_name: '',
     region: '',
     wx_pay_apiv2_secret_key: '',
-    wx_pay_apiv3_secret_key: '',
-    wx_pay_pos_id: '',
+    wxpay_apiv3_secret_key: '',
+    wxpay_pos_id: '',
   }
 })
 
@@ -71,6 +71,7 @@ const getofficial = async () => {
   let result = await fether(
     `/officialaccount/?token=${Cookies.get('token')}`
   )
+  // 
   // let result = await fether(
   //   `/officialaccount/?token=h0iLxzKyDbZCAJg9m3Yd8BWRrsHQtEvG`
   // )
@@ -92,13 +93,14 @@ const preserve = async () => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
   let result = await fether(`/officialaccount/`, `put`, {
+    token: Cookies.get("token"),
     data: {
       app_id: officialdata.data.app_id,
-      name: officialdata.data.name,
+      officialcount_name: officialdata.data.officialcount_name,
       region: officialdata.data.region,
-      wx_pay_apiv2_secret_key: officialdata.data.wx_pay_apiv2_secret_key,
-      wx_pay_apiv3_secret_key: officialdata.data.wx_pay_apiv3_secret_key,
-      wx_pay_pos_id: officialdata.data.wx_pay_pos_id,
+      wxpay_apiv2_secret_key: officialdata.data.wxpay_apiv2_secret_key,
+      wxpay_apiv3_secret_key: officialdata.data.wxpay_apiv3_secret_key,
+      wxpay_pos_id: officialdata.data.wxpay_pos_id,
     },
     token: Cookies.get("token"),
     // token: 'h0iLxzKyDbZCAJg9m3Yd8BWRrsHQtEvG'
