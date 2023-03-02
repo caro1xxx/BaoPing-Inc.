@@ -369,22 +369,27 @@ const goPage = (index) => {
       $store.dispatch("SubNavBarActions", {
         item: [
           {
-            name: "概括",
-            description: "以直观的方式和图标显示总体运营数据",
-            path: "/order/overview",
-          },
-          {
             name: "支付记录",
             description: "以直观的方式和图标显示总体运营数据",
             path: "/order/paymentrecord",
           },
         ],
-        navName: "投票管理",
+        navName: "订单系统",
       });
-      $router.push("/order/overview");
+      $router.push("/order/paymentrecord");
       break;
     case 6:
-      $router.push("/FanManager");
+      $store.dispatch("SubNavBarActions", {
+        item: [
+          {
+            name: "投票选手",
+            description: "以直观的方式和图标显示总体运营数据",
+            path: "/order/voteparent",
+          },
+        ],
+        navName: "选手管理",
+      });
+      $router.push("/parent/voteparent");
       break;
     case 7:
       $router.push("/");

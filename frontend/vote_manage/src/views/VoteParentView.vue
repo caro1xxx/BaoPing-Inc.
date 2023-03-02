@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <Search />
-    <div class="home_title">权限分组</div>
+    <div class="home_title">投票选手</div>
   </div>
 </template>
 

@@ -34,7 +34,6 @@ import EditActivity from "./components/EditActivity.vue";
 import AddActivity from "./components/AddActivity.vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
-import { ref } from "vue";
 import UpdateRealm from "./components/UpdateRealm.vue";
 import UpdatePrize from "./components/UpdataPrize.vue";
 import VoteUserActivity from "./components/VoteUserActivity.vue";
