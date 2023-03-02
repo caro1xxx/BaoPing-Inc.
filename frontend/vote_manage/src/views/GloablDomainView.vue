@@ -106,6 +106,9 @@ const deleteRealm = async (value, index) => {
 const getTime = (value)=> {
   if (value === 0) {
     return '1970/1/1 0:0'
+  } else if (String(value).length > 10) {
+    let d = new Date(value)
+    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
   } else {
     let d = new Date(value * 1000)
     return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;

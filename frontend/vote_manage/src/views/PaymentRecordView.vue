@@ -14,7 +14,7 @@
         <el-table-column prop="prize_type" label="礼物类型" />
         <el-table-column prop="status" label="票数">
           <template #default="scope">
-            <span>1</span>
+            <div>1</div>
           </template>
         </el-table-column>
         <el-table-column prop="payment_order_id" label="支付订单号" />
@@ -54,18 +54,9 @@ const getPayNotesData = async () => {
   if (result.code === 200) {
     let Arr = []
     Arr = JSON.parse(result.data)
-    console.log(Arr);
-    let newObj = {}
-    for (let i = 0; i < Arr.length; i++) {
-      newObj.wx_username = Arr[i].fields.voteuser.wx_username,
-      newObj.prize_type = Arr[i].fields.prize_type,
-      newObj.price = Arr[i].fields.price,
-      newObj.payment_status = Arr[i].fields.payment_status,
-      newObj.payment_order_id = Arr[i].fields.payment_order_id,
-      newObj.create_time = Arr[i].fields.create_time,
-      newObj.pk = Arr[i].pk,
-      payNotesData.push(newObj)
-    }
+    Arr.map(item => {
+      payNotesData.push({...item.fields, pk: item.pk, wx_username: item.fields.voteuser.wx_username})
+    })
   } else {
     // 请求发送错误
     await $store.dispatch("refreshErroActions");
@@ -94,6 +85,9 @@ const deletePayNotes = async (value, index) => {
 const getTime = (value)=> {
   if (value === 0) {
     return '1970/1/1 0:0'
+  } else if (String(value).length > 10) {
+    let d = new Date(value)
+    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
   } else {
     let d = new Date(value * 1000)
     return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
