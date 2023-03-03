@@ -71,10 +71,16 @@ const getFeedbackList = async () => {
 const deleteFeedback = async (pk) => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  let result = await fether(`/feedback/`, "delete", {
-    token: Cookies.get("token"),
-    feedback_id: pk,
-  });
+  let result = await fether(
+    `/feedback/`,
+    "delete",
+    {
+      token: Cookies.get("token"),
+      feedback_id: pk,
+    },
+    $store.state.userInfo.name,
+    "反馈信息"
+  );
   if (result.code === 200) {
     tableData.forEach((item, index) => {
       if (item.pk === pk) {

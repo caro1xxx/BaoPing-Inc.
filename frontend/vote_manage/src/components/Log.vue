@@ -2,7 +2,7 @@
   <div class="log">
     <div class="login_body_title">操作日志</div>
     <div class="log_body">
-      <div v-for="item in logs" class="log_item">
+      <div v-for="item in logs.reverse()" class="log_item">
         <div>{{ item.who }}</div>
         <div style="color: #2460e5">{{ item.action }}</div>
         <div>了{{ item.target }}</div>
@@ -41,15 +41,14 @@ getLogs();
 
 <style lang="scss" scoped>
 .log {
-  background-color: rgba(255, 255, 255, 0.655);
+  background-color: rgb(255, 255, 255);
   position: absolute;
-  right: 0;
+  right: 0px;
   width: calc(20vw);
   bottom: 0;
   top: 0;
   z-index: 4;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19);
-  animation: 0.5s linear show;
   cursor: pointer;
   user-select: none;
 }
@@ -67,14 +66,6 @@ getLogs();
   font-weight: 15px;
   font-weight: bold;
   margin: 10px;
-}
-@keyframes show {
-  from {
-    right: calc(-20vw);
-  }
-  to {
-    right: 0px;
-  }
 }
 .log_item {
   height: 40px;

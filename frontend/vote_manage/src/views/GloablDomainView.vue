@@ -3,7 +3,7 @@
     <Search />
     <div class="home_title">
       <span>全局域名</span>
-        <svg
+      <svg
         @click="openDialog"
         t="1677544620358"
         class="icon add"
@@ -23,53 +23,61 @@
     </div>
     <div class="home_body_table_wrap">
       <el-table :data="realmAddData" class="home_body_table">
-      <el-table-column prop="id" label="编号" >
-        <template #default="scope">
-          <span>{{ scope.$index }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="domain_name" label="域名" />
-      <el-table-column prop="expire_time" label="有效期">
-        <template #default="scope">
-          <span v-if="scope.row.expire_time">{{ getTime(scope.row.expire_time) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="status" label="状态" />
-      <el-table-column label="操作">
-        <template #default="scope">
-            <span @click="deleteRealm(scope.row, scope.$index)" style="color: red;">删除</span>
-            <span @click="undataData(scope.row, scope.$index)" style="color: #409eff;">编辑</span>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column prop="id" label="编号">
+          <template #default="scope">
+            <span>{{ scope.$index }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="domain_name" label="域名" />
+        <el-table-column prop="expire_time" label="有效期">
+          <template #default="scope">
+            <span v-if="scope.row.expire_time">{{
+              getTime(scope.row.expire_time)
+            }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="status" label="状态" />
+        <el-table-column label="操作">
+          <template #default="scope">
+            <span
+              @click="deleteRealm(scope.row, scope.$index)"
+              style="color: red"
+              >删除</span
+            >
+            <span
+              @click="undataData(scope.row, scope.$index)"
+              style="color: #409eff"
+              >编辑</span
+            >
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
   </div>
 </template>
 
 <script setup>
-import Search from "@/components/Search.vue"
-import { fether } from "@/utils/fether"
-import { reactive,watch } from "vue"
-import {  useStore } from "vuex"
-import Cookies from 'js-cookie'
-const $store = new useStore()
+import Search from "@/components/Search.vue";
+import { fether } from "@/utils/fether";
+import { reactive, watch } from "vue";
+import { useStore } from "vuex";
+import Cookies from "js-cookie";
+const $store = new useStore();
 
 // 域名管理数据
-const realmAddData = reactive([])
+const realmAddData = reactive([]);
 
 // 获取域名列表
 const getRealm = async () => {
   //开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  let result = await fether(
-    `/domain/?token=${Cookies.get('token')}`
-  )
+  let result = await fether(`/domain/?token=${Cookies.get("token")}`);
   if (result.code === 200) {
-    let Arr = []
-    Arr = JSON.parse(result.data)
-    Arr.map(item => {
-      realmAddData.push({...item.fields})
-    })
+    let Arr = [];
+    Arr = JSON.parse(result.data);
+    Arr.map((item) => {
+      realmAddData.push({ ...item.fields });
+    });
   } else {
     //请求发送错误
     await $store.dispatch("refreshErroActions");
@@ -77,72 +85,81 @@ const getRealm = async () => {
   }
   //关闭加载loading
   $store.commit("noticifyLoading", false);
-}
-getRealm()
+};
+getRealm();
 // 编辑数据
 const undataData = async (value, index) => {
-  value.key = true
-  value.index = index
-  $store.commit('undateRealmStatus', value)
-}
+  value.key = true;
+  value.index = index;
+  $store.commit("undateRealmStatus", value);
+};
 
 // 删除域名列表数据
 const deleteRealm = async (value, index) => {
   //开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  let result = await fether(`/domain/`, `delete`, {
-    domain: value.domain_name,
-    token: Cookies.get("token"),
-  })
+  let result = await fether(
+    `/domain/`,
+    `delete`,
+    {
+      domain: value.domain_name,
+      token: Cookies.get("token"),
+    },
+    $store.state.userInfo.name,
+    "全局域名"
+  );
   if (result.code === 200) {
     // 删除本地数据
-    realmAddData.splice(index, 1)
+    realmAddData.splice(index, 1);
   }
   await $store.dispatch("GlobalMessageActions", result.msg);
   // 关闭加载loading
   $store.commit("noticifyLoading", false);
-}
+};
 
-const getTime = (value)=> {
+const getTime = (value) => {
   if (value === 0) {
-    return '1970/1/1 0:0'
+    return "1970/1/1 0:0";
   } else if (String(value).length > 10) {
-    let d = new Date(value)
-    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+    let d = new Date(value);
+    return `${d.getFullYear()}/${
+      d.getMonth() + 1
+    }/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
   } else {
-    let d = new Date(value * 1000)
-    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+    let d = new Date(value * 1000);
+    return `${d.getFullYear()}/${
+      d.getMonth() + 1
+    }/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
   }
-}
+};
 
 watch(
   () => $store.state.realmData,
   (newVal) => {
     if (newVal.key) {
-      realmAddData[newVal.index].domain_name = newVal.domain_name,
-      realmAddData[newVal.index].expire_time = newVal.expire_time,
-      realmAddData[newVal.index].status = newVal.status
+      (realmAddData[newVal.index].domain_name = newVal.domain_name),
+        (realmAddData[newVal.index].expire_time = newVal.expire_time),
+        (realmAddData[newVal.index].status = newVal.status);
     } else if (newVal.domain_name) {
       realmAddData.push({
         domain_name: newVal.domain_name,
         expire_time: newVal.expire_time,
         status: newVal.status,
-      })
+      });
     }
   },
   {
-    deep: true
+    deep: true,
   }
-)
+);
 
 // 开启弹窗
 const openDialog = () => {
   // key为判断是否为新增或编辑的钥匙  true为编辑false为新增
- $store.commit('undateRealmStatus', {
-  key: false
- })
-}
-
+  $store.commit("undateRealmStatus", {
+    key: false,
+  });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -159,25 +176,27 @@ const openDialog = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  span,svg{    
+  span,
+  svg {
     cursor: pointer;
     user-select: none;
   }
 }
-.home_body{
+.home_body {
   display: flex;
   justify-content: flex-end;
 }
-.home_body,svg{
+.home_body,
+svg {
   cursor: pointer;
 }
-svg{
+svg {
   margin-right: 15px;
 }
-.home_body_table{
+.home_body_table {
   height: calc(100vh - 168px);
   border-radius: 3px;
-  span{
+  span {
     cursor: pointer;
     user-select: none;
     margin: 0px 10px;
@@ -188,7 +207,7 @@ svg{
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
-.home_body_table_wrap{
+.home_body_table_wrap {
   padding: 10px;
   background-color: white;
 }

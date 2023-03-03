@@ -49,6 +49,7 @@ const getUserInfo = async () => {
   if (result.code === 200) {
     let JSONResult = JSON.parse(result.data)[0].fields;
     Cookies.set("token", JSONResult.token, { expires: 7 });
+    $store.commit("saveUserInfo", { ...JSONResult });
     localStorage.setItem("userinfo", JSON.stringify({ ...JSONResult }));
   } else {
     await $store.dispatch("GlobalMessageActions", "登录过期，请重新登录");

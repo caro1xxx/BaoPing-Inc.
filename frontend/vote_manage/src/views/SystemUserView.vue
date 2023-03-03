@@ -147,10 +147,16 @@ const getUserInfoList = async () => {
 const deleteUser = async (target) => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  let result = await fether(`/userinfo/`, "delete", {
-    username: target,
-    token: Cookies.get("token"),
-  });
+  let result = await fether(
+    `/userinfo/`,
+    "delete",
+    {
+      username: target,
+      token: Cookies.get("token"),
+    },
+    $store.state.userInfo.name,
+    "系统用户"
+  );
   if (result.code === 200) {
     for (let i = 0; i < tableData.length; i++) {
       if (tableData[i].username === target) {
@@ -173,20 +179,29 @@ const editUserShowPopup = async (target) => {
 const saveUserEdit = async (target) => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  let result = await fether(`/userinfo/`, "put", {
-    data: {
-      name: target.name,
-      auth: target.auth,
-      pwd: target.pwd,
-      status: target.status,
-      username: target.username,
+  let result = await fether(
+    `/userinfo/`,
+    "put",
+    {
+      data: {
+        name: target.name,
+        auth: target.auth,
+        status: target.status,
+        username: target.username,
+      },
+      token: Cookies.get("token"),
     },
-    token: Cookies.get("token"),
-  });
+    $store.state.userInfo.name,
+    "系统用户"
+  );
   if (result.code === 200) {
     for (let i = 0; i < tableData.length; i++) {
       if (tableData[i].username === target.username) {
-        tableData[i] = target;
+        tableData[i].username = target.username;
+        tableData[i].pwd = target.pwd;
+        tableData[i].name = target.name;
+        tableData[i].auth = target.auth;
+        tableData[i].status = target.status;
       }
     }
   }

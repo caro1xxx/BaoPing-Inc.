@@ -21,7 +21,11 @@
         <el-table-column prop="network" label="网络" />
         <el-table-column label="操作">
           <template #default="scope">
-            <span style="color: red;" @click="deleteVote(scope.row, scope.$index)">删除</span>
+            <span
+              style="color: red"
+              @click="deleteVote(scope.row, scope.$index)"
+              >删除</span
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -30,29 +34,29 @@
 </template>
 
 <script setup>
-import Search from "@/components/Search.vue"
-import { reactive } from "vue"
-import { useStore } from "vuex"
-import { fether } from '@/utils/fether'
-import Cookies from 'js-cookie'
-const $store = new useStore()
+import Search from "@/components/Search.vue";
+import { reactive } from "vue";
+import { useStore } from "vuex";
+import { fether } from "@/utils/fether";
+import Cookies from "js-cookie";
+const $store = new useStore();
 // 投票记录数据
-const voteNotesData = reactive([
-
-])
+const voteNotesData = reactive([]);
 // 获取投票记录数据
 const getVoteData = async () => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  let result = await fether(
-    `/voterecord/?token=${Cookies.get('token')}`
-  )
+  let result = await fether(`/voterecord/?token=${Cookies.get("token")}`);
   if (result.code === 200) {
-    let Arr = []
-    Arr = JSON.parse(result.data)
-    Arr.map(item => {
-      voteNotesData.push({...item.fields, pk: item.pk, wx_username: item.fields.voteuser.wx_username})
-    })
+    let Arr = [];
+    Arr = JSON.parse(result.data);
+    Arr.map((item) => {
+      voteNotesData.push({
+        ...item.fields,
+        pk: item.pk,
+        wx_username: item.fields.voteuser.wx_username,
+      });
+    });
   } else {
     // 请求发送错误
     await $store.dispatch("refreshErroActions");
@@ -60,25 +64,31 @@ const getVoteData = async () => {
   }
   // 关闭加载loading
   $store.commit("noticifyLoading", false);
-}
-getVoteData()
+};
+getVoteData();
 
 // 删除投票记录
 const deleteVote = async (value, index) => {
   //开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  let result = await fether(`/voterecord/`, `delete`, {
-    pk: value.pk,
-    token: Cookies.get("token"),
-  })
+  let result = await fether(
+    `/voterecord/`,
+    `delete`,
+    {
+      pk: value.pk,
+      token: Cookies.get("token"),
+    },
+    $store.state.userInfo.name,
+    "投票记录"
+  );
   if (result.code === 200) {
     // 删除本地数据
-    voteNotesData.splice(index, 1)
+    voteNotesData.splice(index, 1);
   }
   await $store.dispatch("GlobalMessageActions", result.msg);
   // 关闭加载loading
   $store.commit("noticifyLoading", false);
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -95,17 +105,17 @@ const deleteVote = async (value, index) => {
   cursor: pointer;
   user-select: none;
 }
-svg{
+svg {
   cursor: pointer;
 }
-.home_body{
+.home_body {
   padding: 10px;
   background-color: #fff;
 }
-.home_body_table{
+.home_body_table {
   height: calc(100vh - 168px);
   border-radius: 3px;
-  span{
+  span {
     cursor: pointer;
     user-select: none;
     margin: 0px 10px;

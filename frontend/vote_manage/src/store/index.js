@@ -117,7 +117,7 @@ export default createStore({
       state.isUserEditSave += payload;
     },
     // 修改登录状态
-    editUserInfoSave(state, payload) {
+    editAuthState(state, payload) {
       state.isAuth = payload;
     },
 
@@ -214,7 +214,7 @@ export default createStore({
       context.commit("reFreshState");
     },
     authActions(context, payload) {
-      context.commit("editUserInfoSave", payload);
+      context.commit("editAuthState", payload);
     },
     voteManagerActions(context, payload) {
       context.commit("edidVoteManageSave", payload);

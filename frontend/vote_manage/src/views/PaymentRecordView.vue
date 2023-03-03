@@ -26,7 +26,11 @@
         <el-table-column prop="payment_status" label="支付状态" />
         <el-table-column label="操作">
           <template #default="scope">
-            <span style="color: red;" @click="deletePayNotes(scope.row, scope.$index)">删除</span>
+            <span
+              style="color: red"
+              @click="deletePayNotes(scope.row, scope.$index)"
+              >删除</span
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -35,28 +39,28 @@
 </template>
 
 <script setup>
-import Search from "@/components/Search.vue"
-import { reactive } from "vue"
-import { useStore } from "vuex"
-import { fether } from '@/utils/fether'
-import Cookies from 'js-cookie'
-const $store = new useStore()
-const payNotesData = reactive([
-
-])
+import Search from "@/components/Search.vue";
+import { reactive } from "vue";
+import { useStore } from "vuex";
+import { fether } from "@/utils/fether";
+import Cookies from "js-cookie";
+const $store = new useStore();
+const payNotesData = reactive([]);
 // 获取支付记录数据
 const getPayNotesData = async () => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  let result = await fether(
-    `/paymentrecord/?token=${Cookies.get('token')}`
-  )
+  let result = await fether(`/paymentrecord/?token=${Cookies.get("token")}`);
   if (result.code === 200) {
-    let Arr = []
-    Arr = JSON.parse(result.data)
-    Arr.map(item => {
-      payNotesData.push({...item.fields, pk: item.pk, wx_username: item.fields.voteuser.wx_username})
-    })
+    let Arr = [];
+    Arr = JSON.parse(result.data);
+    Arr.map((item) => {
+      payNotesData.push({
+        ...item.fields,
+        pk: item.pk,
+        wx_username: item.fields.voteuser.wx_username,
+      });
+    });
   } else {
     // 请求发送错误
     await $store.dispatch("refreshErroActions");
@@ -64,35 +68,45 @@ const getPayNotesData = async () => {
   }
   // 关闭加载loading
   $store.commit("noticifyLoading", false);
-}
-getPayNotesData()
+};
+getPayNotesData();
 
 const deletePayNotes = async (value, index) => {
   //开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  let result = await fether(`/paymentrecord/`, `delete`, {
-    pk: value.pk,
-    token: Cookies.get("token"),
-  })
+  let result = await fether(
+    `/paymentrecord/`,
+    `delete`,
+    {
+      pk: value.pk,
+      token: Cookies.get("token"),
+    },
+    $store.state.userInfo.name,
+    "支付记录"
+  );
   if (result.code === 200) {
     // 删除本地数据
-    payNotesData.splice(index, 1)
+    payNotesData.splice(index, 1);
   }
   await $store.dispatch("GlobalMessageActions", result.msg);
   // 关闭加载loading
   $store.commit("noticifyLoading", false);
-}
-const getTime = (value)=> {
+};
+const getTime = (value) => {
   if (value === 0) {
-    return '1970/1/1 0:0'
+    return "1970/1/1 0:0";
   } else if (String(value).length > 10) {
-    let d = new Date(value)
-    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+    let d = new Date(value);
+    return `${d.getFullYear()}/${
+      d.getMonth() + 1
+    }/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
   } else {
-    let d = new Date(value * 1000)
-    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+    let d = new Date(value * 1000);
+    return `${d.getFullYear()}/${
+      d.getMonth() + 1
+    }/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -109,17 +123,17 @@ const getTime = (value)=> {
   cursor: pointer;
   user-select: none;
 }
-svg{
+svg {
   cursor: pointer;
 }
-.home_body{
+.home_body {
   padding: 10px;
   background-color: #fff;
 }
-.home_body_table{
+.home_body_table {
   height: calc(100vh - 168px);
   border-radius: 3px;
-  span{
+  span {
     cursor: pointer;
     user-select: none;
     margin: 0px 10px;

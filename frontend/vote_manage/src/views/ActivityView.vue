@@ -237,28 +237,29 @@ const onClickQrCode = (target) => {
   });
 };
 
-// 删除获取
+// 删除
 const deleteActivity = async (vote_id) => {
+  await $store.dispatch("GlobalMessageActions", "禁止删除活动");
   // 开启加载loading
-  await $store.dispatch("NoticifyActions", true);
-  let result = await fether(`/voteactivity/`, "delete", {
-    token: jsCookie.get("token"),
-    vote_id: vote_id,
-  });
-  if (result.code === 200) {
-    voteList.forEach((item, index) => {
-      if (item.fields.vote_id === vote_id) {
-        voteList.splice(index, 1);
-      }
-    });
-    localStorage.setItem("vote", JSON.stringify(voteList));
-  } else {
-    // 请求发送错误
-    await $store.dispatch("refreshErroActions");
-    await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
-  }
-  // 关闭加载loading
-  $store.commit("noticifyLoading", false);
+  // await $store.dispatch("NoticifyActions", true);
+  // let result = await fether(`/voteactivity/`, "delete", {
+  //   token: jsCookie.get("token"),
+  //   vote_id: vote_id,
+  // });
+  // if (result.code === 200) {
+  //   voteList.forEach((item, index) => {
+  //     if (item.fields.vote_id === vote_id) {
+  //       voteList.splice(index, 1);
+  //     }
+  //   });
+  //   localStorage.setItem("vote", JSON.stringify(voteList));
+  // } else {
+  //   // 请求发送错误
+  //   await $store.dispatch("refreshErroActions");
+  //   await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
+  // }
+  // // 关闭加载loading
+  // $store.commit("noticifyLoading", false);
 };
 
 watch(
