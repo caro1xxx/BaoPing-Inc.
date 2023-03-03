@@ -41,7 +41,7 @@ getLogs();
 
 <style lang="scss" scoped>
 .log {
-  background-color: rgb(255, 255, 255);
+  background-color: rgba(255, 255, 255, 0.655);
   position: absolute;
   right: 0;
   width: calc(20vw);
