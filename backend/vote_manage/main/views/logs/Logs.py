@@ -29,17 +29,10 @@ class Logs(APIView):
         ret = {'code': 200, 'msg': '添加日志成功'}
         try:
             who = json.loads(request.body).get('who', None)
-            userop = UserOp()
-            ok, msg = userop.checkUsername(who)
-            if not ok:
-                return JsonResponse({"code": 400, "msg": msg})
-            ok, msg = userop.checkUsernameExist(who)
-            if not ok:
-                return JsonResponse({"code": 400, "msg": msg})
-            
             action = json.loads(request.body).get('action', None)
             target = json.loads(request.body).get('target', None)
             create_time = getNowTimeStamp()
+
             ck = Validate()
             ck.addCheck('checkIsNotEmpty', action, '行为不能为空')
             ck.addCheck('checkIsNotEmpty', target, '对象不能为空')

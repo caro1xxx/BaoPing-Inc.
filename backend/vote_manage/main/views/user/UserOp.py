@@ -120,9 +120,9 @@ class UserOp:
         ok, msg = self.checkName(userdata['name'])
         if not ok:
             return ok, msg
-        ok, msg = self.checkPwd(userdata['pwd'])
-        if not ok:
-            return ok, msg
+        # ok, msg = self.checkPwd(userdata['pwd'])
+        # if not ok:
+        #     return ok, msg
         ok, msg = self.checkAuth(userdata['auth'])
         if not ok:
             return ok, msg

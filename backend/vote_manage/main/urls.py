@@ -12,6 +12,7 @@ from main.views.vote_record import VoteRecord
 from main.views.payment_record import PaymentRecord
 from main.views.voteuser import Voteuser
 from main.views.statics import Statics
+from main.views.settings import Settings
 from main.views import Request404, TestView
 from vote_manage import settings
 from django.views.static import serve
@@ -37,6 +38,7 @@ urlpatterns = [
     url(r'^voteuser/$', Voteuser.Voteuser.as_view()),
     url(r'^statics/$', Statics.Statics.as_view()),
     url(r'^logs/$', Logs.Logs.as_view()),
+    url(r'^settings/$', Settings.Settings.as_view()),
     url(r'^test/$', TestView.TestView.as_view()),
     url(r'$', Request404.Request404.as_view())
 ]

@@ -163,3 +163,8 @@ class StaticsHistory(models.Model):
     day_income = models.IntegerField(default=0)
     day_time = models.IntegerField(default=0)
     create_time = models.IntegerField(default=0)
+
+
+class Settings(models.Model):
+    name = models.TextField(default='')
+    status = models.IntegerField(default=0)

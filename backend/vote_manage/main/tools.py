@@ -154,7 +154,7 @@ def myPaginator(data, maxSize, pageNum):
     else:
         paginator = Paginator(data.order_by('pk'), maxSize)
     pageNum = int(pageNum)
-    pageCount = paginator.count
+    pageCount = paginator.num_pages
     if pageNum > pageCount:
         data = {}
     else:

@@ -68,7 +68,7 @@ class UserInfo(APIView):
             userObj = models.User.objects.get(username=userdata['username'])
             userObj.name = userdata['name']
             userObj.auth = userdata['auth']
-            userObj.pwd = genearteMD5(userdata['pwd'])
+            # userObj.pwd = genearteMD5(userdata['pwd'])
             userObj.status = userdata['status']
             userObj.save()
 

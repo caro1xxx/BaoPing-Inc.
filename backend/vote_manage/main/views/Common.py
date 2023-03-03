@@ -13,7 +13,7 @@ class Common:
         data = table.objects.filter(**{searchKey: searchValue})
         return data
     
-    def getData(self, request, tableName):
+    def getData(self, request, tableName, *args, **kwargs):
         searchKey = request.GET.get('search_key', None)
         searchValue = request.GET.get('search_value', None)
         pageNum = request.GET.get('page_num', 1)
@@ -24,6 +24,7 @@ class Common:
             table = getattr(models, tableName, None)
             data =[{},] if table is None else table.objects.all()
 
-        data, pageCount = myPaginator(data, 10, pageNum)
+        maxSize = kwargs.get('maxsize', 10) 
+        data, pageCount = myPaginator(data, maxSize, pageNum)
         data = serializers.serialize('json', data, use_natural_foreign_keys=True)
         return data, pageCount
