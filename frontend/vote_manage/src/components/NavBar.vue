@@ -296,11 +296,6 @@ const goPage = (index) => {
             description: "以直观的方式和图标显示总体运营数据",
             path: "/",
           },
-          {
-            name: "活动状态",
-            description: "以直观的方式和图标显示总体运营数据",
-            path: "/activitystatus",
-          },
         ],
         navName: "数据信息",
       });
@@ -392,7 +387,7 @@ const goPage = (index) => {
       $router.push("/parent/voteparent");
       break;
     case 7:
-      $router.push("/");
+      $store.commit("changeLogState");
       break;
   }
 };

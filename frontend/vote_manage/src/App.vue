@@ -20,6 +20,7 @@
     <VoteUserActivity v-if="$store.state.voteManagerUserRecord" />
     <!-- 投票管理页面 与活动相关联的订单记录 -->
     <VotePayOrder v-if="$store.state.voteManagerPayOrder" />
+    <Log v-if="$store.state.logShowState" />
   </div>
 </template>
 
@@ -38,6 +39,7 @@ import UpdateRealm from "./components/UpdateRealm.vue";
 import UpdatePrize from "./components/UpdataPrize.vue";
 import VoteUserActivity from "./components/VoteUserActivity.vue";
 import VotePayOrder from "./components/VotePayOrder.vue";
+import Log from "./components/Log.vue";
 const $store = useStore();
 if (Cookies.get("token") === undefined) {
   $store.dispatch("authActions", false);

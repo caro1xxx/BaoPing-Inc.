@@ -5,7 +5,6 @@ import AuthView from "../views/AuthView.vue";
 import SystemUserView from "../views/SystemUserView.vue";
 import SystemSettingView from "../views/SystemSettingView.vue";
 import DataOverview from "../views/DataOverview.vue";
-import ActivityStatusView from "../views/ActivityStatusView.vue";
 import GloablDomainView from "../views/GloablDomainView.vue";
 import FeedbackView from "../views/FeedbackView.vue";
 import PrizeApplicationView from "../views/PrizeApplicationView.vue";
@@ -26,12 +25,6 @@ const routes = [
     path: "/",
     name: "home",
     component: DataOverview,
-  },
-  // 活动状态
-  {
-    path: "/activitystatus",
-    name: "activitystatus",
-    component: ActivityStatusView,
   },
   // 系统用户
   {

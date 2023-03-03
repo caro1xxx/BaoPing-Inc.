@@ -68,6 +68,8 @@ export default createStore({
     // 活动管理页面,相关联的支付订单
     voteManagerPayOrder: false,
     voteManagerPayOrderVoteid: "",
+    //日志弹出状态
+    logShowState: false,
   },
   getters: {},
   mutations: {
@@ -182,6 +184,9 @@ export default createStore({
       if (payload) {
         state.voteManagerPayOrderVoteid = payload.vote_id;
       }
+    },
+    changeLogState(state) {
+      state.logShowState = !state.logShowState;
     },
   },
   actions: {
