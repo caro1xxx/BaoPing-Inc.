@@ -167,4 +167,4 @@ class StaticsHistory(models.Model):
 
 class Settings(models.Model):
     name = models.TextField(default='')
-    status = models.IntegerField(default=0)
+    value = models.TextField(default='')

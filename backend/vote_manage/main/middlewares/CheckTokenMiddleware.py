@@ -17,6 +17,8 @@ class CheckTokenMiddleware(MiddlewareMixin):
             if pathInfo in ['login', 'register', 'forgetpasswordsendemail', 'sendemailcode'] or str(pathInfo).find('media') != -1:
                 return None
             if m == 'GET':
+                if pathInfo in ['settings']:
+                    return None
                 token = request.GET.get('token', None)
             elif m in ['POST', 'PUT', 'DELETE']:
                 # print(str(request.body, encoding='utf-8'))
