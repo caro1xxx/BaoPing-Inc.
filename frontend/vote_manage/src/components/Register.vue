@@ -43,7 +43,15 @@
         class="register_mask_body_inp"
         style="width: 70%"
       />
-      <div @click="sendCode">发送验证码</div>
+      <div
+        @click="sendCode"
+        :style="{
+          cursor: !userInfo.isSendCodeState ? 'pointer' : 'not-allowed',
+          backgroundColor: !userInfo.isSendCodeState ? '#2379fb' : '#cecece',
+        }"
+      >
+        {{ userInfo.sendCodeContent }}
+      </div>
     </div>
     <div class="register_selecttitle">选择头像</div>
     <div class="register_selectavator">
@@ -68,7 +76,11 @@
       </div>
     </div>
     <div class="register_child_radio">
-      <input type="radio" @click="onClickRadio" />
+      <input
+        :checked="avatorList.isRemember"
+        type="radio"
+        @click="onClickRadio"
+      />
       <div>记住我</div>
     </div>
     <button class="register_child_btn" @click="checkForm">注册并登录</button>
@@ -76,7 +88,7 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, onMounted, onBeforeUnmount } from "vue";
 import { Validator } from "@/utils/validator";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
@@ -89,14 +101,14 @@ const router = useRouter();
 const $store = useStore();
 // 头像列表
 const avatorList = reactive([
-  { id: 22, img: require("../assets/img/avator/1.png"), select: false },
-  { id: 23, img: require("../assets/img/avator/2.png"), select: false },
-  { id: 24, img: require("../assets/img/avator/3.png"), select: false },
-  { id: 25, img: require("../assets/img/avator/4.png"), select: false },
-  { id: 26, img: require("../assets/img/avator/5.png"), select: false },
-  { id: 27, img: require("../assets/img/avator/6.png"), select: false },
-  { id: 28, img: require("../assets/img/avator/7.png"), select: false },
-  { id: 29, img: require("../assets/img/avator/8.png"), select: false },
+  { id: 1, img: require("../assets/img/avator/1.png"), select: false },
+  { id: 2, img: require("../assets/img/avator/2.png"), select: false },
+  { id: 3, img: require("../assets/img/avator/3.png"), select: false },
+  { id: 4, img: require("../assets/img/avator/4.png"), select: false },
+  { id: 5, img: require("../assets/img/avator/5.png"), select: false },
+  { id: 6, img: require("../assets/img/avator/6.png"), select: false },
+  { id: 7, img: require("../assets/img/avator/7.png"), select: false },
+  { id: 8, img: require("../assets/img/avator/8.png"), select: false },
 ]);
 
 // 点击记住
@@ -114,6 +126,8 @@ const userInfo = reactive({
   code: "",
   avator: "",
   isRemember: false,
+  isSendCodeState: false,
+  sendCodeContent: "发送验证码",
 });
 
 // 选择头像
@@ -193,17 +207,53 @@ const register = () => {
 
 // 请求验证码
 const sendCode = async () => {
+  if (userInfo.sendCodeContent !== "发送验证码") return;
   let validator = new Validator();
   validator.add(userInfo.email, "isNonEmpty", "输入邮箱");
   validator.add(userInfo.email, "checkEmailFormat", "邮箱格式错误");
   let result = validator.start();
-  $store.dispatch("GlobalMessageActions", result);
-  if (result) return;
+  if (result) {
+    $store.dispatch("GlobalMessageActions", result);
+    return;
+  }
+  sendSucess();
   let codeResult = await fether("/sendemailcode/", "post", {
     email: userInfo.email,
   });
-  let res = await $store.dispatch("GlobalMessageActions", codeResult.msg);
+  if (codeResult.code === 200) {
+    await $store.dispatch("GlobalMessageActions", "发送成功");
+  } else {
+    await $store.dispatch("GlobalMessageActions", codeResult.msg);
+  }
 };
+
+// 验证码发送成功 禁止点击发送验证码按钮
+const sendSucess = () => {
+  userInfo.isSendCodeState = true;
+  userInfo.sendCodeContent = 60;
+  let timer = setInterval(() => {
+    if (userInfo.sendCodeContent <= 1) {
+      userInfo.sendCodeContent = "发送验证码";
+      clearInterval(timer);
+      userInfo.isSendCodeState = false;
+    } else {
+      userInfo.sendCodeContent -= 1;
+    }
+  }, 1000);
+};
+
+// enter
+const keyDownEnter = (e) => {
+  if (e.code !== "Enter") return;
+  checkForm();
+};
+
+onMounted(() => {
+  window.addEventListener("keypress", keyDownEnter);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener("keypress", keyDownEnter);
+});
 
 // 登录成功
 const loginSuccess = () => {

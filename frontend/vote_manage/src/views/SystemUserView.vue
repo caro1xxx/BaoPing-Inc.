@@ -128,9 +128,19 @@ const getUserInfoList = async () => {
       "token"
     )}`
   );
-  if (result.code === 200) {
+  isAxiosStatus(result, true)
+
+  // 关闭加载loading
+  $store.commit("noticifyLoading", false);
+};
+
+const isAxiosStatus = async (data, status) => {
+  if (status === false) {
+    tableData.splice(0, tableData.length)
+  }
+  if (data.code === 200) {
     //serve
-    let JSONResult = await JSON.parse(result.data);
+    let JSONResult = await JSON.parse(data.data);
     JSONResult.forEach((item) => {
       tableData.push(item.fields);
     });
@@ -139,18 +149,22 @@ const getUserInfoList = async () => {
     await $store.dispatch("refreshErroActions");
     await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
   }
-  // 关闭加载loading
-  $store.commit("noticifyLoading", false);
-};
+}
 
 // 删除用户
 const deleteUser = async (target) => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  let result = await fether(`/userinfo/`, "delete", {
-    username: target,
-    token: Cookies.get("token"),
-  });
+  let result = await fether(
+    `/userinfo/`,
+    "delete",
+    {
+      username: target,
+      token: Cookies.get("token"),
+    },
+    $store.state.userInfo.name,
+    "系统用户"
+  );
   if (result.code === 200) {
     for (let i = 0; i < tableData.length; i++) {
       if (tableData[i].username === target) {
@@ -173,20 +187,29 @@ const editUserShowPopup = async (target) => {
 const saveUserEdit = async (target) => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  let result = await fether(`/userinfo/`, "put", {
-    data: {
-      name: target.name,
-      auth: target.auth,
-      pwd: target.pwd,
-      status: target.status,
-      username: target.username,
+  let result = await fether(
+    `/userinfo/`,
+    "put",
+    {
+      data: {
+        name: target.name,
+        auth: target.auth,
+        status: target.status,
+        username: target.username,
+      },
+      token: Cookies.get("token"),
     },
-    token: Cookies.get("token"),
-  });
+    $store.state.userInfo.name,
+    "系统用户"
+  );
   if (result.code === 200) {
     for (let i = 0; i < tableData.length; i++) {
       if (tableData[i].username === target.username) {
-        tableData[i] = target;
+        tableData[i].username = target.username;
+        tableData[i].pwd = target.pwd;
+        tableData[i].name = target.name;
+        tableData[i].auth = target.auth;
+        tableData[i].status = target.status;
       }
     }
   }
@@ -207,6 +230,14 @@ watch(
     saveUserEdit($store.state.editPopProps);
   }
 );
+
+// 监听筛选数据
+watch(
+  () => $store.state.filterData,
+  (newVal) => {
+    isAxiosStatus(newVal, false)
+  },
+)
 
 getUserInfoList();
 </script>

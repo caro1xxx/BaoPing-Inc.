@@ -5,7 +5,7 @@
             <div class="body_content_body">
                 <div class="body_content_item">
                     <label>openid(用户名)</label>
-                    <el-input v-model="prizeData.wx_username" placeholder="请输入" />
+                    <el-input v-model="prizeData.open_id" placeholder="请输入" />
                 </div>
                 <div class="body_content_item">
                     <label>姓名</label>

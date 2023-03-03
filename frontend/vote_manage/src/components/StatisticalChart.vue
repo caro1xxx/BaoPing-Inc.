@@ -1,10 +1,11 @@
 <template>
-  <div id="siderbar_statistical_chart" :style="{width: `${props.data.width}px`, height: `${props.data.height}px`}"></div>
+  <div id="siderbar_statistical_chart"></div>
 </template>
 
 <script setup>
 import * as echarts from "echarts"
 import { reactive, onMounted, defineProps  } from "vue";
+
 
 // 接收数据
 const props = defineProps({
@@ -30,10 +31,12 @@ onMounted(() => {
     },
     xAxis: {
       type: 'category',
-      data: isBroken
+      data: isBroken,
+      name: '时间'
     },
     yAxis: {
-      type: 'value'
+      type: 'value',
+      name: '数量'
     },
     series: [
       {
@@ -44,9 +47,16 @@ onMounted(() => {
   };
   
   option && myChart.setOption(option);
+  // 监听浏览器页面缩放事件
+  window.addEventListener("resize", function () {
+      myChart.resize();
+  });
 })
 </script>
 
 <style lang="scss" scoped>
-
+#siderbar_statistical_chart{
+  width: 100%;
+  height: 100%;
+}
 </style>

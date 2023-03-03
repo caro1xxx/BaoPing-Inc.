@@ -68,6 +68,10 @@ export default createStore({
     // 活动管理页面,相关联的支付订单
     voteManagerPayOrder: false,
     voteManagerPayOrderVoteid: "",
+    //日志弹出状态
+    logShowState: false,
+    //搜索筛选的数据
+    filterData: {}
   },
   getters: {},
   mutations: {
@@ -115,7 +119,7 @@ export default createStore({
       state.isUserEditSave += payload;
     },
     // 修改登录状态
-    editUserInfoSave(state, payload) {
+    editAuthState(state, payload) {
       state.isAuth = payload;
     },
 
@@ -183,6 +187,13 @@ export default createStore({
         state.voteManagerPayOrderVoteid = payload.vote_id;
       }
     },
+    changeLogState(state) {
+      state.logShowState = !state.logShowState;
+    },
+    // 保存搜索筛选的数据
+    getFilterData(state, payload) {
+      state.filterData = {...payload}
+    }
   },
   actions: {
     SubNavBarActions(context, payload) {
@@ -209,7 +220,7 @@ export default createStore({
       context.commit("reFreshState");
     },
     authActions(context, payload) {
-      context.commit("editUserInfoSave", payload);
+      context.commit("editAuthState", payload);
     },
     voteManagerActions(context, payload) {
       context.commit("edidVoteManageSave", payload);

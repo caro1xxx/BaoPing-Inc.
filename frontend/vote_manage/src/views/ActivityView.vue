@@ -155,7 +155,9 @@
               fill="#2460e5"
             ></path>
           </svg>
+          <!-- 删除 -->
           <svg
+            @click="deleteActivity(item.fields.vote_id)"
             t="1677328484608"
             class="icon"
             viewBox="0 0 1024 1024"
@@ -201,8 +203,17 @@ const getVoteList = async () => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
   let result = await fether(`/voteactivity/?token=${jsCookie.get("token")}`);
-  if (result.code === 200) {
-    let JSONResult = JSON.parse(result.data);
+  isAxiosStatus(result, true)
+  // 关闭加载loading
+  $store.commit("noticifyLoading", false);
+};
+
+const isAxiosStatus = async (data, status) => {
+  if (status === false) {
+    voteList.splice(0, voteList.length)
+  }
+  if (data.code === 200) {
+    let JSONResult = JSON.parse(data.data);
     JSONResult.forEach((item) => {
       voteList.push({ ...item, isQr: false });
     });
@@ -212,9 +223,7 @@ const getVoteList = async () => {
     await $store.dispatch("refreshErroActions");
     await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
   }
-  // 关闭加载loading
-  $store.commit("noticifyLoading", false);
-};
+}
 
 // 获取活动详细信息
 const getActivityDetail = (vote_id) => {
@@ -235,12 +244,45 @@ const onClickQrCode = (target) => {
   });
 };
 
+// 删除
+const deleteActivity = async (vote_id) => {
+  await $store.dispatch("GlobalMessageActions", "禁止删除活动");
+  // 开启加载loading
+  // await $store.dispatch("NoticifyActions", true);
+  // let result = await fether(`/voteactivity/`, "delete", {
+  //   token: jsCookie.get("token"),
+  //   vote_id: vote_id,
+  // });
+  // if (result.code === 200) {
+  //   voteList.forEach((item, index) => {
+  //     if (item.fields.vote_id === vote_id) {
+  //       voteList.splice(index, 1);
+  //     }
+  //   });
+  //   localStorage.setItem("vote", JSON.stringify(voteList));
+  // } else {
+  //   // 请求发送错误
+  //   await $store.dispatch("refreshErroActions");
+  //   await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
+  // }
+  // // 关闭加载loading
+  // $store.commit("noticifyLoading", false);
+};
+
 watch(
   () => $store.state.voteManageAddPopup,
   (newVal) => {
     if (!newVal) getVoteList();
   }
 );
+
+// 监听筛选数据
+watch(
+  () => $store.state.filterData,
+  (newVal) => {
+    isAxiosStatus(newVal, false)
+  },
+)
 
 getVoteList();
 </script>

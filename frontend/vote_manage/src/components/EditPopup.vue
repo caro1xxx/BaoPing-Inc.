@@ -24,13 +24,6 @@
         />
         <input
           type="text"
-          placeholder="密码"
-          v-model="userEditInfo.pwd"
-          class="register_mask_body_inp"
-          maxlength="8"
-        />
-        <input
-          type="text"
           placeholder="状态"
           v-model="userEditInfo.status"
           class="register_mask_body_inp"
@@ -74,7 +67,6 @@ const checkForm = async () => {
   let validator = new Validator();
   validator.add(userEditInfo.name, "isNonEmpty", "输入账号");
   validator.add(userEditInfo.status, "isNonEmpty", "输入状态");
-  validator.add(userEditInfo.pwd, "isNonEmpty", "输入密码");
   validator.add(userEditInfo.auth, "isNonEmpty", "输入姓名");
   let result = validator.start();
   if (!result) {
@@ -84,6 +76,17 @@ const checkForm = async () => {
     $store.dispatch("GlobalMessageActions", result);
   }
 };
+
+// const saveEditUser = async () => {
+//   let result = await fether("/userinfo/", "put", {
+//     username: "",
+//     name: "",
+//     status: "",
+//     token: jsCookie.get("token"),
+//     auth: "",
+//     pwd: "",
+//   });
+// };
 </script>
 
 <style lang="scss" scoped>
