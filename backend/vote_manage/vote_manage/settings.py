@@ -172,6 +172,6 @@ CACHES = {
 }
 
 
-# CRONJOBS = [
-#     ('0 0 * * *', 'base.crontabs.confdict_handle', ' >> /tmp/logs/confdict_handle.log'), # 注意：/tmp/base_api 目录要手动创建
-# ]
+CRONJOBS = [
+    ('*/1 * * * *', 'main.crontab.Crontab.updateStaticHistory', '>> ' + str(BASE_DIR) + '/logs/updateStaticHistory.log'), # 注意：/tmp/base_api 目录要手动创建
+]

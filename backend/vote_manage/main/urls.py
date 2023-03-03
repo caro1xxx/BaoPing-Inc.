@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.conf.urls import url
 from django.urls import path, include,re_path
 from main.views.user import Login, Register, ForgetPasswordSendEmail, CheckEmailCode, SendEmailCode, SetNewPassword, UserInfo
-from main.views.logs import AddLogs
+from main.views.logs import Logs
 from main.views.system_manage import OfficialAccount
 from main.views.feedback import Feedback
 from main.views.vote_activity import VoteActivity
@@ -26,7 +26,6 @@ urlpatterns = [
     url(r'^checkemailcode/$', CheckEmailCode.CheckEmailCode.as_view()),
     url(r'^sendemailcode/$', SendEmailCode.SendEmailCode.as_view()),
     url(r'^setnewpassword/$', SetNewPassword.SetNewPassword.as_view()),
-    url(r'^addlogs/$', AddLogs.AddLogs.as_view()),
     url(r'^userinfo/$', UserInfo.UserInfo.as_view()),
     url(r'^officialaccount/$', OfficialAccount.OfficialAccount.as_view()),
     url(r'^feedback/$', Feedback.Feedback.as_view()),
@@ -37,6 +36,7 @@ urlpatterns = [
     url(r'^paymentrecord/$', PaymentRecord.PaymentRecord.as_view()),
     url(r'^voteuser/$', Voteuser.Voteuser.as_view()),
     url(r'^statics/$', Statics.Statics.as_view()),
-    url(r'^testfile/$', TestView.TestView.as_view()),
+    url(r'^logs/$', Logs.Logs.as_view()),
+    url(r'^test/$', TestView.TestView.as_view()),
     url(r'$', Request404.Request404.as_view())
 ]

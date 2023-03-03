@@ -4,35 +4,27 @@ from django.http import JsonResponse
 from main import models
 import json
 from main.tools import myPaginator
+from main.views.Common import Common
 
 
 class ApplyPrize(APIView):
     def get(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
-            value = request.GET.get('value', None)
+            # value = request.GET.get('value', None)
 
-            if value in ['all', None]:
-                obj =  models.ApplyPrize.objects.all()
-            else:
-                obj = models.ApplyPrize.objects.filter()
-            # data = []
-            # for applyPrize in obj:
-            #     tmp = {}
-            #     tmp['apply_prize_id'] = applyPrize.pk
-            #     tmp['username'] = applyPrize.voteuser.wx_username
-            #     tmp['name'] = applyPrize.name
-            #     tmp['phone_number'] = applyPrize.phone_number
-            #     tmp['create_time'] = applyPrize.create_time
-            #     tmp['status'] = applyPrize.status
-            #     data.append(tmp)
+            # if value in ['all', None]:
+            #     obj =  models.ApplyPrize.objects.all()
+            # else:
+            #     obj = models.ApplyPrize.objects.filter()
 
-            data, ret['page_count'] = myPaginator(obj, 10, request.GET.get('page_num', 1))
-            ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
+            # data, ret['page_count'] = myPaginator(obj, 10, request.GET.get('page_num', 1))
+            # ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
+            ret['data'], ret['page_count'] = Common().getData(request, 'ApplyPrize')
 
         except Exception as e:
             # ret = {'code': 500, 'msg':  'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'msg': str(e)}
+            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
     
 

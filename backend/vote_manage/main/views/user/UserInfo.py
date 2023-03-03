@@ -7,6 +7,7 @@ from django.core import serializers
 from django.core.cache import cache
 from main.views.user.UserOp import UserOp
 from main.tools import *
+from main.views.Common import Common
 
 
 class UserInfo(APIView):
@@ -14,10 +15,18 @@ class UserInfo(APIView):
     def get(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
-            # username = request.GET.get('username', None)
-            data = models.User.objects.all()
-            data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
-            ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
+            # searchKey = request.GET.get('search_key', None)
+            # searchValue = request.GET.get('search_value', None)
+            # pageNum = request.GET.get('page_num', 1)
+
+            # if searchKey:
+            #     data = Common().search('User', searchKey, searchValue)
+            # else:
+            #     data = models.User.objects.all()
+                
+            # data, ret['page_count'] = myPaginator(data, 10, pageNum)
+            # ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
+            ret['data'], ret['page_count'] = Common().getData(request, 'User')
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
             # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}

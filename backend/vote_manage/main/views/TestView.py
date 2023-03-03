@@ -10,6 +10,10 @@ from django.core.paginator import Paginator
 from vote_manage.settings import BASE_DIR
 
 class TestView(APIView):
+    def get(self, request, *args, **kwargs):
+        print(str(BASE_DIR))
+        return JsonResponse({})
+    
     def post(self, request, *args, **kwargs):
         print('test')
         return JsonResponse({})

@@ -158,4 +158,8 @@ class Statics(models.Model):
     yesterday_income = models.IntegerField(default=0)
     update_time = models.IntegerField(default=0)
 
-# class StaticsHistory(models.Model):
+
+class StaticsHistory(models.Model):
+    day_income = models.IntegerField(default=0)
+    day_time = models.IntegerField(default=0)
+    create_time = models.IntegerField(default=0)

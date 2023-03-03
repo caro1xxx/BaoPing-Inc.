@@ -13,6 +13,7 @@ class Login(APIView):
         ret = {'code': 200, 'msg': 'ok'}
         try:
             token = request.GET.get('token', None)
+
             userOp = UserOp()
             ok, data = userOp.loginWithToken(token)
             if ok:
@@ -39,5 +40,5 @@ class Login(APIView):
                 ret['msg'] = data
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)

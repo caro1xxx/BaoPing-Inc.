@@ -4,27 +4,25 @@ from django.http import JsonResponse
 from main import models
 import json
 from main.tools import *
+from main.views.Common import Common
 
 
 class PaymentRecord(APIView):
     def get(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
-            value = request.GET.get('value', None)
             vote_id = request.GET.get('vote_id', None)
 
-            if value in ['all', None, '']:
-                paymentRecordObj =  models.PaymentRecord.objects.all() if vote_id is None else models.PaymentRecord.objects.filter(vote_activity_id=vote_id)
+            if vote_id in [None, '']:
+                ret['data'], ret['page_count'] = Common().getData(request, 'PaymentRecord')
             else:
-                paymentRecordObj = models.PaymentRecord.objects.filter() if vote_id is None else models.PaymentRecord.objects.filter(vote_activity_id=vote_id)
-
-            data = paymentRecordObj
-            data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
-            ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
+                data = models.PaymentRecord.objects.filter(vote_activity_id=vote_id)
+                data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
+                ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
 
     def delete(self, request, *args, **kwargs):

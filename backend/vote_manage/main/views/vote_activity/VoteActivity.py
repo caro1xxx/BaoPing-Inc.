@@ -6,21 +6,23 @@ from main.tools import generateCode6, myPaginator
 import json
 from main.tools import Validate
 from main.views.vote_activity.VoteActivityOp import VoteActivityOp
+from main.views.Common import Common
 
 
 class VoteActivity(APIView):
     def get(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
-            value = request.GET.get('value', None)
+            # value = request.GET.get('value', None)
 
-            if not value:
-                obj =  models.VoteActivity.objects.all()
-            else:
-                obj = models.VoteActivity.objects.filter(domain__contains=value)
+            # if not value:
+            #     obj =  models.VoteActivity.objects.all()
+            # else:
+            #     obj = models.VoteActivity.objects.filter(domain__contains=value)
 
-            data, ret['page_count'] = myPaginator(obj, 10, request.GET.get('page_num', 1))
-            ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
+            # data, ret['page_count'] = myPaginator(obj, 10, request.GET.get('page_num', 1))
+            # ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
+            ret['data'], ret['page_count'] = Common().getData(request, 'VoteActivity')
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}

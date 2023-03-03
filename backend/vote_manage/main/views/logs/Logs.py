@@ -3,12 +3,28 @@ from main import models
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from django.core import serializers
-from django.core.cache import cache
 from main.views.user.UserOp import UserOp
-from main.tools import Validate, getNowTimeStamp
+from main.tools import Validate, getNowTimeStamp, myPaginator
 
+class Logs(APIView): 
+    def get(self, request, *args, **kwargs):
+        ret = {'code': 200, 'msg': 'ok'}
+        try:
+            value = request.GET.get('value', None)
 
-class AddLogs(APIView):
+            if value in ['all', None, '']:
+                logsObj =  models.Logs.objects.all()
+            else:
+                logsObj = models.Logs.objects.filter(action=value)
+
+            data = logsObj
+            data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
+            ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
+
+        except Exception as e:
+            ret = {'code': 500, 'msg': 'Timeout'}
+        return JsonResponse(ret)
+    
     def post(self, request, *ary, **kwargs):
         ret = {'code': 200, 'msg': '添加日志成功'}
         try:
@@ -35,5 +51,5 @@ class AddLogs(APIView):
             logsObj.save()
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)

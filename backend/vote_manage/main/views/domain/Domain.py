@@ -4,22 +4,24 @@ from django.http import JsonResponse
 from main import models
 import json
 from main.tools import *
+from main.views.Common import Common
 
 
 class Domain(APIView):
     def get(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
-            value = request.GET.get('value', None)
+            # value = request.GET.get('value', None)
 
-            if value in ['all', None]:
-                domainObj =  models.Domain.objects.all()
-            else:
-                domainObj = models.Domain.objects.filter()
+            # if value in ['all', None]:
+            #     domainObj =  models.Domain.objects.all()
+            # else:
+            #     domainObj = models.Domain.objects.filter()
             
-            data = domainObj
-            data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
-            ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
+            # data = domainObj
+            # data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
+            # ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
+            ret['data'], ret['page_count'] = Common().getData(request, 'Domain')
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}

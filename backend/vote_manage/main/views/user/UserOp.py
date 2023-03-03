@@ -50,7 +50,9 @@ class UserOp:
     # 检查username是否已经注册
     def checkUsernameExist(self, username):
         userObj = models.User.objects.filter(username=username)
-        return userObj.exists(), '用户名已注册'
+        if userObj.exists():
+            return True, '用户名已注册'
+        return False, '用户名不存在'
     
     # 验证用户姓名的格式是否正确
     def checkName(self, name):
