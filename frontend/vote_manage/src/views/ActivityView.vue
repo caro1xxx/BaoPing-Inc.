@@ -155,7 +155,9 @@
               fill="#2460e5"
             ></path>
           </svg>
+          <!-- 删除 -->
           <svg
+            @click="deleteActivity(item.fields.vote_id)"
             t="1677328484608"
             class="icon"
             viewBox="0 0 1024 1024"
@@ -240,6 +242,30 @@ const onClickQrCode = (target) => {
       console.log(voteList[index].isQr);
     }
   });
+};
+
+// 删除获取
+const deleteActivity = async (vote_id) => {
+  // 开启加载loading
+  await $store.dispatch("NoticifyActions", true);
+  let result = await fether(`/voteactivity/`, "delete", {
+    token: jsCookie.get("token"),
+    vote_id: vote_id,
+  });
+  if (result.code === 200) {
+    voteList.forEach((item, index) => {
+      if (item.fields.vote_id === vote_id) {
+        voteList.splice(index, 1);
+      }
+    });
+    localStorage.setItem("vote", JSON.stringify(voteList));
+  } else {
+    // 请求发送错误
+    await $store.dispatch("refreshErroActions");
+    await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
+  }
+  // 关闭加载loading
+  $store.commit("noticifyLoading", false);
 };
 
 watch(

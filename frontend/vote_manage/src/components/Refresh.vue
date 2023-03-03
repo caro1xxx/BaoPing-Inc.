@@ -1,7 +1,7 @@
 <template>
   <div class="body">
-    <div class="body_btn">
-      <div @click="refresh">
+    <div class="body_btn" @click="refresh">
+      <div>
         网络错误,点我刷新<svg
           t="1677331480221"
           class="icon"

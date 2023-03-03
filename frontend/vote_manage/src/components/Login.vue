@@ -2,6 +2,7 @@
   <div class="register_mask_body_input">
     <input
       type="text"
+      autofocus
       placeholder="账号"
       v-model="userInputInfo.username"
       class="register_mask_body_inp"
@@ -15,7 +16,11 @@
       maxlength="16"
     />
     <div class="register_child_radio">
-      <input type="radio" @click="onClickRadio" />
+      <input
+        :checked="userInputInfo.isRemember"
+        type="radio"
+        @click="onClickRadio"
+      />
       <div>记住我</div>
     </div>
     <button class="register_child_btn" @click="checkForm">登录</button>
@@ -24,7 +29,7 @@
 
 <script setup>
 import { fether } from "@/utils/fether";
-import { ref } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Validator } from "@/utils/validator";
@@ -92,6 +97,19 @@ const loginSuccess = () => {
   $store.dispatch("authActions", true);
   router.push("/");
 };
+
+// enter
+const keyDownEnter = (e) => {
+  if (e.code !== "Enter") return;
+  checkForm();
+};
+
+onMounted(() => {
+  window.addEventListener("keypress", keyDownEnter);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener("keypress", keyDownEnter);
+});
 </script>
 
 <style lang="scss" scoped>
