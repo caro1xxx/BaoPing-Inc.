@@ -24,9 +24,6 @@
       <div class="botton_box">
         <StatisticalChartOne :data="boxChange" />
       </div>
-      <div class="botton_box">
-        <StatisticalChartTwo :data="boxChange" />
-      </div>
     </div>
   </div>
 </template>
@@ -39,7 +36,6 @@ import { useStore } from "vuex";
 import jsCookie from "js-cookie";
 import StatisticalChart from '../components/StatisticalChart.vue'
 import StatisticalChartOne from '../components/StatisticalChartOne.vue'
-import StatisticalChartTwo from '../components/StatisticalChartTwo.vue'
 const $store = new useStore();
 const OverviewData = reactive({
   today_income: "",
@@ -47,8 +43,8 @@ const OverviewData = reactive({
 });
 
 let boxChange = reactive({
-  width: 0,
-  height: 0
+  width: 100,
+  height: 100
 })
 
 // 获取数据
@@ -73,10 +69,13 @@ getDataOverView();
 
 onMounted(() => {
   let boxs = document.getElementsByClassName('botton_box')
-  // setInterval(() => {
-  //   boxChange.width = boxs[0].offsetWidth
-  //   boxChange.height = boxs[0].offsetHeight
-  // }, 3000)
+  // 监听浏览器页面缩放事件
+  window.addEventListener("resize", function () {
+    if (boxs[0]) {
+      boxChange.width = boxs[0].offsetWidth - 100
+      boxChange.height = boxs[0].offsetHeight - 200
+    }
+  });
 })
 </script>
 
@@ -123,7 +122,7 @@ onMounted(() => {
 .botton{
   height: calc(80vh - 168px);
   display: flex;
-  div{
+  .botton_box{
     flex: 1;
     padding: 10px;
   }
