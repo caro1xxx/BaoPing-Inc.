@@ -22,10 +22,24 @@
         class="register_mask_body_inp"
         style="width: 70%"
       />
-      <div @click="sendCode">发送验证码</div>
+      <div
+        @click="sendCode"
+        :style="{
+          cursor: !userInputInfo.isSendCodeState ? 'pointer' : 'not-allowed',
+          backgroundColor: !userInputInfo.isSendCodeState
+            ? '#2379fb'
+            : '#cecece',
+        }"
+      >
+        {{ userInputInfo.sendCodeContent }}
+      </div>
     </div>
     <div class="register_child_radio">
-      <input type="radio" @click="onClickRadio" />
+      <input
+        :checked="userInputInfo.isRemember"
+        type="radio"
+        @click="onClickRadio"
+      />
       <div>记住我</div>
     </div>
     <button class="register_child_btn" @click="checkForm">确定并登录</button>
@@ -34,7 +48,7 @@
 
 <script setup>
 import { fether } from "@/utils/fether";
-import { ref } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Validator } from "@/utils/validator";
@@ -46,6 +60,8 @@ const userInputInfo = ref({
   isRemember: false,
   email: "",
   code: "",
+  isSendCodeState: false,
+  sendCodeContent: "发送验证码",
 });
 
 // vuex实例
@@ -107,13 +123,48 @@ const sendCode = async () => {
   validator.add(userInputInfo.value.email, "isNonEmpty", "输入邮箱");
   validator.add(userInputInfo.value.email, "checkEmailFormat", "邮箱格式错误");
   let result = validator.start();
-  $store.dispatch("GlobalMessageActions", result);
-  if (result) return;
+  if (result) {
+    $store.dispatch("GlobalMessageActions", result);
+    return;
+  }
+  sendSucess();
   let codeResult = await fether("/forgetpasswordsendemail/", "post", {
     email: userInputInfo.value.email,
   });
-  let res = await $store.dispatch("GlobalMessageActions", codeResult.msg);
+  if (codeResult.code === 200) {
+    await $store.dispatch("GlobalMessageActions", "发送成功");
+  } else {
+    await $store.dispatch("GlobalMessageActions", codeResult.msg);
+  }
 };
+
+// 验证码发送成功 禁止点击发送验证码按钮
+const sendSucess = () => {
+  userInputInfo.value.isSendCodeState = true;
+  userInputInfo.value.sendCodeContent = 60;
+  let timer = setInterval(() => {
+    if (userInputInfo.value.sendCodeContent <= 1) {
+      userInputInfo.value.sendCodeContent = "发送验证码";
+      clearInterval(timer);
+      userInputInfo.value.isSendCodeState = false;
+    } else {
+      userInputInfo.value.sendCodeContent -= 1;
+    }
+  }, 1000);
+};
+
+// enter
+const keyDownEnter = (e) => {
+  if (e.code !== "Enter") return;
+  checkForm();
+};
+
+onMounted(() => {
+  window.addEventListener("keypress", keyDownEnter);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener("keypress", keyDownEnter);
+});
 
 // 登录成功
 const loginSuccess = () => {
