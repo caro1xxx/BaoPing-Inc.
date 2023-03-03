@@ -203,8 +203,17 @@ const getVoteList = async () => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
   let result = await fether(`/voteactivity/?token=${jsCookie.get("token")}`);
-  if (result.code === 200) {
-    let JSONResult = JSON.parse(result.data);
+  isAxiosStatus(result, true)
+  // 关闭加载loading
+  $store.commit("noticifyLoading", false);
+};
+
+const isAxiosStatus = async (data, status) => {
+  if (status === false) {
+    voteList.splice(0, voteList.length)
+  }
+  if (data.code === 200) {
+    let JSONResult = JSON.parse(data.data);
     JSONResult.forEach((item) => {
       voteList.push({ ...item, isQr: false });
     });
@@ -214,9 +223,7 @@ const getVoteList = async () => {
     await $store.dispatch("refreshErroActions");
     await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
   }
-  // 关闭加载loading
-  $store.commit("noticifyLoading", false);
-};
+}
 
 // 获取活动详细信息
 const getActivityDetail = (vote_id) => {
@@ -268,6 +275,14 @@ watch(
     if (!newVal) getVoteList();
   }
 );
+
+// 监听筛选数据
+watch(
+  () => $store.state.filterData,
+  (newVal) => {
+    isAxiosStatus(newVal, false)
+  },
+)
 
 getVoteList();
 </script>

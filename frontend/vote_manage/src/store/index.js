@@ -70,6 +70,8 @@ export default createStore({
     voteManagerPayOrderVoteid: "",
     //日志弹出状态
     logShowState: false,
+    //搜索筛选的数据
+    filterData: {}
   },
   getters: {},
   mutations: {
@@ -188,6 +190,10 @@ export default createStore({
     changeLogState(state) {
       state.logShowState = !state.logShowState;
     },
+    // 保存搜索筛选的数据
+    getFilterData(state, payload) {
+      state.filterData = {...payload}
+    }
   },
   actions: {
     SubNavBarActions(context, payload) {

@@ -9,7 +9,7 @@
             <span>{{ scope.$index }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="wx_username" label="openid(用户名)" />
+        <el-table-column prop="open_id" label="openid(用户名)" />
         <el-table-column prop="avator" label="姓名" />
         <el-table-column prop="open_id" label="open_id" />
         <el-table-column prop="create_time" label="申请时间">
@@ -25,8 +25,10 @@
 <script setup>
 import Search from "@/components/Search.vue"
 import { fether } from "@/utils/fether"
-import { reactive } from "vue"
+import { reactive, watch } from "vue"
+import { useStore } from "vuex"
 import Cookies from 'js-cookie'
+const $store = new useStore()
 
 //投票选手数据
 const athleteData = reactive([])
@@ -34,15 +36,22 @@ const athleteData = reactive([])
 //获取投票选手信息
 const getAthleteData = async () => {
   let result = await fether(`/voteuser/?token=${Cookies.get('token')}`)
-  if (result.code === 200) {
+  isAxiosStatus(result, true)
+}
+getAthleteData()
+
+const isAxiosStatus = async (data, status) => {
+  if (status === false) {
+    athleteData.splice(0, athleteData.length)
+  }
+  if (data.code === 200) {
     let Arr = []
-    Arr = JSON.parse(result.data)
+    Arr = JSON.parse(data.data)
     Arr.map(item => {
       athleteData.push({...item.fields, pk: item.pk})
     })
   }
 }
-getAthleteData()
 
 const getTime = (value)=> {
   if (value === 0) {
@@ -56,6 +65,13 @@ const getTime = (value)=> {
   }
 }
 
+// 监听筛选数据
+watch(
+  () => $store.state.filterData,
+  (newVal) => {
+    isAxiosStatus(newVal, false)
+  },
+)
 </script>
 
 <style lang="scss" scoped>

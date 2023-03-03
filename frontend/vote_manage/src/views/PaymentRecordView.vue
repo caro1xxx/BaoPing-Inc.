@@ -9,7 +9,7 @@
             <span>{{ scope.$index }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="wx_username" label="openid(用户名)" />
+        <el-table-column prop="open_id" label="openid(用户名)" />
         <el-table-column prop="price" label="金额" />
         <el-table-column prop="prize_type" label="礼物类型" />
         <el-table-column prop="status" label="票数">
@@ -40,12 +40,37 @@
 
 <script setup>
 import Search from "@/components/Search.vue";
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
 import { useStore } from "vuex";
 import { fether } from "@/utils/fether";
 import Cookies from "js-cookie";
 const $store = new useStore();
 const payNotesData = reactive([]);
+
+const isAxiosStatus = async (data, status) => {
+  if (status === false) {
+    payNotesData.splice(0, payNotesData.length);
+  }
+  if (data.code === 200) {
+    let Arr = [];
+    Arr = JSON.parse(data.data);
+    Arr.map((item) => {
+      payNotesData.push({
+        ...item.fields,
+        pk: item.pk,
+        wx_username: item.fields.voteuser.wx_username,
+        open_id: item.fields.voteuser.open_id,
+      });
+    });
+  } else {
+    // 请求发送错误
+    await $store.dispatch("refreshErroActions");
+    await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
+  }
+  // 关闭加载loading
+  $store.commit("noticifyLoading", false);
+};
+
 // 获取支付记录数据
 const getPayNotesData = async () => {
   // 开启加载loading
@@ -61,13 +86,10 @@ const getPayNotesData = async () => {
         wx_username: item.fields.voteuser.wx_username,
       });
     });
-  } else {
-    // 请求发送错误
-    await $store.dispatch("refreshErroActions");
-    await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
+    isAxiosStatus(result, true);
+    // 关闭加载loading
+    $store.commit("noticifyLoading", false);
   }
-  // 关闭加载loading
-  $store.commit("noticifyLoading", false);
 };
 getPayNotesData();
 
@@ -107,6 +129,14 @@ const getTime = (value) => {
     }/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
   }
 };
+
+// 监听筛选数据
+watch(
+  () => $store.state.filterData,
+  (newVal) => {
+    isAxiosStatus(newVal, false);
+  }
+);
 </script>
 
 <style lang="scss" scoped>

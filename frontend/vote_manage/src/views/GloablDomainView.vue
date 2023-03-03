@@ -78,15 +78,35 @@ const getRealm = async () => {
     Arr.map((item) => {
       realmAddData.push({ ...item.fields });
     });
-  } else {
-    //请求发送错误
-    await $store.dispatch("refreshErroActions");
-    await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
+    let result = await fether(`/domain/?token=${Cookies.get("token")}`);
+    //判断接口获取数据状态——第一个参数为数据，第二个参数为判断是否是源数据true为原数据，false为搜索后数据
+    isAxiosStatus(result, true);
+    //关闭加载loading
+    $store.commit("noticifyLoading", false);
   }
-  //关闭加载loading
-  $store.commit("noticifyLoading", false);
+  getRealm();
+
+  const isAxiosStatus = async (data, status) => {
+    if (data.code === 200) {
+      if (status === false) {
+        realmAddData.splice(0, realmAddData.length);
+      }
+      let Arr = [];
+      Arr = JSON.parse(data.data);
+      Arr.map((item) => {
+        realmAddData.push({ ...item.fields });
+      });
+    } else {
+      //请求发送错误
+      await $store.dispatch("refreshErroActions");
+      await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
+    }
+    //关闭加载loading
+    $store.commit("noticifyLoading", false);
+  };
+  getRealm();
 };
-getRealm();
+
 // 编辑数据
 const undataData = async (value, index) => {
   value.key = true;
@@ -156,10 +176,22 @@ watch(
 // 开启弹窗
 const openDialog = () => {
   // key为判断是否为新增或编辑的钥匙  true为编辑false为新增
+
   $store.commit("undateRealmStatus", {
     key: false,
   });
 };
+$store.commit("undateRealmStatus", {
+  key: false,
+});
+
+// 监听筛选数据
+watch(
+  () => $store.state.filterData,
+  (newVal) => {
+    isAxiosStatus(newVal, false);
+  }
+);
 </script>
 
 <style lang="scss" scoped>

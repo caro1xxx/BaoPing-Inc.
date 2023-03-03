@@ -9,7 +9,7 @@
             <span>{{ scope.$index }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="wx_username" label="openid(用户名)" />
+        <el-table-column prop="open_id" label="openid(用户名)" />
         <el-table-column prop="vote_name" label="票数">
           <template #default="scope">
             <div>1</div>

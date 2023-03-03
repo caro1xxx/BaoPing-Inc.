@@ -128,9 +128,19 @@ const getUserInfoList = async () => {
       "token"
     )}`
   );
-  if (result.code === 200) {
+  isAxiosStatus(result, true)
+
+  // 关闭加载loading
+  $store.commit("noticifyLoading", false);
+};
+
+const isAxiosStatus = async (data, status) => {
+  if (status === false) {
+    tableData.splice(0, tableData.length)
+  }
+  if (data.code === 200) {
     //serve
-    let JSONResult = await JSON.parse(result.data);
+    let JSONResult = await JSON.parse(data.data);
     JSONResult.forEach((item) => {
       tableData.push(item.fields);
     });
@@ -139,9 +149,7 @@ const getUserInfoList = async () => {
     await $store.dispatch("refreshErroActions");
     await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
   }
-  // 关闭加载loading
-  $store.commit("noticifyLoading", false);
-};
+}
 
 // 删除用户
 const deleteUser = async (target) => {
@@ -222,6 +230,14 @@ watch(
     saveUserEdit($store.state.editPopProps);
   }
 );
+
+// 监听筛选数据
+watch(
+  () => $store.state.filterData,
+  (newVal) => {
+    isAxiosStatus(newVal, false)
+  },
+)
 
 getUserInfoList();
 </script>
