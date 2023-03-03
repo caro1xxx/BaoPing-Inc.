@@ -13,6 +13,7 @@ const getInitSetting = async () => {
     map1.set(i.fields.name, i.fields.value);
   }
   await $store.dispatch("changeSettingsActions", map1);
+  // console.log($store.state.settings.get('每场投票最大访问量'))
 };
 getInitSetting();
 </script>

@@ -21,9 +21,45 @@
           <button>搜素</button>
         </div>
         <div class="content_body_information">
-          <div></div>
-          <div></div>
-          <div></div>
+          <div class="content_body_information_item">
+            <div class="content_body_information_title">四川世代建筑工程有限公司</div>
+            <div class="content_body_information_body">
+              <div class="content_body_information_left">
+                <img src="" alt="">
+              </div>
+              <div class="content_body_information_center">
+                <div>编号：8号</div>
+                <div>票数：<span>455</span>票</div>
+              </div>
+              <div class="content_body_information_right">支持他</div>
+            </div>
+          </div>
+          <div class="content_body_information_item">
+            <div class="content_body_information_title">四川德友建工集团有限公司</div>
+            <div class="content_body_information_body">
+              <div class="content_body_information_left">
+                <img src="" alt="">
+              </div>
+              <div class="content_body_information_center">
+                <div>编号：8号</div>
+                <div>票数：<span>455</span>票</div>
+              </div>
+              <div class="content_body_information_right">支持他</div>
+            </div>
+          </div>
+          <div class="content_body_information_item">
+            <div class="content_body_information_title">广安万达建筑工程有限公司</div>
+            <div class="content_body_information_body">
+              <div class="content_body_information_left">
+                <img src="" alt="">
+              </div>
+              <div class="content_body_information_center">
+                <div>编号：8号</div>
+                <div>票数：<span>455</span>票</div>
+              </div>
+              <div class="content_body_information_right">支持他</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -34,9 +70,6 @@
 <script setup></script>
 
 <style lang="scss" scoped>
-html,body{
-  height: 100%;
-}
 .body{
   width: 100%;
   height: 100%;
@@ -127,9 +160,39 @@ input,button{
 .content_body_information{
   display: flex;
   flex-direction: column;
-  div{
-    height: 200px;
+  .content_body_information_item{
+    padding: 10px;
+    text-align: center;
   }
+}
+.content_body_information_body{
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+.content_body_information_center{
+  flex: 1;
+  text-align: left;
+}
+.content_body_information_left{
+  width: 100px;
+  height: 80px;
+  padding: 10px;
+  img{
+    width: 100%;
+    height: 100%;
+    background-size: 100%;
+    background-repeat: no-repeat;
+  }
+}
+.content_body_information_right{
+  height: 25%;
+  font-size: 20px;
+  color: #ffffff;
+  font-weight: 50px;
+  border-radius: 10px;
+  padding: 10px 15px;
+  background-color: orange;
 }
 .footer{
   height: 50px;
