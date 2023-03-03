@@ -39,11 +39,34 @@ import UpdateRealm from "./components/UpdateRealm.vue";
 import UpdatePrize from "./components/UpdataPrize.vue";
 import VoteUserActivity from "./components/VoteUserActivity.vue";
 import VotePayOrder from "./components/VotePayOrder.vue";
+<<<<<<< HEAD
 import Log from "./components/Log.vue";
+=======
+import { fether } from "./utils/fether";
+>>>>>>> 73c86280b7bc160b8111232632994ec24ea2845e
 const $store = useStore();
+
+
+// 获取userInfo信息
+const getUserInfo = async () => {
+  let result = await fether(`/login/?token=${Cookies.get('token')}`)
+  if (result.code === 200) {
+    let JSONResult = JSON.parse(result.data)[0].fields
+    Cookies.set('token',JSONResult.token,{ expires: 7})
+    localStorage.setItem('userinfo',JSON.stringify({...JSONResult}))
+  }else{
+    await $store.dispatch("GlobalMessageActions", '登录过期，请重新登录');
+    $store.dispatch("authActions", false);
+  }
+}
+
 if (Cookies.get("token") === undefined) {
   $store.dispatch("authActions", false);
+}else{
+  getUserInfo()
 }
+
+
 </script>
 
 <style lang="scss">
