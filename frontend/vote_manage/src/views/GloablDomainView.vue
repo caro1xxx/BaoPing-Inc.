@@ -64,29 +64,7 @@ import { useStore } from "vuex";
 import Cookies from "js-cookie";
 const $store = new useStore();
 
-// 域名管理数据
-const realmAddData = reactive([]);
-
-// 获取域名列表
-const getRealm = async () => {
-  //开启加载loading
-  await $store.dispatch("NoticifyActions", true);
-  let result = await fether(`/domain/?token=${Cookies.get("token")}`);
-  if (result.code === 200) {
-    let Arr = [];
-    Arr = JSON.parse(result.data);
-    Arr.map((item) => {
-      realmAddData.push({ ...item.fields });
-    });
-    let result = await fether(`/domain/?token=${Cookies.get("token")}`);
-    //判断接口获取数据状态——第一个参数为数据，第二个参数为判断是否是源数据true为原数据，false为搜索后数据
-    isAxiosStatus(result, true);
-    //关闭加载loading
-    $store.commit("noticifyLoading", false);
-  }
-  getRealm();
-
-  const isAxiosStatus = async (data, status) => {
+const isAxiosStatus = async (data, status) => {
     if (data.code === 200) {
       if (status === false) {
         realmAddData.splice(0, realmAddData.length);
@@ -104,8 +82,27 @@ const getRealm = async () => {
     //关闭加载loading
     $store.commit("noticifyLoading", false);
   };
-  getRealm();
+// 域名管理数据
+const realmAddData = reactive([]);
+
+// 获取域名列表
+const getRealm = async () => {
+  //开启加载loading
+  await $store.dispatch("NoticifyActions", true);
+  let result = await fether(`/domain/?token=${Cookies.get("token")}`);
+  if (result.code === 200) {
+    let Arr = [];
+    Arr = JSON.parse(result.data);
+    Arr.map((item) => {
+      realmAddData.push({ ...item.fields });
+    });
+    //判断接口获取数据状态——第一个参数为数据，第二个参数为判断是否是源数据true为原数据，false为搜索后数据
+    isAxiosStatus(result, true);
+    //关闭加载loading
+    $store.commit("noticifyLoading", false);
+  }
 };
+getRealm();
 
 // 编辑数据
 const undataData = async (value, index) => {
@@ -176,14 +173,10 @@ watch(
 // 开启弹窗
 const openDialog = () => {
   // key为判断是否为新增或编辑的钥匙  true为编辑false为新增
-
   $store.commit("undateRealmStatus", {
     key: false,
   });
 };
-$store.commit("undateRealmStatus", {
-  key: false,
-});
 
 // 监听筛选数据
 watch(
