@@ -9,7 +9,7 @@
             <span>{{ scope.$index }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="wx_username" label="openid(用户名)" />
+        <el-table-column prop="open_id" label="openid(用户名)" />
         <el-table-column prop="name" label="姓名" />
         <el-table-column prop="phone_number" label="手机号" />
         <el-table-column prop="create_time" label="申请时间">
@@ -47,21 +47,28 @@ const getPrize = async () => {
   let result = await fether(
     `/applyprize/?token=${Cookies.get('token')}`
   )
-  if (result.code === 200) {
+  isAxiosStatus(result, true)
+  //关闭加载loading
+  $store.commit("noticifyLoading", false);
+}
+getPrize()
+
+const isAxiosStatus = async (data, status) => {
+  if (status === false) {
+    prizeData.splice(0, prizeData.length)
+  }
+  if (data.code === 200) {
     let Arr = []
-    Arr = JSON.parse(result.data)
+    Arr = JSON.parse(data.data)
     Arr.map(item => {
-      prizeData.push({...item.fields, pk: item.pk, wx_username: item.fields.voteuser.wx_username})
+      prizeData.push({...item.fields, pk: item.pk, wx_username: item.fields.voteuser.wx_username, open_id: item.fields.voteuser.open_id})
     })
   } else {
     //请求发送错误
     await $store.dispatch("refreshErroActions");
     await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
   }
-  //关闭加载loading
-  $store.commit("noticifyLoading", false);
 }
-getPrize()
 
 // 编辑
 const undataData = async  (value, index) => {
@@ -111,6 +118,14 @@ watch(
   {
     deep: true
   }
+)
+
+// 监听筛选数据
+watch(
+  () => $store.state.filterData,
+  (newVal) => {
+    isAxiosStatus(newVal, false)
+  },
 )
 </script>
 

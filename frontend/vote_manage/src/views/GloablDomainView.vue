@@ -64,9 +64,20 @@ const getRealm = async () => {
   let result = await fether(
     `/domain/?token=${Cookies.get('token')}`
   )
-  if (result.code === 200) {
+  //判断接口获取数据状态——第一个参数为数据，第二个参数为判断是否是源数据true为原数据，false为搜索后数据
+  isAxiosStatus(result, true)
+  //关闭加载loading
+  $store.commit("noticifyLoading", false);
+}
+getRealm()
+
+const isAxiosStatus = async (data, status) => {
+  if (data.code === 200) {
+    if (status === false) {
+      realmAddData.splice(0,realmAddData.length)
+    }
     let Arr = []
-    Arr = JSON.parse(result.data)
+    Arr = JSON.parse(data.data)
     Arr.map(item => {
       realmAddData.push({...item.fields})
     })
@@ -75,10 +86,8 @@ const getRealm = async () => {
     await $store.dispatch("refreshErroActions");
     await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
   }
-  //关闭加载loading
-  $store.commit("noticifyLoading", false);
 }
-getRealm()
+
 // 编辑数据
 const undataData = async (value, index) => {
   value.key = true
@@ -143,6 +152,13 @@ const openDialog = () => {
  })
 }
 
+// 监听筛选数据
+watch(
+  () => $store.state.filterData,
+  (newVal) => {
+    isAxiosStatus(newVal, false)
+  },
+)
 </script>
 
 <style lang="scss" scoped>
