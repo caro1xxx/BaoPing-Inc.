@@ -8,8 +8,11 @@
           <div class="content_body_persennum_item">报名数：<span>45</span></div>
         </div>
         <div class="content_body_search">
-          <input type="text" placeholder="请输入选手名称或编号查询" />
-          <button>搜素</button>
+          <input type="text" placeholder="搜索名称或编号" />
+          <div class="content_body_search_button">
+            <div class="content_body_search_text">跟踪报道</div>
+            <div class="content_body_search_status">已更新</div>
+          </div>
         </div>
         <div class="content_body_information">
           <div class="content_body_information_item">
@@ -101,15 +104,30 @@
   margin-top: 10px;
   justify-content: space-between;
   background-color: #f3f3f3;
-  padding: 10px;
+  padding: 15px;
+}
+.content_body_search_text{
+  padding: 5px;
+  border: 1px solid rgb(175, 109, 34);
+}
+.content_body_search_button{
+  padding: 5px;
+  position: relative;
+  background-color: rgb(223, 189, 117);
+}
+.content_body_search_status{
+  position: absolute;
+  z-index: 2;
+  top: -9px;
+  right: -10px;
+  background-color: red;
+  padding: 2px;
+  color: #ffffff;
+  border-radius: 5px 0px 5px 0px;
+  font-size: 9px;
 }
 input{
-  width: 70%;
-}
-button{
-  width: 15%;
-  background-color: orange;
-  color: #000000;
+  width: 65%;
 }
 input,button{
   padding: 10px;
