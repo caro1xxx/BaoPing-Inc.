@@ -1,17 +1,20 @@
 import "./App.css";
 import { LoadingOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { HOST } from "./ENV";
 function App() {
-  const [domain, setDomain] = useState("");
-
   useEffect(() => {
-    if (domain) return;
-    fetch(`${HOST}/domain/getdomain`)
+    if (!window.location.search) return;
+    fetch(
+      `${HOST}/domain/getdomain?vote_id=${window.location.search.split("=")[1]}`
+    )
       .then((res) => res.json())
       .then((data) => {
-        setDomain(data.domain);
-        window.location.href = "https://" + data.domain;
+        console.log(data);
+        if (!data.domain) return;
+        window.location.href = `http://${data.domain}?vote_id=${
+          window.location.search.split("=")[1]
+        }`;
       });
   });
 

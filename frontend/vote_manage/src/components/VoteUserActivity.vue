@@ -15,20 +15,57 @@
         stripe
         style="width: 100%"
       >
-        <el-table-column prop="vote_activity" label="活动" width="180"
+        <el-table-column prop="vote_id" label="活动编号" width="180"
           ><template #default="scope">
             <el-button link type="primary" size="small">{{
-              "#" + scope.row.vote_activity
+              "#" + scope.row.vote_id
             }}</el-button></template
           ></el-table-column
         >
-        <el-table-column prop="openid" label="用户名(openid)" width="180" />
-        <el-table-column prop="count" label="票数" width="180" />
-        <el-table-column prop="ip" label="ip" width="180" />
-        <el-table-column prop="phone_model" label="手机型号" width="180" />
-        <el-table-column prop="system" label="系统" width="180" />
-        <el-table-column prop="network" label="网络" width="180" />
-        <el-table-column prop="create_time" label="投票时间" width="180" />
+        <el-table-column prop="count" label="票数" width="180">
+          <template #default="scope">
+            <div v-if="!scope.row.isEdit">{{ scope.row.count }}</div>
+            <el-input v-else type="text" v-model="scope.row.count"
+          /></template>
+        </el-table-column>
+        <el-table-column prop="detail" label="详情" width="180">
+          <template #default="scope">
+            <div v-if="!scope.row.isEdit">{{ scope.row.detail }}</div>
+            <el-input v-else type="text" v-model="scope.row.detail"
+          /></template>
+        </el-table-column>
+        <el-table-column prop="name" label="选手名称" width="180">
+          <template #default="scope">
+            <div v-if="!scope.row.isEdit">{{ scope.row.name }}</div>
+            <el-input v-else type="text" v-model="scope.row.name"
+          /></template>
+        </el-table-column>
+        <el-table-column prop="avator" label="选手头像" width="180">
+          <template #default="scope">
+            <img
+              :src="HOST + '/media/' + scope.row.avator"
+              width="30"
+              height="30"
+              alt=""
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="删除" width="180">
+          <template #default="scope">
+            <span
+              v-if="!scope.row.isEdit"
+              style="margin-right: 20px; color: #2479fb; cursor: pointer"
+              @click="editVoteUser(scope.row.userId)"
+              >编辑</span
+            >
+            <span
+              v-else
+              style="margin-right: 20px; color: #2479fb; cursor: pointer"
+              @click="saveEidt({ ...scope.row })"
+              >保存</span
+            >
+          </template>
+        </el-table-column>
       </el-table>
     </div>
   </div>
@@ -37,32 +74,28 @@
 <script setup>
 import { useStore } from "vuex";
 import { fether } from "@/utils/fether";
-import { parseStampTime } from "../utils/stampTime";
-import jsCookie from "js-cookie";
 import { reactive } from "vue";
+import { HOST } from "@/ENV";
+import jsCookie from "js-cookie";
 const $store = new useStore();
 const tableData = reactive([]);
 
-// 请求用户投票数据
+// 请求投票选手列表
 const getUserVoteData = async () => {
   let result = await fether(
-    `/voterecord/?token=${jsCookie.get("token")}&vote_id=${
-      $store.state.voteManagerUserRecordVoteid
-    }`
+    `/votetarget/?vote_id=${$store.state.voteManagerUserRecordVoteid}`
   );
   if (result.code === 200) {
     let JSONResult = JSON.parse(result.data);
     JSONResult.forEach((item) => {
       tableData.push({
-        vote_activity: item.fields.vote_activity,
-        openid: item.fields.voteuser.open_id,
-        count: "x1",
-        ip: item.fields.ip,
-        phone_model: item.fields.phone_model,
-        system: item.fields.system,
-        network: item.fields.network,
-        create_time: parseStampTime(item.fields.create_time),
-        action: "删除",
+        avator: item.fields.avator,
+        count: item.fields.count,
+        detail: item.fields.detail,
+        name: item.fields.name,
+        vote_id: item.fields.vote_id,
+        isEdit: false,
+        userId: item.pk,
       });
     });
   } else {
@@ -71,6 +104,25 @@ const getUserVoteData = async () => {
   }
 };
 getUserVoteData();
+
+// 使可编辑
+const editVoteUser = (pk) => {
+  tableData.forEach((item, index) => {
+    if (item.userId === pk) {
+      tableData[index].isEdit = true;
+    } else {
+      tableData[index].isEdit = false;
+    }
+  });
+};
+// 提交编辑
+const saveEidt = async (target) => {
+  let result = await fether(`/votetarget/`, "put", {
+    ...target,
+    token: jsCookie.get("token"),
+  });
+  await $store.dispatch("GlobalMessageActions", result.msg);
+};
 </script>
 
 <style lang="scss" scoped>

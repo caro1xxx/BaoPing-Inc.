@@ -19,10 +19,10 @@
     </div>
     <div class="botton">
       <div class="botton_box">
-        <StatisticalChart :data="boxChange" />
-      </div>
-      <div class="botton_box">
-        <StatisticalChartOne :data="boxChange" />
+        <StatisticalChart
+          :data="boxChange"
+          :chartData="OverviewData.chartData"
+        />
       </div>
     </div>
   </div>
@@ -33,27 +33,35 @@ import Search from "@/components/Search.vue";
 import { reactive, onMounted } from "vue";
 import { fether } from "@/utils/fether";
 import { useStore } from "vuex";
-import jsCookie from "js-cookie";
-import StatisticalChart from '../components/StatisticalChart.vue'
-import StatisticalChartOne from '../components/StatisticalChartOne.vue'
+import StatisticalChart from "../components/StatisticalChart.vue";
+import StatisticalChartOne from "../components/StatisticalChartOne.vue";
 const $store = new useStore();
 const OverviewData = reactive({
   today_income: "",
   yesterday_income: "",
+  chartData: [],
 });
 
 let boxChange = reactive({
   width: 100,
-  height: 100
-})
+  height: 100,
+});
 
 // 获取数据
 const getDataOverView = async () => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  let result = await fether(`/statics/?token=${jsCookie.get("token")}`);
-  if (result.code === 200) {
+  let result = await fether(`/statics/`);
+  let historyResult = await fether(`/staticshistory/`);
+  if (result.code === 200 && historyResult.code === 200) {
     let JSONResult = JSON.parse(result.data)[0].fields;
+    let JSONhistoryResult = JSON.parse(historyResult.data);
+    JSONhistoryResult.forEach((item) => {
+      OverviewData.chartData.push({
+        income: item.fields.day_income,
+        time: item.fields.day_time,
+      });
+    });
     OverviewData.today_income = JSONResult.today_income;
     OverviewData.yesterday_income = JSONResult.yesterday_income;
   } else {
@@ -68,15 +76,15 @@ const getDataOverView = async () => {
 getDataOverView();
 
 onMounted(() => {
-  let boxs = document.getElementsByClassName('botton_box')
+  let boxs = document.getElementsByClassName("botton_box");
   // 监听浏览器页面缩放事件
   window.addEventListener("resize", function () {
     if (boxs[0]) {
-      boxChange.width = boxs[0].offsetWidth - 100
-      boxChange.height = boxs[0].offsetHeight - 200
+      boxChange.width = boxs[0].offsetWidth - 100;
+      boxChange.height = boxs[0].offsetHeight - 200;
     }
   });
-})
+});
 </script>
 
 <style lang="scss" scoped>
@@ -119,10 +127,10 @@ onMounted(() => {
   width: 25%;
   margin-left: 20px;
 }
-.botton{
+.botton {
   height: calc(80vh - 168px);
   display: flex;
-  .botton_box{
+  .botton_box {
     flex: 1;
     padding: 10px;
   }
