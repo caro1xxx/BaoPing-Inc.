@@ -14,10 +14,10 @@ class CheckTokenMiddleware(MiddlewareMixin):
             m = str(request.method)
             pathInfo = request.path_info.replace('/', '')
 
-            if pathInfo in ['login', 'register', 'forgetpasswordsendemail', 'sendemailcode'] or str(pathInfo).find('media') != -1:
+            if pathInfo in ['login', 'register', 'forgetpasswordsendemail', 'sendemailcode', 'statics', 'staticshistory'] or str(pathInfo).find('media') != -1:
                 return None
             if m == 'GET':
-                if pathInfo in ['settings']:
+                if pathInfo in ['settings', 'alonevoteactivity', 'votetarget']:
                     return None
                 token = request.GET.get('token', None)
             elif m in ['POST', 'PUT', 'DELETE']:
