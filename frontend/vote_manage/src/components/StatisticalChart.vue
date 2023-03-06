@@ -3,9 +3,9 @@
 </template>
 
 <script setup>
-import * as echarts from "echarts"
-import { reactive, onMounted, defineProps  } from "vue";
-
+import * as echarts from "echarts";
+import { reactive, watch, defineProps } from "vue";
+import { parseStampTime } from "../utils/stampTime.js";
 
 // 接收数据
 const props = defineProps({
@@ -13,49 +13,60 @@ const props = defineProps({
     width: Number,
     height: Number,
   },
+  chartData: { income: Number, time: Number },
 });
 
-console.log();
-onMounted(() => {
-  const isBroken = reactive(['1月', '2月', '3月', '4月', '5月'])
-  const isBrokenValue = reactive([20, 41, 15, 33, 25])
-  const chartDom = document.getElementById('siderbar_statistical_chart');
-  var myChart = echarts.init(chartDom);
-  var option;
-  option = {
-    title: {
-      text: '标题'
-    },
-    tooltip: {
-      trigger: 'axis'
-    },
-    xAxis: {
-      type: 'category',
-      data: isBroken,
-      name: '时间'
-    },
-    yAxis: {
-      type: 'value',
-      name: '数量'
-    },
-    series: [
-      {
-        data: isBrokenValue,
-        type: 'line'
-      }
-    ]
-  };
-  
-  option && myChart.setOption(option);
-  // 监听浏览器页面缩放事件
-  window.addEventListener("resize", function () {
+const isBroken = reactive([]);
+const isBrokenValue = reactive([]);
+
+watch(
+  () => props.chartData,
+  (newVal) => {
+    props.chartData.forEach((item) => {
+      isBroken.push(parseStampTime(item.time));
+      isBrokenValue.push(item.income);
+    });
+    const chartDom = document.getElementById("siderbar_statistical_chart");
+    var myChart = echarts.init(chartDom);
+    var option;
+    option = {
+      title: {
+        text: "近五日",
+      },
+      tooltip: {
+        trigger: "axis",
+      },
+      xAxis: {
+        type: "category",
+        data: isBroken,
+        name: "时间",
+      },
+      yAxis: {
+        type: "value",
+        name: "数量",
+      },
+      series: [
+        {
+          data: isBrokenValue,
+          type: "line",
+        },
+      ],
+    };
+
+    option && myChart.setOption(option);
+    // 监听浏览器页面缩放事件
+    window.addEventListener("resize", function () {
       myChart.resize();
-  });
-})
+    });
+  },
+  {
+    deep: true,
+  }
+);
 </script>
 
 <style lang="scss" scoped>
-#siderbar_statistical_chart{
+#siderbar_statistical_chart {
   width: 100%;
   height: 100%;
 }

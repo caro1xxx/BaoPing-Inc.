@@ -296,12 +296,12 @@ const goPage = (index) => {
       $store.dispatch("SubNavBarActions", {
         item: [
           {
-            name: "投票选手",
+            name: "投票用户",
             description: "以直观的方式和图标显示总体运营数据",
             path: "/order/voteparent",
           },
         ],
-        navName: "选手管理",
+        navName: "投票用户",
       });
       $router.push("/parent/voteparent");
       break;
