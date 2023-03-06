@@ -5,14 +5,15 @@ from main.views.user import Login, Register, ForgetPasswordSendEmail, CheckEmail
 from main.views.logs import Logs
 from main.views.system_manage import OfficialAccount
 from main.views.feedback import Feedback
-from main.views.vote_activity import VoteActivity
+from main.views.vote_activity import VoteActivity, AloneVoteActivity
 from main.views.domain import Domain
 from main.views.applyprize import ApplyPrize
 from main.views.vote_record import VoteRecord
 from main.views.payment_record import PaymentRecord
 from main.views.voteuser import Voteuser
-from main.views.statics import Statics
+from main.views.statics import Statics, StaticsHistory
 from main.views.settings import Settings
+from main.views.vote_target import VoteTarget
 from main.views import Request404, TestView
 from vote_manage import settings
 from django.views.static import serve
@@ -37,8 +38,11 @@ urlpatterns = [
     url(r'^paymentrecord/$', PaymentRecord.PaymentRecord.as_view()),
     url(r'^voteuser/$', Voteuser.Voteuser.as_view()),
     url(r'^statics/$', Statics.Statics.as_view()),
+    url(r'^staticshistory/$', StaticsHistory.StaticsHistory.as_view()),
     url(r'^logs/$', Logs.Logs.as_view()),
     url(r'^settings/$', Settings.Settings.as_view()),
+    url(r'^alonevoteactivity/$', AloneVoteActivity.AloneVoteActivity.as_view()),
+    url(r'^votetarget/$', VoteTarget.VoteTarget.as_view()),
     url(r'^test/$', TestView.TestView.as_view()),
     url(r'$', Request404.Request404.as_view())
 ]

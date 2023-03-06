@@ -26,8 +26,7 @@ class VoteActivity(APIView):
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            print(str(e))
-            ret = {'code': 500, 'msg': 'Timeout', 'msg': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'msg': str(e)}
         return JsonResponse(ret)
 
     def post(self, request, *args, **kwargs):

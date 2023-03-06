@@ -207,7 +207,14 @@ class UserOp:
         try:
             code = generateCode6()
             content = code
-            my_email = send_mail('你的验证码是:{}'.format(email), content, settings.DEFAULT_FROM_EMAIL, [email])
+            # my_email = send_mail('你的验证码是:{}'.format(email), content, settings.DEFAULT_FROM_EMAIL, [email])
+            my_email = send_mail(
+                '验证码', 
+                '', 
+                settings.DEFAULT_FROM_EMAIL, 
+                [email], 
+                html_message='<html lang="en"><body style="display: flex;justify-content: center;align-items: center;"><div style="width: 300px;background-color: #2479fb;padding: 20px;color: white;font-size: 20px;"><div style="text-align: center;">投票管理系统</div><div style="text-align: center;font-size: 15px;text-align: start;margin: 20px 0px;">您的验证码是:</div><div style="font-size: 30px;font-weight: bold;text-align: center;margin-top: 50px;">{}</div><div style="font-size: 10px;text-align: start;margin-top: 50px;">验证码有效期5分钟</div></div></body></html>'.format(code)
+            )
             if my_email != 1:
                 return False, '发送验证码失败'
             key = 'syl_' + email

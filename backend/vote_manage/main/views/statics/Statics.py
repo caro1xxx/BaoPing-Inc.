@@ -10,18 +10,16 @@ class Statics(APIView):
     def get(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
-            staticsObj = models.Statics.objects.all()
-            data = serializers.serialize('json', staticsObj)
-            # return JsonResponse(ret)
+            staticsObj = models.Statics.objects.all().first()
 
             staticsOp = StaticsOp()
             if staticsObj is None:
                 staticsObj = staticsOp.initStatics()
                 ret['data'] = serializers.serialize('json', [staticsObj]) 
             else:
-                staticsObj = staticsOp.updateStatics()
+                # staticsObj = staticsOp.updateStatics()
                 ret['data'] = serializers.serialize('json', [staticsObj]) 
-            print(ret['data'])
+            # print(ret['data'])
             return JsonResponse(ret)          
 
         except Exception as e:

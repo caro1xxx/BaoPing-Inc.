@@ -20,9 +20,15 @@ class Crontab:
                 create_time = nowTime
             ).save()
             print('更新统计历史成功')
-        except Exception as e:
+        except Exception as e:  
             print('更新统计历史失败')
+
+    def clearAllDomainVisitCount(self):
+        domainObj = models.Domain.objects.all()
+        if domainObj:
+            domainObj.update(visit_count=0)
 
     def test(self):
         print('test method test')
         return 'test method test retun'
+

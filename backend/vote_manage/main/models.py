@@ -26,6 +26,7 @@ class Domain(models.Model):
     visit_count = models.IntegerField(default=0)
     expire_time = models.IntegerField()
     flow = models.IntegerField()
+    vote_id = models.IntegerField()
 
 
 class VoteUser(models.Model):
@@ -57,7 +58,7 @@ class VoteActivity(models.Model):
     visit_count = models.IntegerField(default=0)
     visit_count_multiple = models.IntegerField(default=1)
     vote_count_restrict = models.TextField(default='[]')
-    today_start_voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE, null=True, related_name='today_start_voteuser')
+    today_start_voteuser = models.IntegerField(default=0)
     today_star_update_begin_time = models.IntegerField(default=0)
     today_star_update_end_time = models.IntegerField(default=0)
     allowed_alone_everyday_vote_count = models.IntegerField(default=0)
@@ -69,7 +70,7 @@ class VoteActivity(models.Model):
     enable_vote_cert_code = models.IntegerField(default=0)
     enable_prize = models.IntegerField(default=0)
     enable_browser = models.IntegerField(default=0)
-    auto_comment_voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE, null=True, related_name='auto_comment_voteuser')
+    auto_comment_voteuser = models.IntegerField(default=0)
     auto_comment_begin_time = models.IntegerField(default=0)
     auto_comment_end_time = models.IntegerField(default=0)
     auto_comment_everyday_begin_time = models.IntegerField(default=0)
@@ -85,6 +86,13 @@ class VoteActivity(models.Model):
     # payment_voteusers = models.ManyToManyField(
     #     PaymentRecord,
     # )
+
+class VoteTarget(models.Model):
+    vote_id = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
+    detail = models.TextField(default='')
+    name = models.CharField(max_length=64)
+    count = models.IntegerField(default=0)
+    avator = models.FileField(upload_to='img', blank=True)
 
 
 class Feedback(models.Model):
@@ -129,12 +137,13 @@ class Active(models.Model):
 
 class VoteRecord(models.Model):
     voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE)
+    vote_target = models.ForeignKey(VoteTarget, to_field='id', on_delete=models.CASCADE)
     create_time = models.IntegerField(null=False)
     vote_activity = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
     ip = models.TextField(default='')
     phone_number = models.TextField(default='')
     phone_model = models.TextField(default='')
-    system = models.TextField(default='')
+    system = models.TextField(default='')   
     network = models.TextField(default='')
 
 
