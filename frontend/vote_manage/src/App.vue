@@ -21,6 +21,7 @@
     <!-- 投票管理页面 与活动相关联的订单记录 -->
     <VotePayOrder v-if="$store.state.voteManagerPayOrder" />
     <Log v-if="$store.state.logShowState" />
+    <AddVoteUser v-if="$store.state.voteManageAddUser.state" />
   </div>
 </template>
 
@@ -33,6 +34,7 @@ import SubNavBar from "./components/SubNavBar.vue";
 import AuthView from "./views/AuthView.vue";
 import EditActivity from "./components/EditActivity.vue";
 import AddActivity from "./components/AddActivity.vue";
+import AddVoteUser from "./components/AddVoteUser.vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
 import UpdateRealm from "./components/UpdateRealm.vue";
@@ -49,6 +51,7 @@ const getUserInfo = async () => {
   if (result.code === 200) {
     let JSONResult = JSON.parse(result.data)[0].fields;
     Cookies.set("token", JSONResult.token, { expires: 7 });
+    Cookies.set("username", JSONResult.username, { expires: 7 });
     $store.commit("saveUserInfo", { ...JSONResult });
     localStorage.setItem("userinfo", JSON.stringify({ ...JSONResult }));
   } else {

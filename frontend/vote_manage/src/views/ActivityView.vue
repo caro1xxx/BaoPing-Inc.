@@ -155,27 +155,22 @@
               fill="#2460e5"
             ></path>
           </svg>
-          <!-- 删除 -->
+          <!-- 添加投票选手 -->
           <svg
-            @click="deleteActivity(item.fields.vote_id)"
-            t="1677328484608"
-            class="icon"
+            @click="addUserActivity(item.fields.vote_id)"
+            t="1677544620358"
+            class="icon add"
             viewBox="0 0 1024 1024"
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
-            p-id="10871"
+            p-id="1501"
             width="30"
             height="30"
           >
             <path
-              d="M512 512m-512 0a512 512 0 1 0 1024 0 512 512 0 1 0-1024 0Z"
-              fill="#FDEBED"
-              p-id="10872"
-            ></path>
-            <path
-              d="M729.6 384H294.4c-7.68 0-12.8-5.12-12.8-12.8v-25.6c0-7.68 5.12-12.8 12.8-12.8h115.2v-25.6c0-14.08 11.52-25.6 25.6-25.6h153.6c14.08 0 25.6 11.52 25.6 25.6v25.6h115.2c7.68 0 12.8 5.12 12.8 12.8v25.6c0 7.68-5.12 12.8-12.8 12.8z m-371.2 38.4h307.2c28.16 0 51.2 23.04 51.2 51.2v217.6c0 28.16-23.04 51.2-51.2 51.2H358.4c-28.16 0-51.2-23.04-51.2-51.2V473.6c0-28.16 23.04-51.2 51.2-51.2z m192 243.2c0 7.68 5.12 12.8 12.8 12.8s12.8-5.12 12.8-12.8V537.6c0-7.68-5.12-12.8-12.8-12.8s-12.8 5.12-12.8 12.8v128z m-102.4 0c0 7.68 5.12 12.8 12.8 12.8s12.8-5.12 12.8-12.8V537.6c0-7.68-5.12-12.8-12.8-12.8s-12.8 5.12-12.8 12.8v128z"
-              fill="#EC3A4E"
-              p-id="10873"
+              d="M514.048 62.464q93.184 0 175.616 35.328t143.872 96.768 96.768 143.872 35.328 175.616q0 94.208-35.328 176.128t-96.768 143.36-143.872 96.768-175.616 35.328q-94.208 0-176.64-35.328t-143.872-96.768-96.768-143.36-35.328-176.128q0-93.184 35.328-175.616t96.768-143.872 143.872-96.768 176.64-35.328zM772.096 576.512q26.624 0 45.056-18.944t18.432-45.568-18.432-45.056-45.056-18.432l-192.512 0 0-192.512q0-26.624-18.944-45.568t-45.568-18.944-45.056 18.944-18.432 45.568l0 192.512-192.512 0q-26.624 0-45.056 18.432t-18.432 45.056 18.432 45.568 45.056 18.944l192.512 0 0 191.488q0 26.624 18.432 45.568t45.056 18.944 45.568-18.944 18.944-45.568l0-191.488 192.512 0z"
+              p-id="1502"
+              fill="#2460e5"
             ></path>
           </svg>
         </div>
@@ -203,14 +198,14 @@ const getVoteList = async () => {
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
   let result = await fether(`/voteactivity/?token=${jsCookie.get("token")}`);
-  isAxiosStatus(result, true)
+  isAxiosStatus(result, true);
   // 关闭加载loading
   $store.commit("noticifyLoading", false);
 };
 
 const isAxiosStatus = async (data, status) => {
   if (status === false) {
-    voteList.splice(0, voteList.length)
+    voteList.splice(0, voteList.length);
   }
   if (data.code === 200) {
     let JSONResult = JSON.parse(data.data);
@@ -223,7 +218,7 @@ const isAxiosStatus = async (data, status) => {
     await $store.dispatch("refreshErroActions");
     await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
   }
-}
+};
 
 // 获取活动详细信息
 const getActivityDetail = (vote_id) => {
@@ -244,29 +239,9 @@ const onClickQrCode = (target) => {
   });
 };
 
-// 删除
-const deleteActivity = async (vote_id) => {
-  await $store.dispatch("GlobalMessageActions", "禁止删除活动");
-  // 开启加载loading
-  // await $store.dispatch("NoticifyActions", true);
-  // let result = await fether(`/voteactivity/`, "delete", {
-  //   token: jsCookie.get("token"),
-  //   vote_id: vote_id,
-  // });
-  // if (result.code === 200) {
-  //   voteList.forEach((item, index) => {
-  //     if (item.fields.vote_id === vote_id) {
-  //       voteList.splice(index, 1);
-  //     }
-  //   });
-  //   localStorage.setItem("vote", JSON.stringify(voteList));
-  // } else {
-  //   // 请求发送错误
-  //   await $store.dispatch("refreshErroActions");
-  //   await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
-  // }
-  // // 关闭加载loading
-  // $store.commit("noticifyLoading", false);
+// 添加投票选手
+const addUserActivity = async (vote_id) => {
+  await $store.commit("changeVoteManageAddUser", vote_id);
 };
 
 watch(
@@ -280,9 +255,9 @@ watch(
 watch(
   () => $store.state.filterData,
   (newVal) => {
-    isAxiosStatus(newVal, false)
-  },
-)
+    isAxiosStatus(newVal, false);
+  }
+);
 
 getVoteList();
 </script>

@@ -71,7 +71,9 @@ export default createStore({
     //日志弹出状态
     logShowState: false,
     //搜索筛选的数据
-    filterData: {}
+    filterData: {},
+    // 获取管理用户添加投票选手
+    voteManageAddUser: { state: false, vote_id: "" },
   },
   getters: {},
   mutations: {
@@ -192,8 +194,14 @@ export default createStore({
     },
     // 保存搜索筛选的数据
     getFilterData(state, payload) {
-      state.filterData = {...payload}
-    }
+      state.filterData = { ...payload };
+    },
+    // 保存搜索筛选的数据
+    changeVoteManageAddUser(state, payload) {
+      console.log(state.voteManageAddUser.state);
+      state.voteManageAddUser.state = !state.voteManageAddUser.state;
+      state.voteManageAddUser.vote_id = payload;
+    },
   },
   actions: {
     SubNavBarActions(context, payload) {
