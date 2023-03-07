@@ -276,12 +276,12 @@ const activeRull = async () => {
 const athleteConfig = (e, value) => {
   if (e.target.tagName === 'DIV') {
     console.log(1);
-    $router.push({
-      path: '/three',
-      query: {
-        pk: value
-      }
-    })
+    // $router.push({
+    //   path: '/three',
+    //   query: {
+    //     pk: value
+    //   }
+    // })
   }
 }
 </script>
