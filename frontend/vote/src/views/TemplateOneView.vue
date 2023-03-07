@@ -41,7 +41,7 @@
                 <div class="content_body_information_right">
                   <div class="content_body_information_rightbox">
                     <img class="content_body_information_viod" v-if="(index + 1) < 4" :src="require(`../assets/images/${(index + 1) === 1 ? 9 : (index + 1) === 2 ? 13 : 17}.png`)" alt="">
-                    <img class="content_body_information_solid" :src="require(`../assets/images/${(index + 1) === 1 ? 8 : 12}.png`)" alt="">
+                    <img @click="like()" class="content_body_information_solid" :src="require(`../assets/images/${(index + 1) === 1 ? 8 : 12}.png`)" alt="">
                   </div>
                 </div>
               </div>
@@ -125,6 +125,7 @@ import { fether } from '@/utils/fether';
 import { reactive , ref } from 'vue';
 import { useStore } from "vuex";
 import { useRoute } from 'vue-router'
+import base64 from 'base-64'
 import {HOST}from '../ENV'
 const $route = useRoute()
 const $store = useStore()
@@ -264,6 +265,23 @@ const activeRull = async () => {
   // if (result.code === 200) {
   //   console.log(result);
   // }
+}
+
+// 点赞
+const like = async () =>{
+  let keys = await getKey();
+  let sercet = await encryption(keys);
+  return sercet
+}
+
+// 加密
+const encryption = async (key) =>{
+  return base64.encode(key+'vote');
+}
+
+// 请求key
+const getKey = () =>{
+  return fetch(`${HOST}/keys/?open_id=00001`).then(res=>res.json()).then(data=>{if(data.code === 200){return data.key}})
 }
 </script>
 
