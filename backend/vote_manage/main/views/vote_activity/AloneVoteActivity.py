@@ -17,7 +17,7 @@ class AloneVoteActivity(APIView):
             voteObj = models.VoteActivity.objects.filter(vote_id=voteId).first()
             if voteObj is None:
                 return JsonResponse({'code': 400, 'msg': 'not found'})
-            # ret['template_id'] = voteObj.template_id
+            
             ret['data'] = serializers.serialize('json', [voteObj])
 
         except Exception as e:

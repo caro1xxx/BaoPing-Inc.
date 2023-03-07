@@ -20,10 +20,11 @@ class VoteTargetOp:
             return ok, msg
         return True, 'ok'
     
-    def checkDataOnUpdate(self, key, value, pk):
+    def checkDataOnUpdate(self, name, detail, count, pk):
         validate = Validate()
-        validate.addCheck('checkIsNotEmpty', key, 'key不能为空')
-        validate.addCheck('checkIsNotEmpty', value, 'value不能为空')
+        validate.addCheck('checkIsNotEmpty', name, 'name不能为空')
+        validate.addCheck('checkIsNotEmpty', detail, 'detail不能为空')
+        validate.addCheck('checkIsNotEmpty', count, 'count不能为空')
         validate.addCheck('checkIsNotEmpty', pk, 'pk不能为空')
         ok, msg = validate.startCheck()
         if not ok:

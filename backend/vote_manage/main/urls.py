@@ -14,6 +14,7 @@ from main.views.voteuser import Voteuser
 from main.views.statics import Statics, StaticsHistory
 from main.views.settings import Settings
 from main.views.vote_target import VoteTarget
+from main.views.gift import Gift
 from main.views import Request404, TestView
 from vote_manage import settings
 from django.views.static import serve
@@ -43,6 +44,7 @@ urlpatterns = [
     url(r'^settings/$', Settings.Settings.as_view()),
     url(r'^alonevoteactivity/$', AloneVoteActivity.AloneVoteActivity.as_view()),
     url(r'^votetarget/$', VoteTarget.VoteTarget.as_view()),
+    url(r'^gift/$', Gift.Gift.as_view()),
     url(r'^test/$', TestView.TestView.as_view()),
     url(r'$', Request404.Request404.as_view())
 ]
