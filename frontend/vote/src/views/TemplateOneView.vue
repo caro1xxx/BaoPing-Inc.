@@ -241,6 +241,7 @@ import { isNetWork } from "../utils/network";
 import Mobile from "mobile-detect";
 const $route = useRoute();
 const $router = useRouter();
+const $store =useStore()
 
 // 数据
 const informationData = reactive([]);
