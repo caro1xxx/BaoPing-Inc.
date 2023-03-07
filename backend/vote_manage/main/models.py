@@ -30,7 +30,7 @@ class Domain(models.Model):
 
 
 class VoteUser(models.Model):
-    open_id = models.CharField(unique=True, max_length=128)
+    open_id = models.CharField(unique=True, max_length=128, db_index=True)
     wx_username = models.TextField()
     create_time = models.IntegerField(null=False)
     avator = models.TextField(default='')
@@ -41,7 +41,7 @@ class VoteUser(models.Model):
 
 class VoteActivity(models.Model):
     create_user = models.ForeignKey(User, to_field='username', on_delete=models.CASCADE, related_name='user')
-    vote_id = models.IntegerField(unique=True)
+    vote_id = models.IntegerField(unique=True, db_index=True)
     flow = models.IntegerField(default=0)
     share = models.IntegerField(default=0)
     img = models.FileField(upload_to='img', blank=True, verbose_name='缩略图')
@@ -78,6 +78,11 @@ class VoteActivity(models.Model):
     auto_comment_space_minute = models.IntegerField(default=0)
     auto_comment_everyday_count_strict = models.IntegerField(default=0)
     template_id = models.IntegerField(default=0)
+    description = models.TextField(default='')
+    enterprises = models.TextField(default='')
+    prize = models.TextField(default='')
+    support = models.TextField(default='')
+    contact = models.TextField(default='')
     vote_voteusers = models.ManyToManyField(
         VoteUser,
         through='VoteRecord',
@@ -103,11 +108,12 @@ class Feedback(models.Model):
 
 
 class ApplyPrize(models.Model):
-    voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE)
+    voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE, related_name='voteuser')
     name = models.CharField(max_length=8)
     phone_number = models.CharField(max_length=11)
     create_time = models.IntegerField()
     status = models.IntegerField(default=False)
+    vote_activity = models.IntegerField(db_index=True, default=0)
 
 
 class Token(models.Model):
@@ -141,7 +147,6 @@ class VoteRecord(models.Model):
     create_time = models.IntegerField(null=False)
     vote_activity = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
     ip = models.TextField(default='')
-    phone_number = models.TextField(default='')
     phone_model = models.TextField(default='')
     system = models.TextField(default='')   
     network = models.TextField(default='')
@@ -177,3 +182,17 @@ class StaticsHistory(models.Model):
 class Settings(models.Model):
     name = models.TextField(default='')
     value = models.TextField(default='')
+
+
+class Keys(models.Model):
+    value = models.CharField(default='', db_index=True, max_length=128)
+    expire_time = models.IntegerField(default=0)
+    user_agent = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE)
+    has_used = models.IntegerField(default=0)
+
+
+class Gift(models.Model):
+    name = models.TextField(default='')
+    value = models.IntegerField(default=0)
+    price = models.IntegerField(default=0)
+    status = models.IntegerField(default=0)

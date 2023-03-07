@@ -64,6 +64,10 @@ class VoteTarget(APIView):
             detail = json.loads(request.body).get('detail', None)
             count = json.loads(request.body).get('count', None)
 
+            ok, msg = VoteTargetOp().checkDataOnUpdate(name, detail, count, pk)
+            if not ok:
+                return JsonResponse({'code': 400, 'msg': msg})
+
             voteTargetObj = models.VoteTarget.objects.filter(pk=pk).first()
             if voteTargetObj is None:
                 return JsonResponse({'code': 400, 'msg': 'not found'})

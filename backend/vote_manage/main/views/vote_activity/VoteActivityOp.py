@@ -109,6 +109,11 @@ class VoteActivityOp:
         validate = Validate()
         validate.addCheck('checkIsNotEmpty', data.get('template_id', None), '模版ID不能为空')
         validate.addCheck('checkIsNumber', data.get('template_id', None), '模版ID错误')
+        validate.addCheck('checkIsNotEmpty', data.get('description', None), '描述不能为空')
+        validate.addCheck('checkIsNotEmpty', data.get('enterprises', None), '企业不能为空')
+        validate.addCheck('checkIsNotEmpty', data.get('prize', None), '奖品不能为空')
+        validate.addCheck('checkIsNotEmpty', data.get('contact', None), '联系方式不能为空')
+        validate.addCheck('checkIsNotEmpty', data.get('support', None), '支持方式不能为空')
         ok, msg = validate.startCheck()
         return ok, msg
 
@@ -156,6 +161,11 @@ class VoteActivityOp:
     def updateTemplateData(self, data):
         voteActivityObj = models.VoteActivity.objects.filter(vote_id=data.get('vote_id', None)).first()
         voteActivityObj.template_id = data.get('template_id', None)
+        voteActivityObj.description = data.get('description', None)
+        voteActivityObj.enterprises = data.get('enterprises', None)
+        voteActivityObj.prize = data.get('prize', None)
+        voteActivityObj.contact = data.get('contact', None)
+        voteActivityObj.support = data.get('support', None)
         voteActivityObj.save()
 
     def queryAllVoteuser(self, vote_id):
