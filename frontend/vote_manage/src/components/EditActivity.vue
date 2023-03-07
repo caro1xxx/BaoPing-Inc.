@@ -278,7 +278,7 @@ const getStorage = () => {
         : "全国";
       activitySettingOptions[5].value = obj.visit_count;
       activitySettingOptions[6].value = obj.visit_count_multiple;
-      voteSetting[0].value = obj.vote_count_restrict;
+      // voteSetting[0].value = obj.vote_count_restrict;
       voteSetting[1].value = obj.today_start_voteuser
         ? obj.today_start_voteuser
         : "空";
@@ -341,10 +341,10 @@ const activitySettingOptions = reactive([
 // 投票设置
 const voteSetting = reactive([
   {
-    label: "票数限制(*选手票数在*小时内达到*票后锁定*分钟)",
+    label: "",
     key: 1,
-    value: "{}",
-    type: "limit",
+    value: "[]",
+    type: "abc",
   },
   { label: "今日之星选手id(openid)", key: 7, value: "", type: "text" },
   { label: "每日今日之星更新时间", key: 5, value: [], type: "time" },

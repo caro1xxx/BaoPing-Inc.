@@ -225,17 +225,17 @@ const goPage = (index) => {
         item: [
           {
             name: "系统账户",
-            description: "以直观的方式和图标显示总体运营数据",
+            description: "该后端管理项目的所有使用者",
             path: "/system/systemuser",
           },
           {
             name: "系统设置",
-            description: "以直观的方式和图标显示总体运营数据",
+            description: "包含微信支付Api,商户号等设置",
             path: "/system/systemsetting",
           },
           {
             name: "全局域名",
-            description: "以直观的方式和图标显示总体运营数据",
+            description: "所有正在使用中的域名",
             path: "/system/gloabldomain",
           },
         ],
@@ -248,12 +248,12 @@ const goPage = (index) => {
         item: [
           {
             name: "反馈信息",
-            description: "以直观的方式和图标显示总体运营数据",
+            description: "投票用户提交的建议以及Bug",
             path: "/message/feedback",
           },
           {
             name: "奖品申请",
-            description: "以直观的方式和图标显示总体运营数据",
+            description: "获得荣誉者申请的奖品工单",
             path: "/message/prizeapplication",
           },
         ],
@@ -266,13 +266,18 @@ const goPage = (index) => {
         item: [
           {
             name: "投票活动",
-            description: "以直观的方式和图标显示总体运营数据",
+            description: "对所有投票活动进行增删改查操作",
             path: "/vote/activity",
           },
           {
             name: "投票记录",
-            description: "以直观的方式和图标显示总体运营数据",
+            description: "直观了解活动点赞流量",
             path: "/vote/voterecord",
+          },
+          {
+            name: "礼物管理",
+            description: "活动所展示售卖的礼物列表",
+            path: "/vote/prize",
           },
         ],
         navName: "投票管理",
@@ -284,7 +289,7 @@ const goPage = (index) => {
         item: [
           {
             name: "支付记录",
-            description: "以直观的方式和图标显示总体运营数据",
+            description: "投票用户所购买的礼物对应的订单详情",
             path: "/order/paymentrecord",
           },
         ],
@@ -297,7 +302,7 @@ const goPage = (index) => {
         item: [
           {
             name: "投票用户",
-            description: "以直观的方式和图标显示总体运营数据",
+            description: "管理所有参与过该服务所提供的活动的用户列表",
             path: "/order/voteparent",
           },
         ],
