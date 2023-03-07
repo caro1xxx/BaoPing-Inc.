@@ -22,21 +22,22 @@
         </div>
         <div class="content_body_information">
           <div class="content_body_information_item"
+            @click="athleteConfig($event, item.pk)"
             v-for="(item, index) in informationData" :key="index">
             <img class="content_body_information_background"
             :src="require(`../assets/images/${(index + 1) === 1 ? 6 : (index + 1) === 2 ? 10 : (index + 1) === 3 ? 14 : 21}.png`)" alt="">
             <div class="content_body_information_body">
               <div class="content_body_information_title">
                 <div style="width: 80px;"></div>
-                <div v-if="(index + 1) > 2" class="content_body_information_name">{{ item.informationName }}</div>
+                <div v-if="(index + 1) > 2" class="content_body_information_name">{{ item.name }}</div>
               </div>
               <div class="content_body_information_content">
                 <div class="content_body_information_left">
-                  <img :src="item.imgUrl" alt="">
+                  <img :src="`${HOST}/media/${item.avator}`" alt="">
                 </div>
                 <div class="content_body_information_center">
                   <div>编号：{{ item.informationNum }}号</div>
-                  <div>支持：<span>{{ item.sustain }}</span>次</div>
+                  <div>支持：<span>{{ item.count }}</span>次</div>
                 </div>
                 <div class="content_body_information_right">
                   <div class="content_body_information_rightbox">
@@ -123,24 +124,15 @@
 <script setup>
 import { fether } from '@/utils/fether';
 import { reactive , ref } from 'vue';
-import { useStore } from "vuex";
-import { useRoute } from 'vue-router'
 import base64 from 'base-64'
+import { useRoute, useRouter } from 'vue-router'
 import {HOST}from '../ENV'
 const $route = useRoute()
+const $router = useRouter()
 const $store = useStore()
 
 // 数据
-const informationData = reactive([
-  {informationName: '河南扬程电力消防有限公司', informationNum: 8,sustain: 455,imgUrl: ''},
-  {informationName: '河南扬程电力消防有限公司', informationNum: 8,sustain: 455,imgUrl: ''},
-  {informationName: '河南扬程电力消防有限公司', informationNum: 8,sustain: 455,imgUrl: ''},
-  {informationName: '河南扬程电力消防有限公司', informationNum: 8,sustain: 455,imgUrl: ''},
-  {informationName: '河南扬程电力消防有限公司', informationNum: 8,sustain: 455,imgUrl: ''},
-  {informationName: '河南扬程电力消防有限公司', informationNum: 8,sustain: 455,imgUrl: ''},
-  {informationName: '河南扬程电力消防有限公司', informationNum: 8,sustain: 455,imgUrl: ''},
-  {informationName: '河南扬程电力消防有限公司', informationNum: 8,sustain: 455,imgUrl: ''},
-])
+const informationData = reactive([])
 
 const uploadImg = ref('')
 const headerImg = ref('')
@@ -177,6 +169,20 @@ const doenProp = () => {
     enrollStatus.isActiveRules = !enrollStatus.isActiveRules
   }
 }
+
+//获取选手列表
+const getInformation = async () => {
+  let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}`)
+  result.map(item => {
+    informationData.push({...item.fields, pk: item.pk, model: item.model})
+  })
+  // 数组排序
+  informationData.sort((a, b) => {
+    return b.count - a.count
+  })
+  console.log(informationData);
+}
+getInformation()
 
 // 点击按钮分发到file click事件
 const dispatchUpload = () => {
@@ -237,7 +243,7 @@ const submit = async () => {
 const activeRull = async () => {
   enrollStatus.isActiveRules = !enrollStatus.isActiveRules
   activeRules = $store.state.settings.get('description')
-  
+
   // 添加用户信息
   // let result = await fether('/voteuser/', 'post', {
   //   data: {
@@ -283,6 +289,17 @@ const encryption = async (key) =>{
 const getKey = () =>{
   return fetch(`${HOST}/keys/?open_id=00001`).then(res=>res.json()).then(data=>{if(data.code === 200){return data.key}})
 }
+const athleteConfig = (e, value) => {
+  if (e.target.tagName === 'DIV') {
+    console.log(1);
+    $router.push({
+      path: '/three',
+      query: {
+        pk: value
+      }
+    })
+  }
+  }
 </script>
 
 <style lang="scss" scoped>

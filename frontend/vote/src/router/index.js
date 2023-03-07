@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import TemplateOneView from "../views/TemplateOneView.vue";
-import TemplateTwoView from '../views/TemplateTwoView.vue'
+import TemplateTwoView from '../views/TemplateTwoView.vue';
+import TemplateThreeView from '../views/TemplateThreeView.vue'
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
     path: "/two",
     name: "TemplateTwoView",
     component: TemplateTwoView,
+  },
+  {
+    path: "/three",
+    name: "TemplateThreeView",
+    component: TemplateThreeView,
   },
 ];
 
