@@ -9,10 +9,10 @@
             <span>{{ scope.$index }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="open_id" label="openid(用户名)" />
+        <el-table-column prop="open_id" label="用户名" />
         <el-table-column prop="avator" label="姓名" />
         <el-table-column prop="open_id" label="open_id" />
-        <el-table-column prop="create_time" label="申请时间">
+        <el-table-column prop="create_time" label="首次创建时间">
           <template #default="scope">
             <span>{{ getTime(scope.row.create_time) }}</span>
           </template>

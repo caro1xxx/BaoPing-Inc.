@@ -12,6 +12,7 @@ import ActivityView from "../views/ActivityView.vue";
 import VoteRecordView from "../views/VoteRecordView.vue";
 import PaymentRecordView from "../views/PaymentRecordView.vue";
 import VoteParentView from "../views/VoteParentView.vue";
+import PrizeView from "../views/PrizeView.vue";
 
 const routes = [
   // 登录注册
@@ -67,6 +68,12 @@ const routes = [
     path: "/vote/voterecord",
     name: "VoteRecordView",
     component: VoteRecordView,
+  },
+  // 礼物管理
+  {
+    path: "/vote/prize",
+    name: "PrizeView",
+    component: PrizeView,
   },
   // 支付
   {

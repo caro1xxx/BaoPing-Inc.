@@ -3,9 +3,8 @@
 </template>
 
 <script setup>
-import * as echarts from "echarts"
-import { reactive, onMounted, defineProps  } from "vue";
-
+import * as echarts from "echarts";
+import { reactive, onMounted } from "vue";
 
 // 接收数据
 const props = defineProps({
@@ -17,45 +16,45 @@ const props = defineProps({
 
 console.log();
 onMounted(() => {
-  const isBroken = reactive(['1月', '2月', '3月', '4月', '5月'])
-  const isBrokenValue = reactive([20, 41, 15, 33, 25])
-  const chartDom = document.getElementById('siderbar_statistical_chart1');
+  const isBroken = reactive(["1月", "2月", "3月", "4月", "5月"]);
+  const isBrokenValue = reactive([20, 41, 15, 33, 25]);
+  const chartDom = document.getElementById("siderbar_statistical_chart1");
   var myChart = echarts.init(chartDom);
   var option;
   option = {
     title: {
-      text: '标题'
+      text: "标题",
     },
     tooltip: {
-      trigger: 'axis'
+      trigger: "axis",
     },
     xAxis: {
-      type: 'category',
+      type: "category",
       data: isBroken,
-      name: '时间'
+      name: "时间",
     },
     yAxis: {
-      type: 'value',
-      name: '数量'
+      type: "value",
+      name: "数量",
     },
     series: [
       {
         data: isBrokenValue,
-        type: 'line'
-      }
-    ]
+        type: "line",
+      },
+    ],
   };
-  
+
   option && myChart.setOption(option);
   // 监听浏览器页面缩放事件
   window.addEventListener("resize", function () {
-      myChart.resize();
+    myChart.resize();
   });
-})
+});
 </script>
 
 <style lang="scss" scoped>
-#siderbar_statistical_chart1{
+#siderbar_statistical_chart1 {
   width: 100%;
   height: 100%;
 }

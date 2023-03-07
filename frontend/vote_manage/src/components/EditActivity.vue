@@ -85,6 +85,13 @@
             <el-radio label="1" size="large">模板1</el-radio>
             <el-radio label="2" size="large">模板2</el-radio>
           </el-radio-group>
+          <div v-for="item in voteDetail" style="margin: 10px 0px">
+            <label>{{ item.name }}</label>
+            <div style="font-size: 13px; color: #cecece; position: relative">
+              <div class="detailContent">{{ item.value }}</div>
+              <span @click="showEidt(item.key)" class="editBtn">编辑</span>
+            </div>
+          </div>
         </div>
       </div>
       <div class="body_body_body" v-else-if="head[2].isClick">
@@ -223,6 +230,10 @@
         alt=""
       />
     </div>
+    <Edit
+      v-if="editValue.state"
+      :data="{ value: editValue.value, close: editValue.close }"
+    />
   </div>
 </template>
 
@@ -232,6 +243,7 @@ import jsCookie from "js-cookie";
 import { reactive, ref } from "vue";
 import { useStore } from "vuex";
 import { stampToUTCtime, timeToStamp } from "../utils/stampTime";
+import Edit from "./Edit.vue";
 const $store = new useStore();
 
 // 获取localStorage内的活动数据
@@ -241,6 +253,11 @@ const getStorage = () => {
     if (result[i].fields.vote_id === $store.state.voteManagePopup.target) {
       let obj = { ...result[i].fields };
       pageTemplate.value = obj.template_id + "";
+      voteDetail[0].value = !obj.description ? "空" : obj.description;
+      voteDetail[1].value = !obj.enterprises ? "空" : obj.enterprises;
+      voteDetail[2].value = !obj.prize ? "空" : obj.prize;
+      voteDetail[3].value = !obj.support ? "空" : obj.support;
+      voteDetail[4].value = !obj.contact ? "空" : obj.contact;
       activitySettingOptions[0].value[0] = stampToUTCtime(obj.create_time);
       activitySettingOptions[0].value[1] = stampToUTCtime(obj.expire_time);
       activitySettingOptions[1].value[0] = stampToUTCtime(
@@ -261,7 +278,7 @@ const getStorage = () => {
         : "全国";
       activitySettingOptions[5].value = obj.visit_count;
       activitySettingOptions[6].value = obj.visit_count_multiple;
-      voteSetting[0].value = obj.vote_count_restrict;
+      // voteSetting[0].value = obj.vote_count_restrict;
       voteSetting[1].value = obj.today_start_voteuser
         ? obj.today_start_voteuser
         : "空";
@@ -301,7 +318,7 @@ const getStorage = () => {
 // bar
 const head = reactive([
   { name: "活动设置", key: 1, isClick: true, label: "activity_settings" },
-  { name: "页面模板", key: 2, isClick: false, label: "style" },
+  { name: "页面设置", key: 2, isClick: false, label: "style" },
   { name: "投票设置", key: 3, isClick: false, label: "vote_settings" },
   { name: "自动化", key: 4, isClick: false, label: "auto_comment_settings" },
 ]);
@@ -324,10 +341,10 @@ const activitySettingOptions = reactive([
 // 投票设置
 const voteSetting = reactive([
   {
-    label: "票数限制(*选手票数在*小时内达到*票后锁定*分钟)",
+    label: "",
     key: 1,
-    value: "{}",
-    type: "limit",
+    value: "[]",
+    type: "abc",
   },
   { label: "今日之星选手id(openid)", key: 7, value: "", type: "text" },
   { label: "每日今日之星更新时间", key: 5, value: [], type: "time" },
@@ -343,6 +360,24 @@ const voteSetting = reactive([
 ]);
 // 模板
 const pageTemplate = ref(1);
+const voteDetail = reactive([
+  { name: "活动说明", value: "空", key: 0 },
+  { name: "荣入企业", value: "空", key: 1 },
+  { name: "荣誉奖品", value: "空", key: 2 },
+  { name: "支持方式", value: "空", key: 3 },
+  { name: "联系方式", value: "空", key: 4 },
+]);
+const editValue = reactive({
+  state: false,
+  value: "",
+  currentVoteOptionsKey: 0,
+  close: (change) => {
+    voteDetail[editValue.currentVoteOptionsKey].value = change;
+    editValue.state = false;
+    saveEditData();
+  },
+});
+
 // 自动化
 const autoMation = reactive([
   { label: "自动评论选手id(openid)", key: 1, value: "", type: "text" },
@@ -351,6 +386,13 @@ const autoMation = reactive([
   { label: "每*分钟1条评论", key: 2, value: "", type: "number" },
   { label: "每日评论上限", key: 3, value: "", type: "number" },
 ]);
+
+// 显示文本编辑器
+const showEidt = (key) => {
+  editValue.currentVoteOptionsKey = key;
+  editValue.value = voteDetail[key].value;
+  editValue.state = true;
+};
 
 // 点击head
 const onClickBar = (key) => {
@@ -423,6 +465,11 @@ const saveEditData = async () => {
           content: "template",
           template_id: pageTemplate.value,
           vote_id: $store.state.voteManagePopup.target,
+          description: voteDetail[0].value,
+          enterprises: voteDetail[1].value,
+          prize: voteDetail[2].value,
+          support: voteDetail[3].value,
+          contact: voteDetail[4].value,
         };
       }
       let result = await fether("/voteactivity/", "put", {
@@ -520,5 +567,18 @@ getStorage();
   width: 30px;
   height: 30px;
   z-index: 5;
+}
+.detailContent {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 80%;
+}
+.editBtn {
+  position: absolute;
+  color: #3f9eff;
+  cursor: pointer;
+  top: 0px;
+  right: 10px;
 }
 </style>

@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { defineProps, reactive } from "vue";
+import { reactive } from "vue";
 import { useStore } from "vuex";
 import { Validator } from "@/utils/validator";
 const $store = new useStore();
