@@ -360,38 +360,11 @@ const submit = async () => {
 const activeRull = async () => {
   enrollStatus.isActiveRules = !enrollStatus.isActiveRules;
   activeRules = $store.state.settings.get("description");
-
-  // 添加用户信息
-  // let result = await fether('/voteuser/', 'post', {
-  //   data: {
-  //     open_id: "wxtest6",
-  //     wx_username: "xiaotest",
-  //     avator: "2"
-  //   }
-  // })
-  // if (result.code === 200) {
-  //   console.log(result);
-  // }
-
-  // 点赞
-  // let result = await fether('/support/', 'post', {
-  //   data: {
-  //     open_id: "00009",
-  //     vote_target_id: "13",
-  //     vote_id: "470162",
-  //     phone_number: "17743894323",
-  //     phone_model: "iphone4",
-  //     system: "ios",
-  //     network: "wifi"
-  //   }
-  // })
-  // if (result.code === 200) {
-  //   console.log(result);
-  // }
 };
 
 // 点赞
 const like = async (target) => {
+  console.log(target);
   let keys = await getKey();
   let sercet = await encryption(keys);
   const md = new Mobile(navigator.userAgent);
