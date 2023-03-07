@@ -74,6 +74,8 @@ export default createStore({
     filterData: {},
     // 获取管理用户添加投票选手
     voteManageAddUser: { state: false, vote_id: "" },
+    // 礼物新增框
+    giftAdd: { state: false, value: "" },
   },
   getters: {},
   mutations: {
@@ -198,9 +200,12 @@ export default createStore({
     },
     // 保存搜索筛选的数据
     changeVoteManageAddUser(state, payload) {
-      console.log(state.voteManageAddUser.state);
       state.voteManageAddUser.state = !state.voteManageAddUser.state;
       state.voteManageAddUser.vote_id = payload;
+    },
+    // 改变礼物新增框
+    changeGiftAdd(state) {
+      state.giftAdd.state = !state.giftAdd.state;
     },
   },
   actions: {

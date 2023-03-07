@@ -22,6 +22,7 @@
     <VotePayOrder v-if="$store.state.voteManagerPayOrder" />
     <Log v-if="$store.state.logShowState" />
     <AddVoteUser v-if="$store.state.voteManageAddUser.state" />
+    <AddGiftPopup v-if="$store.state.giftAdd.state" />
   </div>
 </template>
 
@@ -35,6 +36,7 @@ import AuthView from "./views/AuthView.vue";
 import EditActivity from "./components/EditActivity.vue";
 import AddActivity from "./components/AddActivity.vue";
 import AddVoteUser from "./components/AddVoteUser.vue";
+import AddGiftPopup from "./components/AddGiftPopup.vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
 import UpdateRealm from "./components/UpdateRealm.vue";
