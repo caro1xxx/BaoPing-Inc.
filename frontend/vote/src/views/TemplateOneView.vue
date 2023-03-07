@@ -1,5 +1,6 @@
 <template>
-  <div class="body">
+  <athleteInformation v-if="enrollStatus.isAthleteConfig" @returnPage="getChild" :data="informationKey" />
+  <div class="body" v-else>
     <div class="content">
       <div class="content_top">
         <div class="content_top_center">
@@ -127,9 +128,10 @@ import { reactive , ref } from 'vue';
 import { useStore } from "vuex";
 import { useRoute, useRouter } from 'vue-router'
 import {HOST}from '../ENV'
+import athleteInformation from '@/components/athleteInformation.vue';
 const $route = useRoute()
 const $router = useRouter()
-const $store = useStore()
+const $store = useStore();
 
 // 数据
 const informationData = reactive([])
@@ -137,6 +139,7 @@ const informationData = reactive([])
 const uploadImg = ref('')
 const headerImg = ref('')
 let activeRules = ''
+let informationKey = 0
 
 const fileData = new FormData()
 
@@ -148,10 +151,11 @@ const enrollData = reactive({
   file: fileData
 })
 
-// 弹窗状态
+// 状态
 const enrollStatus = reactive({
   isEnrollProp: false,
-  isActiveRules: false
+  isActiveRules: false,
+  isAthleteConfig: false
 })
 
 //我要报名
@@ -170,6 +174,11 @@ const doenProp = () => {
   }
 }
 
+//获取子级传递过来的数据
+const getChild = () =>{
+  enrollStatus.isAthleteConfig = false
+}
+
 //获取选手列表
 const getInformation = async () => {
   let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}`)
@@ -180,7 +189,6 @@ const getInformation = async () => {
   informationData.sort((a, b) => {
     return b.count - a.count
   })
-  console.log(informationData);
 }
 getInformation()
 
@@ -275,7 +283,9 @@ const activeRull = async () => {
 
 const athleteConfig = (e, value) => {
   if (e.target.tagName === 'DIV') {
-    console.log(1);
+    enrollStatus.isAthleteConfig = true
+    // $store.commit('changeAthlete', true)
+    informationKey = value
     // $router.push({
     //   path: '/three',
     //   query: {
