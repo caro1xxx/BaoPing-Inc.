@@ -121,6 +121,11 @@ const saveEidt = async (target) => {
     ...target,
     token: jsCookie.get("token"),
   });
+  if (result.code === 200) {
+    tableData.forEach((item, index) => {
+      tableData[index].isEdit = false;
+    });
+  }
   await $store.dispatch("GlobalMessageActions", result.msg);
 };
 </script>

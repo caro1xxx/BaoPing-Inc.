@@ -4,7 +4,7 @@
 
 <script setup>
 import * as echarts from "echarts";
-import { reactive, watch, defineProps } from "vue";
+import { reactive, watch } from "vue";
 import { parseStampTime } from "../utils/stampTime.js";
 
 // 接收数据
