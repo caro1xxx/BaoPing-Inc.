@@ -10,8 +10,8 @@
       </div>
       <div class="content_body">
         <div class="content_body_persennum">
-          <div class="content_body_persennum_item"><img :style="{ width: '20px',height: '24px' }" src="../assets/images/3.png" alt="">访问数：<span>2.5w</span></div>
-          <div class="content_body_persennum_item"><img :style="{ width: '20px',height: '24px' }" src="../assets/images/4.png" alt="">报名数：<span>45</span></div>
+          <div class="content_body_persennum_item"><img :style="{ width: '20px',height: '22px' }" src="../assets/images/3.png" alt="">访问数：<span>2.5w</span></div>
+          <div class="content_body_persennum_item"><img :style="{ width: '20px',height: '22px' }" src="../assets/images/4.png" alt="">报名数：<span>45</span></div>
         </div>
         <div class="content_body_search">
           <input type="text" placeholder="搜索名称或编号" />
@@ -64,17 +64,70 @@
         <img src="../assets/images/25.png" style="width: 35px; height:50px" alt="">
       </div>
       <div class="footer_item2 footer_color1">
-        <button>活动规则</button>
+        <button @click="activeRull">活动规则</button>
       </div>
       <div class="footer_item2 footer_color2">
-        <button>我要报名</button>
+        <button @click="goEnroll">我要报名</button>
+      </div>
+    </div>
+    <!-- 报名弹窗 -->
+    <div class="enroll_prop" v-if="enrollStatus.isEnrollProp">
+      <div class="enroll_prop_form">
+        <div>
+          <h3>报名信息</h3>
+          <div class="enroll_prop_form_item">
+            <label>头像</label>
+            <div style="display: flex;">
+              <input
+                type="file"
+                id="fileImage"
+                ref="uploadImg"
+                style="display: none;"
+                name="fileImage"
+                @change="showImg">
+                <div @click="dispatchUpload" class="uploadReplace">
+                  <div>+</div>
+                </div>
+                <img id="headerImg" style="width: 104px;height: 104px;" v-if="headerImg" :src="headerImg" alt="" />
+            </div>
+          </div>
+          <div class="enroll_prop_form_item">
+            <label>个人描述</label>
+            <textarea name="textarea" @change="getDescribe" cols="50" rows="10"></textarea>
+          </div>
+          <div class="enroll_prop_form_item">
+            <label>选手名称</label>
+            <input type="text" @change="athleteName">
+          </div>
+          <div class="enroll_prop_form_item">
+            <label>手机号</label>
+            <input type="text" @change="getPhone">
+          </div>
+        </div>
+        <div class="enroll_prop_form_button">
+          <button style="color: black;" @click="doenProp">取消</button>
+          <button style="background-color:#409eff;" @click="submit">确定</button>
+        </div>
+        <img class="downImg" @click="doenProp" style="width: 30px;height: 30px;" src="../assets/images/39.png" alt="">
+      </div>
+    </div>
+    <div v-if="enrollStatus.isActiveRules" class="enroll_prop">
+      <div class="enroll_prop_form">
+        <div ref="activeRules" v-html="activeRules"></div>
+        <img class="downImg" @click="doenProp" style="width: 30px;height: 30px;" src="../assets/images/39.png" alt="">
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { fether } from '@/utils/fether';
+import { reactive , ref } from 'vue';
+import { useStore } from "vuex";
+import { useRoute } from 'vue-router'
+import {HOST}from '../ENV'
+const $route = useRoute()
+const $store = useStore()
 
 // 数据
 const informationData = reactive([
@@ -88,6 +141,130 @@ const informationData = reactive([
   {informationName: '河南扬程电力消防有限公司', informationNum: 8,sustain: 455,imgUrl: ''},
 ])
 
+const uploadImg = ref('')
+const headerImg = ref('')
+let activeRules = ''
+
+const fileData = new FormData()
+
+// 表单数据
+const enrollData = reactive({
+  imgUrl: '',
+  describe: '',
+  athletename: '',
+  file: fileData
+})
+
+// 弹窗状态
+const enrollStatus = reactive({
+  isEnrollProp: false,
+  isActiveRules: false
+})
+
+//我要报名
+const goEnroll = () => {
+  enrollStatus.isEnrollProp = !enrollStatus.isEnrollProp
+  //清除图片
+  headerImg.value = ''
+}
+// 取消弹窗
+const doenProp = () => {
+  if (enrollStatus.isEnrollProp === true) {
+    enrollStatus.isEnrollProp = !enrollStatus.isEnrollProp
+  } 
+  if (enrollStatus.isActiveRules === true) {
+    enrollStatus.isActiveRules = !enrollStatus.isActiveRules
+  }
+}
+
+// 点击按钮分发到file click事件
+const dispatchUpload = () => {
+  let box = document.getElementById("fileImage");
+  box.click();
+};
+//获取图片路径
+const showImg = () => {
+  let file = uploadImg.value.files[0]
+  if (file.type !== 'image/png') {
+    alert('请上传图片类型文件')
+    return
+  }
+  const reads = new FileReader();
+  reads.readAsDataURL(file);
+  fileData.append('avator', file)
+  reads.onload = function (e) {
+    headerImg.value = e.target.result
+    enrollData.imgUrl = e.target.result
+  }
+}
+
+//获取描述数据
+const getDescribe = (e) => {
+  enrollData.describe = e.target.value
+}
+//获取选手名称
+const athleteName = (e) => {
+  enrollData.athletename = e.target.value
+}
+//获取手机号
+const getPhone = (e) => {
+  enrollData.phone_number = e.target.value
+}
+//提交
+const submit = async () => {
+  let voteId = $route.query.vote_id
+  fileData.append('vote_id', voteId)
+  if (enrollData.athletename.length) {
+    fileData.append('name', enrollData.athletename)
+  } else {
+    alert('请输入选手名称')
+  }
+  if (enrollData.describe.length) {
+    fileData.append('detail', enrollData.describe)
+  } else {
+    alert('请输入个人描述')
+  }
+  fetch(`${HOST}/votetarget/`, {method:'post',body:fileData})
+  .then(res=>res.json())
+  .then(data=>{
+    if (data.code === 200) {
+      enrollStatus.isEnrollProp = false
+    }
+  })
+}
+
+const activeRull = async () => {
+  enrollStatus.isActiveRules = !enrollStatus.isActiveRules
+  activeRules = $store.state.settings.get('description')
+  
+  // 添加用户信息
+  // let result = await fether('/voteuser/', 'post', {
+  //   data: {
+  //     open_id: "wxtest6",
+  //     wx_username: "xiaotest",
+  //     avator: "2"
+  //   }
+  // })
+  // if (result.code === 200) {
+  //   console.log(result);
+  // }
+
+  // 点赞
+  // let result = await fether('/support/', 'post', {
+  //   data: {
+  //     open_id: "00009",
+  //     vote_target_id: "13",
+  //     vote_id: "470162",
+  //     phone_number: "17743894323",
+  //     phone_model: "iphone4",
+  //     system: "ios",
+  //     network: "wifi"
+  //   }
+  // })
+  // if (result.code === 200) {
+  //   console.log(result);
+  // }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -130,7 +307,7 @@ const informationData = reactive([
   width: 41%;
   padding: 10px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   font-size: 10px;
   img{
     margin-right: 10px;
@@ -144,6 +321,10 @@ const informationData = reactive([
   justify-content: space-between;
   background-color: #f3f3f3;
   padding: 15px;
+  input{
+    width: 65%;
+    padding: 10px;
+  }
 }
 .content_body_search_button{
   width: 95px;
@@ -161,11 +342,6 @@ const informationData = reactive([
   color: #ffffff;
   border-radius: 5px 0px 5px 0px;
   font-size: 9px;
-}
-input{
-  width: 65%;
-  padding: 10px;
-  border: 1px solid #f3f3f3;
 }
 button{
   width: 100%;
@@ -277,5 +453,70 @@ button{
 }
 .footer_color2 > button{
   background-color: blue;
+}
+
+// 弹窗样式
+.enroll_prop{
+  position: absolute;
+  top: 0px;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-color: #00000074;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+.enroll_prop_form{
+  width: 80%;
+  height: 80%;
+  background-color: #FFFFFF;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.enroll_prop_form_item{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+.enroll_prop_form_item > label {
+  margin-bottom: 10px;
+}
+.enroll_prop_form_item > input{
+  padding: 10px 0px;
+}
+.downImg{
+  position: absolute;
+  top: 5%;
+  right: 5%;
+}
+.uploadReplace {
+  height: 100px;
+  width: 100px;
+  border: 2px dashed #cecece;
+  border-radius: 3px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  div {
+    position: absolute;
+    z-index: 2;
+    font-size: 30px;
+    color: #cecece;
+  }
+}
+.enroll_prop_form_button{
+  display: flex;
+  justify-content: flex-end;
+  button{
+    width: 20%;
+    height: 30px;
+    margin-right: 10px;
+  }
 }
 </style>
