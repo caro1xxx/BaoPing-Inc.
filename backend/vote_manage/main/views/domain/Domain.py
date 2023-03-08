@@ -53,7 +53,8 @@ class Domain(APIView):
                 status = 1,
                 visit_count = 0,
                 expire_time = expireTime,
-                flow = 0
+                flow = 0,
+                vote_id = 0
             ).save()
 
         except Exception as e:
