@@ -1,19 +1,64 @@
 <template>
-  <athleteInformation v-if="enrollStatus.isAthleteConfig" @returnPage="getChild" :data="informationKey" />
-  <div class="body" v-else>
+  <athleteInformation
+    v-if="enrollStatus.isAthleteConfig"
+    @returnPage="getChild"
+    :data="informationKey"
+  />
+  <customerService
+    v-if="enrollStatus.iscustomerService"
+    @returnPage="getCusrr"
+  />
+  <!-- 二维码弹窗 -->
+  <isQrcode v-if="enrollStatus.isOpenQscode" @returnPage="downQscode" />
+  <div class="body" v-if="!enrollStatus.isAthleteConfig">
+    <!-- 开场广告图 -->
+    <div class="stateAdv" v-if="$store.state.settings[11].value">
+      <img
+        class="state_img"
+        :src="HOST + '/media/' + $store.state.settings[84].value"
+      />
+    </div>
+    <!-- 开场视频广告 -->
+    <div class="stateAdv" v-if="$store.state.settings[11].value">
+      <video
+        style="background-color: #000"
+        class="state_img"
+        :src="HOST + '/media/' + $store.state.settings[86].value"
+        controls="controls"
+      >
+        您的浏览器不支持 video 标签。
+      </video>
+    </div>
     <div class="content">
-      <div class="content_top">
+      <div class="content_top" id="Carousel">
         <div class="content_top_center">
           <div style="font-size: 20px">新乡市消防技术公司</div>
-          <div
-            style="
-              width: 50%;
-              height: 2px;
-              background-color: white;
-              margin: 10px 0px;
-            "
-          ></div>
+          <div class="content_top_titles"></div>
           <div>优秀企业推荐</div>
+        </div>
+        <!-- 设置顶部滚动文字 -->
+        <div
+          class="content_top_scroll_text"
+          v-if="$store.state.settings[1].value"
+        >
+          <div class="scroll_text_content">
+            <p>{{ $store.state.settings[83].value }}</p>
+          </div>
+        </div>
+        <!-- 弹幕 -->
+        <div
+          style="text-align: end; overflow: hidden"
+          class="content_top_popup"
+          v-if="!$store.state.settings[11].value"
+        >
+          <div class="scroll_text_content">
+            <p
+              style="display: inline; color: #545c64"
+              v-for="item in popupList.data"
+            >
+              {{ item }}
+            </p>
+          </div>
         </div>
       </div>
       <div class="content_body">
@@ -129,28 +174,42 @@
             </div>
           </div>
         </div>
+        <!-- 底部附加文字 -->
+        <div class="copyright" v-if="$store.state.settings[2].value">
+          {{ $store.state.settings[85].value }}
+        </div>
+        <!-- 隐藏底部技术支持信息 -->
+        <div class="technicalsupport" v-if="$store.state.settings[6].value">
+          {{ $store.state.settings[88].value }}
+        </div>
+        <div class="technicalsupport" v-if="$store.state.settings[39].value">
+          {{ $store.state.settings[91].value }}
+        </div>
       </div>
     </div>
     <div class="footer">
-      <div class="footer_item1">
-        <img
-          src="../assets/images/24.png"
-          style="width: 35px; height: 50px"
-          alt=""
-        />
-      </div>
-      <div class="footer_item1">
-        <img
-          src="../assets/images/25.png"
-          style="width: 35px; height: 50px"
-          alt=""
-        />
-      </div>
-      <div class="footer_item2 footer_color1">
-        <button @click="activeRull">活动规则</button>
-      </div>
-      <div class="footer_item2 footer_color2">
-        <button @click="goEnroll">我要报名</button>
+      <div class="footer_box">
+        <div class="footer_item1">
+          <img
+            src="../assets/images/24.png"
+            style="width: 35px; height: 50px"
+            alt=""
+          />
+        </div>
+        <div class="footer_item1">
+          <img
+            @click="customerSure"
+            src="../assets/images/25.png"
+            style="width: 35px; height: 50px"
+            alt=""
+          />
+        </div>
+        <div class="footer_item2 footer_color1">
+          <button @click="activeRull">活动规则</button>
+        </div>
+        <div class="footer_item2 footer_color2">
+          <button @click="goEnroll">我要报名</button>
+        </div>
       </div>
     </div>
     <!-- 报名弹窗 -->
@@ -194,7 +253,10 @@
             <label>选手名称</label>
             <input type="text" @change="athleteName" />
           </div>
-          <div class="enroll_prop_form_item">
+          <div
+            class="enroll_prop_form_item"
+            v-if="$store.state.settings[7].value"
+          >
             <label>手机号</label>
             <input type="text" @change="getPhone" />
           </div>
@@ -231,30 +293,30 @@
 
 <script setup>
 import { fether } from "@/utils/fether";
-import { reactive, ref } from "vue";
+import { reactive, ref, computed, onMounted } from "vue";
 import base64 from "base-64";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
-import {HOST,HOST2}from '../ENV'
-import athleteInformation from '@/components/athleteInformation.vue';
+import { HOST, HOST2 } from "../ENV";
+import athleteInformation from "@/components/athleteInformation.vue";
+import customerService from "@/components/customerService.vue";
+import isQrcode from '@/components/isQrcode.vue'
 import { isNetWork } from "../utils/network";
 import Mobile from "mobile-detect";
 const $route = useRoute();
 const $router = useRouter();
-const $store =useStore()
-
-// console.log(enrollStatus.isAthleteConfig); 
-
+const $store = useStore();
 // 数据
-const informationData = reactive([
-]);
-
-const uploadImg = ref('')
-const headerImg = ref('')
-let activeRules = ''
-let informationKey = 0
+const informationData = reactive([]);
+const uploadImg = ref("");
+const headerImg = ref("");
+let activeRules = "";
+let informationKey = 0;
 
 const fileData = new FormData();
+
+// 弹幕列表
+const popupList = reactive({ data: [] });
 
 // 表单数据
 const enrollData = reactive({
@@ -268,7 +330,10 @@ const enrollData = reactive({
 const enrollStatus = reactive({
   isEnrollProp: false,
   isActiveRules: false,
-})
+  isAthleteConfig: false,
+  iscustomerService: false,
+  isOpenQscode: false
+});
 
 //我要报名
 const goEnroll = () => {
@@ -286,9 +351,21 @@ const doenProp = () => {
   }
 };
 
+// 客服
+const customerSure = () => {
+  console.log(1);
+  enrollStatus.iscustomerService = true;
+};
+
 //获取子级传递过来的数据
-const getChild = (value) =>{
-  enrollStatus.isAthleteConfig = value.status
+const getChild = (value) => {
+  enrollStatus.isAthleteConfig = value.status;
+};
+const getCusrr = () => {
+  enrollStatus.iscustomerService = false;
+};
+const downQscode = () => {
+  enrollStatus.isOpenQscode = false
 }
 
 //获取选手列表
@@ -299,10 +376,10 @@ const getInformation = async () => {
   });
   // 数组排序
   informationData.sort((a, b) => {
-    return b.count - a.count
-  })
-}
-getInformation()
+    return b.count - a.count;
+  });
+};
+getInformation();
 
 // 点击按钮分发到file click事件
 const dispatchUpload = () => {
@@ -367,7 +444,8 @@ const activeRull = async () => {
 
 // 点赞
 const like = async (target) => {
-  console.log(target);
+  // 开启二维码弹幕
+  enrollStatus.isOpenQscode = true
   let keys = await getKey();
   let sercet = await encryption(keys);
   const md = new Mobile(navigator.userAgent);
@@ -401,13 +479,46 @@ const getKey = () => {
 };
 
 const athleteConfig = (e, value) => {
-  if (e.target.tagName === 'DIV') {
-    enrollStatus.isAthleteConfig = true
+  if (e.target.tagName === "DIV") {
+    enrollStatus.isAthleteConfig = true;
     // $store.commit('changeAthlete', true)
-    informationKey = value
+    informationKey = value;
   }
 };
 
+// 支持轮播图
+const isSupportCarouselAndStart = () => {
+  if (!$store.state.settings[36].value) return;
+  const JSONImgUrl = JSON.parse($store.state.settings[89].value);
+  let flag = 0;
+  let box = document.getElementById("Carousel");
+  setInterval(() => {
+    box.setAttribute(
+      "style",
+      `background-image: url(${HOST + "/media/" + JSONImgUrl[flag]});`
+    );
+    flag = flag + 1 > 2 ? 0 : flag + 1;
+  }, 4000);
+};
+
+// 弹幕动画
+const animating = () => {
+  let JSONPopup = JSON.parse($store.state.settings[93].value);
+  popupList.data.push(JSONPopup[parseInt(Math.random(JSONPopup.length) * 10)]);
+  requestAnimationFrame(animating);
+};
+
+// 是否支持弹幕并且运行
+const isPopupAndStart = () => {
+  if ($store.state.settings[26].value) return;
+  // popupList.push()
+  requestAnimationFrame(animating);
+};
+
+onMounted(() => {
+  isSupportCarouselAndStart();
+  isPopupAndStart();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -429,6 +540,7 @@ const athleteConfig = (e, value) => {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 .content_top_center {
   width: 80%;
@@ -588,11 +700,24 @@ button {
   }
 }
 .footer {
+  padding: 10px;
+}
+.footer_box {
   height: 50px;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  padding: 10px;
   border: 1px solid #f3f3f3;
+}
+// 版权样式
+.copyright {
+  width: 100%;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  display: inline-flex;
+  vertical-align: top;
+  justify-content: center;
+  align-items: center;
 }
 .footer_item2 {
   grid-column: span 2 / auto;
@@ -667,5 +792,83 @@ button {
     height: 30px;
     margin-right: 10px;
   }
+}
+
+.content_top_titles {
+  width: 50%;
+  height: 2px;
+  background-color: white;
+  margin: 10px 0px;
+}
+
+.content_top_scroll_text {
+  position: absolute;
+  height: 30px;
+  bottom: 8px;
+  left: 0px;
+  right: 0px;
+  background-color: #cecece90;
+  color: white;
+  line-height: 30px;
+  margin: 0 auto;
+  width: calc(100vw);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.scroll_text_content {
+  font-size: 0;
+  p {
+    position: relative;
+    display: inline-block;
+    right: 100%;
+    margin: 0;
+    width: 100%;
+    font-size: 16px;
+    line-height: 20px;
+    animation: scroll 10s infinite linear;
+    overflow: hidden;
+    white-space: nowrap;
+    line-height: 30px;
+  }
+}
+@keyframes scroll {
+  0% {
+    right: 100%;
+  }
+  100% {
+    right: -200%;
+  }
+}
+.stateAdv {
+  position: absolute;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
+  top: 0px;
+  background-color: #00000074;
+  z-index: 10;
+  display: inline-flex;
+  vertical-align: top;
+  justify-content: center;
+  align-items: center;
+  .state_img {
+    width: 90%;
+    height: 90%;
+    border: 5px;
+  }
+}
+
+// 底部技术信息支持
+.technicalsupport {
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+}
+.content_top_popup {
+  position: absolute;
+  top: 0;
+  bottom: 30px;
+  left: 0;
+  right: 0;
 }
 </style>
