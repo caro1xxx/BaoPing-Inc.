@@ -22,6 +22,8 @@ class CheckTokenMiddleware(MiddlewareMixin):
                 token = request.GET.get('token', None)
             elif m in ['POST', 'PUT', 'DELETE']:
                 # print(str(request.body, encoding='utf-8'))
+                if pathInfo in ['setnewpassword']:
+                    return None
                 if request.FILES:
                     token = request.POST.get('token', None)
                 else:

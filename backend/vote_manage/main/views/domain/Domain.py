@@ -21,7 +21,7 @@ class Domain(APIView):
             # data = domainObj
             # data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
             # ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
-            ret['data'], ret['page_count'] = Common().getData(request, 'Domain')
+            ret['data'], ret['page_count'] = Common().getData(request, 'Domain', maxsize=20)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}

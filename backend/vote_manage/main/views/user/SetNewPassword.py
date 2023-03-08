@@ -13,6 +13,7 @@ class SetNewPassword(APIView):
             email = json.loads(request.body).get('email', None) 
             emailCode = json.loads(request.body).get('code', None) 
             newPwd = json.loads(request.body).get('new_pwd', None) 
+
             userop = UserOp()
             ok, msg = userop.checkEmail(email)
             if not ok:
@@ -29,7 +30,10 @@ class SetNewPassword(APIView):
             ok, msg = userop.setNewPassword(email, newPwd)
             if not ok:
                 return JsonResponse({'code': 400, 'msg': msg})
-            ret['data'] = serializers.serialize("json",models.User.objects.filter(email=email))
+
+            userObj = models.User.objects.filter(email=email).first()
+            userop.onLoginSuccess(userObj)
+            ret['data'] = serializers.serialize("json", [userObj])
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
             # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}

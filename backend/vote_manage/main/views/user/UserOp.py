@@ -231,14 +231,12 @@ class UserOp:
             if not ok:
                 return ok, msg
             if emailCode is None:
-                return ok, '验证码不能为空'
+                return False, '验证码不能为空'
 
             serverEmailCode = cache.get('syl_' + email, None)
-            if serverEmailCode is None:
-                return ok, '验证码已过期'
+            if serverEmailCode is None or serverEmailCode != emailCode:
+                return False, '验证码已过期'
             cache.delete('syl_' + email)
-            if serverEmailCode != emailCode:
-                return ok, '验证码错误'
         except Exception as e:
             return False, 'Timeout'
         return True, None
