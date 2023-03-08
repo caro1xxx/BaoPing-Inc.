@@ -65,16 +65,16 @@
             <div class="content_body_information_body">
               <div class="content_body_information_title">
                 <div style="width: 80px"></div>
-                <div v-if="index + 1 > 2" class="content_body_information_name">
+                <div class="content_body_information_name">
                   {{ item.name }}
                 </div>
               </div>
               <div class="content_body_information_content">
                 <div class="content_body_information_left">
-                  <img :src="`${HOST}/media/${item.avator}`" alt="" />
+                  <img :src="`${HOST2}/media/${item.avator}`" alt="" />
                 </div>
                 <div class="content_body_information_center">
-                  <div>编号：{{ item.informationNum }}号</div>
+                  <div>编号：{{ item.pk }}号</div>
                   <div>
                     支持：<span>{{ item.count }}</span
                     >次
@@ -235,13 +235,15 @@ import { reactive, ref } from "vue";
 import base64 from "base-64";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
-import {HOST}from '../ENV'
+import {HOST,HOST2}from '../ENV'
 import athleteInformation from '@/components/athleteInformation.vue';
 import { isNetWork } from "../utils/network";
 import Mobile from "mobile-detect";
 const $route = useRoute();
 const $router = useRouter();
 const $store =useStore()
+
+// console.log(enrollStatus.isAthleteConfig); 
 
 // 数据
 const informationData = reactive([
@@ -266,7 +268,6 @@ const enrollData = reactive({
 const enrollStatus = reactive({
   isEnrollProp: false,
   isActiveRules: false,
-  isAthleteConfig: false
 })
 
 //我要报名
@@ -286,8 +287,8 @@ const doenProp = () => {
 };
 
 //获取子级传递过来的数据
-const getChild = () =>{
-  enrollStatus.isAthleteConfig = false
+const getChild = (value) =>{
+  enrollStatus.isAthleteConfig = value.status
 }
 
 //获取选手列表
@@ -406,6 +407,7 @@ const athleteConfig = (e, value) => {
     informationKey = value
   }
 };
+
 </script>
 
 <style lang="scss" scoped>
@@ -446,15 +448,17 @@ const athleteConfig = (e, value) => {
   padding: 0px 25px;
 }
 .content_body_persennum_item {
-  width: 41%;
+  width: 47%;
   padding: 10px 0px;
   display: flex;
   align-items: center;
   font-size: 10px;
   img {
-    margin-right: 10px;
+    margin-right: 5px;
   }
   span {
+    font-size: 15px;
+    font-weight: 500;
     color: rgb(49, 60, 161);
   }
 }
@@ -547,16 +551,17 @@ button {
 .content_body_information_content {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  margin-top: 15px;
+  margin-top: 10px;
 }
 .content_body_information_center {
   grid-column: span 2 / auto;
   display: flex;
+  padding: 10px 0px;
   flex-direction: column;
   justify-content: space-around;
   span {
     color: red;
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 500;
   }
 }
@@ -574,11 +579,11 @@ button {
       height: 90%;
       position: absolute;
       z-index: -1;
-      top: -20px;
+      top: -25px;
     }
     .content_body_information_solid {
       height: 40px;
-      padding-top: 10px;
+      padding-top: 15px;
     }
   }
 }
