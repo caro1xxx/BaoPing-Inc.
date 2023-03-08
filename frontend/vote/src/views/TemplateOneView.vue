@@ -244,7 +244,8 @@ const $router = useRouter();
 const $store =useStore()
 
 // 数据
-const informationData = reactive([]);
+const informationData = reactive([
+]);
 
 const uploadImg = ref('')
 const headerImg = ref('')
@@ -442,10 +443,11 @@ const athleteConfig = (e, value) => {
 .content_body_persennum {
   display: flex;
   justify-content: space-between;
+  padding: 0px 25px;
 }
 .content_body_persennum_item {
   width: 41%;
-  padding: 10px;
+  padding: 10px 0px;
   display: flex;
   align-items: center;
   font-size: 10px;
@@ -497,19 +499,19 @@ button {
 .content_body_information_top {
   position: absolute;
   z-index: 5;
-  top: -5px;
+  top: 5px;
   left: 20px;
 }
 // 绘制倒三角型
 .content_body_information_top1 {
   position: absolute;
   z-index: 5;
-  top: -5px;
-  left: 20px;
+  top: 15px;
+  left: 30px;
   .content_body_information_square {
-    width: 60px;
-    height: 30px;
-    line-height: 30px;
+    width: 40px;
+    height: 15px;
+    line-height: 20px;
     background-color: green;
     text-align: center;
     color: #ffffff;
@@ -517,14 +519,15 @@ button {
   .content_body_information_delta {
     width: 0px;
     height: 0px;
-    border-top: 15px solid green;
-    border-left: 30px solid transparent;
-    border-right: 30px solid transparent;
-    border-bottom: 30px solid transparent;
+    border-top: 10px solid green;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 10px solid transparent;
   }
 }
 .content_body_information_background {
   position: absolute;
+  height: 110%;
 }
 .content_body_information_body {
   width: calc(100% - 40px);
@@ -535,25 +538,26 @@ button {
 .content_body_information_title {
   display: flex;
   align-items: center;
-  height: 30px;
+  height: 35px;
   .content_body_information_name {
     margin-left: 10px;
-    font-size: 12px;
+    font-size: 20px;
   }
 }
 .content_body_information_content {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  margin-top: 10px;
+  margin-top: 15px;
 }
 .content_body_information_center {
   grid-column: span 2 / auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-around;
   span {
     color: red;
     font-size: 17px;
+    font-weight: 500;
   }
 }
 .content_body_information_left {
@@ -570,11 +574,11 @@ button {
       height: 90%;
       position: absolute;
       z-index: -1;
-      top: 0px;
+      top: -20px;
     }
     .content_body_information_solid {
       height: 40px;
-      padding-top: 25px;
+      padding-top: 10px;
     }
   }
 }
