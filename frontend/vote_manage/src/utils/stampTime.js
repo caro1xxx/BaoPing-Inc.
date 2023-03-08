@@ -1,6 +1,8 @@
 export const parseStampTime = (stamp) => {
   const D = new Date(stamp * 1000);
-  return `${D.getFullYear()}/${D.getMonth()}/${D.getDay()} ${D.getHours()}:${D.getMinutes()}`;
+  return `${D.getFullYear()}/${
+    D.getMonth() + 1
+  }/${D.getDate()} ${D.getHours()}:${D.getMinutes()}`;
 };
 
 export const stampToUTCtime = (stamp) => {

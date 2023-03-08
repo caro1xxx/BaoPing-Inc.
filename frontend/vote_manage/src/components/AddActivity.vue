@@ -89,8 +89,9 @@ const dispatchUpload = () => {
 
 // 上传改变
 const uploadChange = () => {
-  const file = uploadRef.value[0].files[0];
+  let file = uploadRef.value[0].files[0];
   if (file.type !== "image/png") {
+    file = "";
     $store.dispatch("GlobalMessageActions", "请上传图片类型的文件");
     return;
   }
@@ -105,6 +106,7 @@ const uploadChange = () => {
 //提交校验
 const check = () => {
   let validator = new Validator();
+
   for (let i of dataItem) {
     validator.add(i.value, "isNonEmpty", `请输入${i.name}`);
   }
@@ -115,7 +117,7 @@ const check = () => {
 
 // 提交
 const save = () => {
-  if (!check) return;
+  if (!check()) return;
   let d = new FormData();
   d.append("vote_name", dataItem[0].value);
   d.append("create_user_username", dataItem[1].value);
@@ -197,6 +199,7 @@ const save = () => {
   display: none;
 }
 .uploadReplace {
+  user-select: none;
   height: 100px;
   width: 100px;
   border: 2px dashed #cecece;

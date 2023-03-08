@@ -54,106 +54,107 @@ const getPrize = async () => {
   await $store.dispatch("NoticifyActions", true);
   let result = await fether(`/applyprize/?token=${Cookies.get("token")}`);
   if (result.code === 200) {
+    let Arr = JSON.parse(result.data);
+    Arr.map((item) => {
+      prizeData.push({
+        ...item.fields,
+        open_id: item.fields.voteuser.open_id,
+        pk: item.pk,
+        wx_username: item.fields.voteuser.wx_username,
+      });
+    });
+  } else {
+    await $store.dispatch("refreshErroActions");
+    await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
+  }
+  //关闭加载loading
+  $store.commit("noticifyLoading", false);
+};
+
+getPrize();
+
+const isAxiosStatus = async (data, status) => {
+  if (status === false) {
+    prizeData.splice(0, prizeData.length);
+  }
+  if (data.code === 200) {
     let Arr = [];
-    Arr = JSON.parse(result.data);
+    Arr = JSON.parse(data.data);
     Arr.map((item) => {
       prizeData.push({
         ...item.fields,
         pk: item.pk,
         wx_username: item.fields.voteuser.wx_username,
+        open_id: item.fields.voteuser.open_id,
       });
     });
-    let result = await fether(`/applyprize/?token=${Cookies.get("token")}`);
-    isAxiosStatus(result, true);
-    //关闭加载loading
-    $store.commit("noticifyLoading", false);
+  } else {
+    //请求发送错误
+    await $store.dispatch("refreshErroActions");
+    await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
   }
-  getPrize();
-
-  const isAxiosStatus = async (data, status) => {
-    if (status === false) {
-      prizeData.splice(0, prizeData.length);
-    }
-    if (data.code === 200) {
-      let Arr = [];
-      Arr = JSON.parse(data.data);
-      Arr.map((item) => {
-        prizeData.push({
-          ...item.fields,
-          pk: item.pk,
-          wx_username: item.fields.voteuser.wx_username,
-          open_id: item.fields.voteuser.open_id,
-        });
-      });
-    } else {
-      //请求发送错误
-      await $store.dispatch("refreshErroActions");
-      await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
-    }
-    //关闭加载loading
-    $store.commit("noticifyLoading", false);
-  };
-  getPrize();
-
-  // 编辑
-  const undataData = async (value, index) => {
-    value.index = index;
-    $store.commit("changePrizeStatus", value);
-  };
-
-  // 删除奖品数据
-  const deletePrize = async (value, index) => {
-    //开启加载loading
-    await $store.dispatch("NoticifyActions", true);
-    let result = await fether(
-      `/applyprize/`,
-      `delete`,
-      {
-        token: Cookies.get("token"),
-        pk: value.pk,
-      },
-      $store.state.userInfo.name,
-      "申请奖品"
-    );
-    if (result.code === 200) {
-      // 删除本地数据
-      prizeData.splice(index, 1);
-    }
-    await $store.dispatch("GlobalMessageActions", result.msg);
-    // 关闭加载loading
-    $store.commit("noticifyLoading", false);
-  };
-
-  const getTime = (value) => {
-    if (value === 0) {
-      return "1970/1/1 0:0";
-    } else if (String(value).length > 10) {
-      let d = new Date(value);
-      return `${d.getFullYear()}/${
-        d.getMonth() + 1
-      }/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
-    } else {
-      let d = new Date(value * 1000);
-      return `${d.getFullYear()}/${
-        d.getMonth() + 1
-      }/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
-    }
-  };
-
-  watch(
-    () => $store.state.prizeData,
-    (newVal) => {
-      (prizeData[newVal.index].wx_username = newVal.wx_username),
-        (prizeData[newVal.index].name = newVal.name),
-        (prizeData[newVal.index].phone_number = newVal.phone_number),
-        (prizeData[newVal.index].create_time = newVal.create_time),
-        (prizeData[newVal.index].status = newVal.status);
-    },
-    {
-      deep: true,
-    }
-  );
+  //关闭加载loading
+  $store.commit("noticifyLoading", false);
 };
+
+// 编辑
+const undataData = async (value, index) => {
+  value.index = index;
+  $store.commit("changePrizeStatus", value);
+};
+
+// 删除奖品数据
+const deletePrize = async (value, index) => {
+  //开启加载loading
+  await $store.dispatch("NoticifyActions", true);
+  let result = await fether(
+    `/applyprize/`,
+    `delete`,
+    {
+      token: Cookies.get("token"),
+      pk: value.pk,
+    },
+    $store.state.userInfo.name,
+    "申请奖品"
+  );
+  if (result.code === 200) {
+    // 删除本地数据
+    prizeData.splice(index, 1);
+  }
+  await $store.dispatch("GlobalMessageActions", result.msg);
+  // 关闭加载loading
+  $store.commit("noticifyLoading", false);
+};
+
+const getTime = (value) => {
+  if (value === 0) {
+    return "1970/1/1 0:0";
+  } else if (String(value).length > 10) {
+    let d = new Date(value);
+    return `${d.getFullYear()}/${
+      d.getMonth() + 1
+    }/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+  } else {
+    let d = new Date(value * 1000);
+    return `${d.getFullYear()}/${
+      d.getMonth() + 1
+    }/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`;
+  }
+};
+
+watch(
+  () => $store.state.prizeData,
+  (newVal) => {
+    (prizeData[newVal.index].wx_username = newVal.wx_username),
+      (prizeData[newVal.index].name = newVal.name),
+      (prizeData[newVal.index].phone_number = newVal.phone_number),
+      (prizeData[newVal.index].create_time = newVal.create_time),
+      (prizeData[newVal.index].status = newVal.status);
+  },
+  {
+    deep: true,
+  }
+);
 </script>
 
 <style lang="scss" scoped>

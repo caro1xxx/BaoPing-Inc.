@@ -22,7 +22,7 @@
       </svg>
     </div>
     <div class="home_body_table_wrap">
-      <el-table :data="realmAddData" class="home_body_table">
+      <el-table :data="realmAddData.data" class="home_body_table">
         <el-table-column prop="id" label="编号">
           <template #default="scope">
             <span>{{ scope.$index }}</span>
@@ -69,10 +69,11 @@ const isAxiosStatus = async (data, status) => {
       if (status === false) {
         realmAddData.splice(0, realmAddData.length);
       }
+      realmAddData.data = []
       let Arr = [];
       Arr = JSON.parse(data.data);
       Arr.map((item) => {
-        realmAddData.push({ ...item.fields });
+        realmAddData.data.push({ ...item.fields });
       });
     } else {
       //请求发送错误
@@ -83,18 +84,19 @@ const isAxiosStatus = async (data, status) => {
     $store.commit("noticifyLoading", false);
   };
 // 域名管理数据
-const realmAddData = reactive([]);
+const realmAddData = reactive({data:[]});
 
 // 获取域名列表
 const getRealm = async () => {
   //开启加载loading
   await $store.dispatch("NoticifyActions", true);
+  realmAddData.data = []
   let result = await fether(`/domain/?token=${Cookies.get("token")}`);
   if (result.code === 200) {
     let Arr = [];
     Arr = JSON.parse(result.data);
     Arr.map((item) => {
-      realmAddData.push({ ...item.fields });
+      realmAddData.data.push({ ...item.fields });
     });
     //判断接口获取数据状态——第一个参数为数据，第二个参数为判断是否是源数据true为原数据，false为搜索后数据
     isAxiosStatus(result, true);
@@ -127,7 +129,7 @@ const deleteRealm = async (value, index) => {
   );
   if (result.code === 200) {
     // 删除本地数据
-    realmAddData.splice(index, 1);
+    realmAddData.data.splice(index, 1);
   }
   await $store.dispatch("GlobalMessageActions", result.msg);
   // 关闭加载loading
@@ -154,11 +156,11 @@ watch(
   () => $store.state.realmData,
   (newVal) => {
     if (newVal.key) {
-      (realmAddData[newVal.index].domain_name = newVal.domain_name),
-        (realmAddData[newVal.index].expire_time = newVal.expire_time),
-        (realmAddData[newVal.index].status = newVal.status);
+      (realmAddData.data[newVal.index].domain_name = newVal.domain_name),
+        (realmAddData.data[newVal.index].expire_time = newVal.expire_time),
+        (realmAddData.data[newVal.index].status = newVal.status);
     } else if (newVal.domain_name) {
-      realmAddData.push({
+      realmAddData.data.push({
         domain_name: newVal.domain_name,
         expire_time: newVal.expire_time,
         status: newVal.status,

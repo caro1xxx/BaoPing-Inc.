@@ -35,10 +35,6 @@ const state = reactive({
     language: "zh-Hans",
   },
 });
-
-const submitChange = async () => {
-  let result = await fether("/voteactivity/", "put", {});
-};
 </script>
 
 <style lang="scss" scoped>
