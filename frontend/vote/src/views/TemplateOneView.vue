@@ -133,29 +133,35 @@
             </div>
           </div>
         </div>
+        <!-- 底部附加文字 -->
+        <div class="copyright" v-if="$store.state.settings[2].value">{{ $store.state.settings[85].value }}</div>
+        <!-- 隐藏底部技术支持信息 -->
+        <div class="technicalsupport" v-if="$store.state.settings[6].value">{{ $store.state.settings[88].value }}</div>
       </div>
     </div>
     <div class="footer">
-      <div class="footer_item1">
-        <img
-          src="../assets/images/24.png"
-          style="width: 35px; height: 50px"
-          alt=""
-        />
-      </div>
-      <div class="footer_item1">
-        <img
-          @click="customerSure"
-          src="../assets/images/25.png"
-          style="width: 35px; height: 50px"
-          alt=""
-        />
-      </div>
-      <div class="footer_item2 footer_color1">
-        <button @click="activeRull">活动规则</button>
-      </div>
-      <div class="footer_item2 footer_color2">
-        <button @click="goEnroll">我要报名</button>
+      <div class="footer_box">
+        <div class="footer_item1">
+          <img
+            src="../assets/images/24.png"
+            style="width: 35px; height: 50px"
+            alt=""
+          />
+        </div>
+        <div class="footer_item1">
+          <img
+            @click="customerSure"
+            src="../assets/images/25.png"
+            style="width: 35px; height: 50px"
+            alt=""
+          />
+        </div>
+        <div class="footer_item2 footer_color1">
+          <button @click="activeRull">活动规则</button>
+        </div>
+        <div class="footer_item2 footer_color2">
+          <button @click="goEnroll">我要报名</button>
+        </div>
       </div>
     </div>
     <!-- 报名弹窗 -->
@@ -199,7 +205,7 @@
             <label>选手名称</label>
             <input type="text" @change="athleteName" />
           </div>
-          <div class="enroll_prop_form_item">
+          <div class="enroll_prop_form_item" v-if="$store.state.settings[7].value">
             <label>手机号</label>
             <input type="text" @change="getPhone" />
           </div>
@@ -248,7 +254,7 @@ import Mobile from "mobile-detect";
 const $route = useRoute();
 const $router = useRouter();
 const $store = useStore();
-
+console.log($store.state);
 // 数据
 const informationData = reactive([]);
 const uploadImg = ref("");
@@ -601,11 +607,24 @@ button {
   }
 }
 .footer {
+  padding: 10px;
+}
+.footer_box{
   height: 50px;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  padding: 10px;
   border: 1px solid #f3f3f3;
+}
+// 版权样式
+.copyright{
+  width: 100%;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  display: inline-flex;
+  vertical-align: top;
+  justify-content: center;
+  align-items: center;
 }
 .footer_item2 {
   grid-column: span 2 / auto;
@@ -685,5 +704,12 @@ button {
   position: absolute;
   height: 30px;
   bottom: 0px;
+}
+
+// 底部技术信息支持
+.technicalsupport{
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
 }
 </style>
