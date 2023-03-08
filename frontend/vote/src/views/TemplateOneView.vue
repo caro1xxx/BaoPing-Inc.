@@ -1,6 +1,7 @@
 <template>
   <athleteInformation v-if="enrollStatus.isAthleteConfig" @returnPage="getChild" :data="informationKey" />
-  <div class="body" v-else>
+  <customerService />
+  <div class="body" v-if="!enrollStatus.isAthleteConfig">
     <div class="content">
       <div class="content_top">
         <div class="content_top_center">
@@ -237,6 +238,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 import {HOST,HOST2}from '../ENV'
 import athleteInformation from '@/components/athleteInformation.vue';
+import customerService from '@/components/customerService.vue'
 import { isNetWork } from "../utils/network";
 import Mobile from "mobile-detect";
 const $route = useRoute();
@@ -268,6 +270,8 @@ const enrollData = reactive({
 const enrollStatus = reactive({
   isEnrollProp: false,
   isActiveRules: false,
+  isAthleteConfig: false,
+  iscustomerService: true
 })
 
 //我要报名
