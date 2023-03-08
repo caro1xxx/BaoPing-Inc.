@@ -25,7 +25,7 @@ const customerData = reactive({
 
 onMounted(() => {
     let result = computed(() => {
-    return $store.state.settings.get('contact')
+    return $store.state.settings[0]
     })
     customerData.data = result.value
 })
