@@ -1,4 +1,22 @@
 <template>
+  <!-- 开场广告图 -->
+  <div class="stateAdv" v-if="$store.state.settings[11].value">
+    <img
+      class="state_img"
+      :src="HOST + '/media/' + $store.state.settings[84].value"
+    />
+  </div>
+  <!-- 开场视频广告 -->
+  <div class="stateAdv" v-if="$store.state.settings[11].value">
+    <video
+      style="background-color: #000"
+      class="state_img"
+      :src="HOST + '/media/' + $store.state.settings[86].value"
+      controls="controls"
+    >
+      您的浏览器不支持 video 标签。
+    </video>
+  </div>
   <athleteInformation
     v-if="enrollStatus.isAthleteConfig"
     @returnPage="getChild"
@@ -9,18 +27,17 @@
       <div class="content_top">
         <div class="content_top_center">
           <div style="font-size: 20px">新乡市消防技术公司</div>
-          <div
-            style="
-              width: 50%;
-              height: 2px;
-              background-color: white;
-              margin: 10px 0px;
-            "
-          ></div>
+          <div class="content_top_titles"></div>
           <div>优秀企业推荐</div>
         </div>
-        <div class="content_top_scroll_text">
-          {{ $store.state.settings[0] }}
+        <!-- 设置顶部滚动文字 -->
+        <div
+          class="content_top_scroll_text"
+          v-if="$store.state.settings[1].value"
+        >
+          <div class="scroll_text_content">
+            <p>{{ $store.state.settings[83].value }}</p>
+          </div>
         </div>
       </div>
       <div class="content_body">
@@ -370,7 +387,6 @@ const activeRull = async () => {
 
 // 点赞
 const like = async (target) => {
-  console.log(target);
   let keys = await getKey();
   let sercet = await encryption(keys);
   const md = new Mobile(navigator.userAgent);
@@ -671,9 +687,68 @@ button {
     margin-right: 10px;
   }
 }
+
+.content_top_titles {
+  width: 50%;
+  height: 2px;
+  background-color: white;
+  margin: 10px 0px;
+}
+
 .content_top_scroll_text {
   position: absolute;
   height: 30px;
+  bottom: 8px;
+  left: 0px;
+  right: 0px;
+  background-color: #cecece90;
+  color: white;
+  line-height: 30px;
+  margin: 0 auto;
+  width: calc(100vw);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.scroll_text_content {
+  font-size: 0;
+  p {
+    position: relative;
+    display: inline-block;
+    right: 100%;
+    margin: 0;
+    width: 100%;
+    font-size: 16px;
+    line-height: 20px;
+    animation: scroll 10s infinite linear;
+    overflow: hidden;
+    white-space: nowrap;
+    line-height: 30px;
+  }
+}
+@keyframes scroll {
+  0% {
+    right: 100%;
+  }
+  100% {
+    right: -200%;
+  }
+}
+.stateAdv {
+  position: absolute;
+  right: 0px;
+  left: 0px;
   bottom: 0px;
+  top: 0px;
+  background-color: #00000074;
+  z-index: 10;
+  display: inline-flex;
+  vertical-align: top;
+  justify-content: center;
+  align-items: center;
+  .state_img {
+    width: 90%;
+    height: 90%;
+    border: 5px;
+  }
 }
 </style>

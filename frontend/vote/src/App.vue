@@ -30,7 +30,7 @@ const getInitSetting = async () => {
     });
   }
   await $store.dispatch("changeSettingsActions", map1);
-  if ($store.state.settings[77] === 1)
+  if ($store.state.settings[77].value === 1)
     $router.push(`/one?vote_id=${$route.query.vote_id}`);
   else $router.push(`/two?vote_id=${$route.query.vote_id}`);
 };
