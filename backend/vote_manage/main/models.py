@@ -83,6 +83,18 @@ class VoteActivity(models.Model):
     prize = models.TextField(default='')
     support = models.TextField(default='')
     contact = models.TextField(default='')
+
+    top_roll_text = models.TextField(default='')
+    start_adv_img = models.FileField(upload_to='img', blank=True, verbose_name='开场广告图')
+    bottom_text = models.TextField(default='')
+    video_adv = models.FileField(upload_to='video', blank=True, verbose_name='视频广告')
+    target_video_adv = models.FileField(upload_to='vedio', blank=True, verbose_name='视频广告')
+    bottom_support_text = models.TextField(default='')
+    carousel_list = models.TextField(default='')
+    temp_file = models.FileField(upload_to='tmp', blank=True, verbose_name='临时文件')
+    bottom_copyright = models.TextField(default='')
+    officialcount_qrcode = models.FileField(upload_to='pr', blank=True, verbose_name='公众号二维码')
+    popup = models.TextField(default='')
     vote_voteusers = models.ManyToManyField(
         VoteUser,
         through='VoteRecord',
@@ -195,4 +207,12 @@ class Gift(models.Model):
     name = models.TextField(default='')
     value = models.IntegerField(default=0)
     price = models.IntegerField(default=0)
+    status = models.IntegerField(default=0)
+
+
+class CommentRecord(models.Model):
+    vote_activity = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
+    vote_user = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE)
+    content = models.TextField(default='')
+    create_time = models.IntegerField(default=0)
     status = models.IntegerField(default=0)

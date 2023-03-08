@@ -20,6 +20,9 @@ class SupportOp:
             return False, '投票活动不存在'
         return True, None
 
+    def checkSettingsOnCreate(self, data):
+        pass
+
     def checkDataOnCreate(self, data):
         validate = Validate()
         validate.addCheck('checkIsNotEmpty', data.get('open_id', None), 'openid不能为空')
