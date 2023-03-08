@@ -1,6 +1,6 @@
 from django.conf.urls import url, re_path
 from main.views.support import Support
-from main.views.voteuser import VoteUser
+from main.views.voteuser import VoteUser, Comment
 from main.views.Request404 import Request404
 from main.views.vote_target import VoteTarget
 from main.views.vote_activity import AloneVoteActivity
@@ -20,5 +20,6 @@ urlpatterns = [
     url(r'^alonevoteactivity/$', AloneVoteActivity.AloneVoteActivity.as_view()),
     url(r'^keys/$', Keys.Keys.as_view()),
     url(r'^settings/$', Settings.as_view()),
+    url(r'^comment/$', Comment.Comment.as_view()),
     url(r'$', Request404.as_view())
 ]
