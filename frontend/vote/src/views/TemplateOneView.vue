@@ -1,27 +1,34 @@
 <template>
-  <athleteInformation v-if="enrollStatus.isAthleteConfig" @returnPage="getChild" :data="informationKey" />
-  <customerService v-if="enrollStatus.iscustomerService" @returnPage="getCusrr" />
+  <athleteInformation
+    v-if="enrollStatus.isAthleteConfig"
+    @returnPage="getChild"
+    :data="informationKey"
+  />
+  <customerService
+    v-if="enrollStatus.iscustomerService"
+    @returnPage="getCusrr"
+  />
   <div class="body" v-if="!enrollStatus.isAthleteConfig">
-  <!-- 开场广告图 -->
-  <div class="stateAdv" v-if="$store.state.settings[11].value">
-    <img
-      class="state_img"
-      :src="HOST + '/media/' + $store.state.settings[84].value"
-    />
-  </div>
-  <!-- 开场视频广告 -->
-  <div class="stateAdv" v-if="$store.state.settings[11].value">
-    <video
-      style="background-color: #000"
-      class="state_img"
-      :src="HOST + '/media/' + $store.state.settings[86].value"
-      controls="controls"
-    >
-      您的浏览器不支持 video 标签。
-    </video>
-  </div>
+    <!-- 开场广告图 -->
+    <div class="stateAdv" v-if="$store.state.settings[11].value">
+      <img
+        class="state_img"
+        :src="HOST + '/media/' + $store.state.settings[84].value"
+      />
+    </div>
+    <!-- 开场视频广告 -->
+    <div class="stateAdv" v-if="$store.state.settings[11].value">
+      <video
+        style="background-color: #000"
+        class="state_img"
+        :src="HOST + '/media/' + $store.state.settings[86].value"
+        controls="controls"
+      >
+        您的浏览器不支持 video 标签。
+      </video>
+    </div>
     <div class="content">
-      <div class="content_top">
+      <div class="content_top" id="Carousel">
         <div class="content_top_center">
           <div style="font-size: 20px">新乡市消防技术公司</div>
           <div class="content_top_titles"></div>
@@ -151,9 +158,16 @@
           </div>
         </div>
         <!-- 底部附加文字 -->
-        <div class="copyright" v-if="$store.state.settings[2].value">{{ $store.state.settings[85].value }}</div>
+        <div class="copyright" v-if="$store.state.settings[2].value">
+          {{ $store.state.settings[85].value }}
+        </div>
         <!-- 隐藏底部技术支持信息 -->
-        <div class="technicalsupport" v-if="$store.state.settings[6].value">{{ $store.state.settings[88].value }}</div>
+        <div class="technicalsupport" v-if="$store.state.settings[6].value">
+          {{ $store.state.settings[88].value }}
+        </div>
+        <div class="technicalsupport" v-if="$store.state.settings[39].value">
+          {{ $store.state.settings[91].value }}
+        </div>
       </div>
     </div>
     <div class="footer">
@@ -222,7 +236,10 @@
             <label>选手名称</label>
             <input type="text" @change="athleteName" />
           </div>
-          <div class="enroll_prop_form_item" v-if="$store.state.settings[7].value">
+          <div
+            class="enroll_prop_form_item"
+            v-if="$store.state.settings[7].value"
+          >
             <label>手机号</label>
             <input type="text" @change="getPhone" />
           </div>
@@ -259,7 +276,7 @@
 
 <script setup>
 import { fether } from "@/utils/fether";
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, onMounted } from "vue";
 import base64 from "base-64";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -271,7 +288,6 @@ import Mobile from "mobile-detect";
 const $route = useRoute();
 const $router = useRouter();
 const $store = useStore();
-console.log($store.state);
 // 数据
 const informationData = reactive([]);
 const uploadImg = ref("");
@@ -294,8 +310,8 @@ const enrollStatus = reactive({
   isEnrollProp: false,
   isActiveRules: false,
   isAthleteConfig: false,
-  iscustomerService: false
-})
+  iscustomerService: false,
+});
 
 //我要报名
 const goEnroll = () => {
@@ -314,18 +330,18 @@ const doenProp = () => {
 };
 
 // 客服
-const customerSure  = () => {
+const customerSure = () => {
   console.log(1);
-  enrollStatus.iscustomerService = true
-}
+  enrollStatus.iscustomerService = true;
+};
 
 //获取子级传递过来的数据
 const getChild = (value) => {
   enrollStatus.isAthleteConfig = value.status;
 };
 const getCusrr = () => {
-  enrollStatus.iscustomerService = false
-}
+  enrollStatus.iscustomerService = false;
+};
 
 //获取选手列表
 const getInformation = async () => {
@@ -442,6 +458,25 @@ const athleteConfig = (e, value) => {
     informationKey = value;
   }
 };
+
+// 支持轮播图
+const isSupportCarouselAndStart = () => {
+  if (!$store.state.settings[36].value) return;
+  const JSONImgUrl = JSON.parse($store.state.settings[89].value);
+  let flag = 0;
+  let box = document.getElementById("Carousel");
+  setInterval(() => {
+    box.setAttribute(
+      "style",
+      `background-image: url(${HOST + "/media/" + JSONImgUrl[flag]});`
+    );
+    flag = flag + 1 > 2 ? 0 : flag + 1;
+  }, 4000);
+};
+
+onMounted(() => {
+  isSupportCarouselAndStart();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -625,14 +660,14 @@ button {
 .footer {
   padding: 10px;
 }
-.footer_box{
+.footer_box {
   height: 50px;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   border: 1px solid #f3f3f3;
 }
 // 版权样式
-.copyright{
+.copyright {
   width: 100%;
   height: 30px;
   text-align: center;
@@ -782,7 +817,7 @@ button {
 }
 
 // 底部技术信息支持
-.technicalsupport{
+.technicalsupport {
   height: 30px;
   line-height: 30px;
   text-align: center;
