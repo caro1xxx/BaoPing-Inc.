@@ -45,6 +45,7 @@
       />
       <div
         @click="sendCode"
+        class="btn"
         :style="{
           cursor: !userInfo.isSendCodeState ? 'pointer' : 'not-allowed',
           backgroundColor: !userInfo.isSendCodeState ? '#2379fb' : '#cecece',
@@ -332,5 +333,8 @@ const loginSuccess = () => {
     cursor: pointer;
     margin-left: 5%;
   }
+}
+.btn {
+  user-select: none;
 }
 </style>

@@ -90,6 +90,8 @@ const sureRealmData = async () => {
             if (result.code === 200) {
                 $store.commit('preserveRealmData', realmAddData)
                 await $store.dispatch("GlobalMessageActions", result.msg);
+            }else{
+                await $store.dispatch("GlobalMessageActions", result.msg);
             }
         } else {
             // 将时间戳进行处理保留10位

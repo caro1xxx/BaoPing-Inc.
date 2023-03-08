@@ -372,7 +372,7 @@ const editValue = reactive({
   value: "",
   currentVoteOptionsKey: 0,
   close: (change) => {
-    voteDetail[editValue.currentVoteOptionsKey].value = change;
+    voteDetail[editValue.currentVoteOptionsKey].value = change ? change : "空";
     editValue.state = false;
     saveEditData();
   },
@@ -465,11 +465,11 @@ const saveEditData = async () => {
           content: "template",
           template_id: pageTemplate.value,
           vote_id: $store.state.voteManagePopup.target,
-          description: voteDetail[0].value,
-          enterprises: voteDetail[1].value,
-          prize: voteDetail[2].value,
-          support: voteDetail[3].value,
-          contact: voteDetail[4].value,
+          description: voteDetail[0].value ? voteDetail[0].value : "空",
+          enterprises: voteDetail[1].value ? voteDetail[1].value : "空",
+          prize: voteDetail[2].value ? voteDetail[2].value : "空",
+          support: voteDetail[3].value ? voteDetail[3].value : "空",
+          contact: voteDetail[4].value ? voteDetail[4].value : "空",
         };
       }
       let result = await fether("/voteactivity/", "put", {

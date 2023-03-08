@@ -24,6 +24,7 @@
       />
       <div
         @click="sendCode"
+        class="btn"
         :style="{
           cursor: !userInputInfo.isSendCodeState ? 'pointer' : 'not-allowed',
           backgroundColor: !userInputInfo.isSendCodeState
@@ -119,6 +120,7 @@ const authUser = async (input) => {
 
 // 发送邮件
 const sendCode = async () => {
+  if (userInputInfo.value.sendCodeContent !== "发送验证码") return;
   let validator = new Validator();
   validator.add(userInputInfo.value.email, "isNonEmpty", "输入邮箱");
   validator.add(userInputInfo.value.email, "checkEmailFormat", "邮箱格式错误");
@@ -234,5 +236,8 @@ const loginSuccess = () => {
     cursor: pointer;
     margin-left: 5%;
   }
+}
+.btn {
+  user-select: none;
 }
 </style>
