@@ -5,7 +5,8 @@ export default createStore({
   state: {
     settings: {},
   },
-  getters: {},
+  getters: {
+  },
   mutations: {
     changeSettings(state, payload) {
       state.settings = payload;
