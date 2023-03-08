@@ -1,6 +1,6 @@
 <template>
   <!-- 选手页视频广告 -->
-  <div class="stateAdv" v-if="!$store.state.settings[11].value">
+  <div class="stateAdv" v-if="$store.state.settings[11].value">
     <video
       style="background-color: #000"
       class="state_img"

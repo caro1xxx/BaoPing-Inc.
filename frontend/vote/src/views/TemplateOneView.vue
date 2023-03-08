@@ -8,6 +8,8 @@
     v-if="enrollStatus.iscustomerService"
     @returnPage="getCusrr"
   />
+  <!-- 二维码弹窗 -->
+  <isQrcode v-if="enrollStatus.isOpenQscode" @returnPage="downQscode" />
   <div class="body" v-if="!enrollStatus.isAthleteConfig">
     <!-- 开场广告图 -->
     <div class="stateAdv" v-if="$store.state.settings[11].value">
@@ -298,6 +300,7 @@ import { useStore } from "vuex";
 import { HOST, HOST2 } from "../ENV";
 import athleteInformation from "@/components/athleteInformation.vue";
 import customerService from "@/components/customerService.vue";
+import isQrcode from '@/components/isQrcode.vue'
 import { isNetWork } from "../utils/network";
 import Mobile from "mobile-detect";
 const $route = useRoute();
@@ -329,6 +332,7 @@ const enrollStatus = reactive({
   isActiveRules: false,
   isAthleteConfig: false,
   iscustomerService: false,
+  isOpenQscode: false
 });
 
 //我要报名
@@ -360,6 +364,9 @@ const getChild = (value) => {
 const getCusrr = () => {
   enrollStatus.iscustomerService = false;
 };
+const downQscode = () => {
+  enrollStatus.isOpenQscode = false
+}
 
 //获取选手列表
 const getInformation = async () => {
@@ -437,6 +444,8 @@ const activeRull = async () => {
 
 // 点赞
 const like = async (target) => {
+  // 开启二维码弹幕
+  enrollStatus.isOpenQscode = true
   let keys = await getKey();
   let sercet = await encryption(keys);
   const md = new Mobile(navigator.userAgent);

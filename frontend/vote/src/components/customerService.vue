@@ -85,6 +85,5 @@ customerData.data = result.value.value
     position: absolute;
     top: 155px;
     left: 365px;
-    height: 0px;
 }
 </style>
