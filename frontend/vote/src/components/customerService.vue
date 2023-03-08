@@ -8,13 +8,14 @@
                 <div class="body_content_config_botton">{{ customerData.data }}</div>
             </div>
         </div>
-        <img class="downImg" src="../assets/images/39.png" alt="">
+        <img @click="returnPage" class="downImg" style="width: 30px;height: 30px;" src="../assets/images/39.png" alt="">
     </div>
 </template>
 
 <script setup>
-import { onMounted, reactive, computed } from 'vue'
+import { defineEmits, reactive, computed } from 'vue'
 import { useStore } from "vuex";
+const emit = defineEmits(['returnPage'])
 
 const $store = new useStore()
 
@@ -22,13 +23,20 @@ const customerData = reactive({
     data: ''
 })
 
+const returnPage = (value) => {
+    let params = {
+        status: value
+    }
+    emit('returnPage', params)
+}
 
-onMounted(() => {
-    let result = computed(() => {
-    return $store.state.settings[0]
-    })
-    customerData.data = result.value
+
+
+let result = computed(() => {
+return $store.state.settings[82]
 })
+customerData.data = result.value.value
+
 </script>
 
 <style lang="scss" scoped>
@@ -74,10 +82,9 @@ onMounted(() => {
     padding: 10px;
 }
 .downImg{
-    width: 30px;
-    height: 30px;
     position: absolute;
-    top: 0px;
+    top: 155px;
+    left: 365px;
     height: 0px;
 }
 </style>

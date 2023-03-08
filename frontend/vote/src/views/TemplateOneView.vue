@@ -1,12 +1,7 @@
 <template>
   <athleteInformation v-if="enrollStatus.isAthleteConfig" @returnPage="getChild" :data="informationKey" />
-  <customerService />
+  <customerService v-if="enrollStatus.iscustomerService" @returnPage="getCusrr" />
   <div class="body" v-if="!enrollStatus.isAthleteConfig">
-  <athleteInformation
-    v-if="enrollStatus.isAthleteConfig"
-    @returnPage="getChild"
-    :data="informationKey"
-  />
     <div class="content">
       <div class="content_top">
         <div class="content_top_center">
@@ -150,6 +145,7 @@
       </div>
       <div class="footer_item1">
         <img
+          @click="customerSure"
           src="../assets/images/25.png"
           style="width: 35px; height: 50px"
           alt=""
@@ -275,7 +271,7 @@ const enrollStatus = reactive({
   isEnrollProp: false,
   isActiveRules: false,
   isAthleteConfig: false,
-  iscustomerService: true
+  iscustomerService: false
 })
 
 //我要报名
@@ -294,10 +290,19 @@ const doenProp = () => {
   }
 };
 
+// 客服
+const customerSure  = () => {
+  console.log(1);
+  enrollStatus.iscustomerService = true
+}
+
 //获取子级传递过来的数据
 const getChild = (value) => {
   enrollStatus.isAthleteConfig = value.status;
 };
+const getCusrr = () => {
+  enrollStatus.iscustomerService = false
+}
 
 //获取选手列表
 const getInformation = async () => {
