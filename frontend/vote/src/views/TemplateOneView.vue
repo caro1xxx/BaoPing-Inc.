@@ -43,6 +43,21 @@
             <p>{{ $store.state.settings[83].value }}</p>
           </div>
         </div>
+        <!-- 弹幕 -->
+        <div
+          style="text-align: end; overflow: hidden"
+          class="content_top_popup"
+          v-if="!$store.state.settings[11].value"
+        >
+          <div class="scroll_text_content">
+            <p
+              style="display: inline; color: #545c64"
+              v-for="item in popupList.data"
+            >
+              {{ item }}
+            </p>
+          </div>
+        </div>
       </div>
       <div class="content_body">
         <div class="content_body_persennum">
@@ -297,6 +312,9 @@ let informationKey = 0;
 
 const fileData = new FormData();
 
+// 弹幕列表
+const popupList = reactive({ data: [] });
+
 // 表单数据
 const enrollData = reactive({
   imgUrl: "",
@@ -474,8 +492,23 @@ const isSupportCarouselAndStart = () => {
   }, 4000);
 };
 
+// 弹幕动画
+const animating = () => {
+  let JSONPopup = JSON.parse($store.state.settings[93].value);
+  popupList.data.push(JSONPopup[parseInt(Math.random(JSONPopup.length) * 10)]);
+  requestAnimationFrame(animating);
+};
+
+// 是否支持弹幕并且运行
+const isPopupAndStart = () => {
+  if ($store.state.settings[26].value) return;
+  // popupList.push()
+  requestAnimationFrame(animating);
+};
+
 onMounted(() => {
   isSupportCarouselAndStart();
+  isPopupAndStart();
 });
 </script>
 
@@ -821,5 +854,12 @@ button {
   height: 30px;
   line-height: 30px;
   text-align: center;
+}
+.content_top_popup {
+  position: absolute;
+  top: 0;
+  bottom: 30px;
+  left: 0;
+  right: 0;
 }
 </style>
