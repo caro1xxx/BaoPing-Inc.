@@ -16,19 +16,35 @@ const getInitSetting = async () => {
     `/alonevoteactivity/?vote_id=${$route.query.vote_id}`
   );
   if (!result || !voteSetting) return;
-  const map1 = new Map();
+  let map1 = [];
   for await (let i of result) {
-    map1.set(i.fields.name, i.fields.value === "0" ? false : true);
+    map1.push({
+      name: i.fields.name,
+      value: i.fields.value === "0" ? false : true,
+    });
   }
   for (let i in voteSetting[0].fields) {
-    map1.set(i, voteSetting[0].fields[i]);
+    map1.push({
+      name: i,
+      value: voteSetting[0].fields[i],
+    });
   }
   await $store.dispatch("changeSettingsActions", map1);
-  if ($store.state.settings.get("template_id") === 1)
+  if ($store.state.settings[77] === 1)
     $router.push(`/one?vote_id=${$route.query.vote_id}`);
   else $router.push(`/two?vote_id=${$route.query.vote_id}`);
 };
 getInitSetting();
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+*::-webkit-scrollbar {
+  display: none;
+}
+* {
+  scrollbar-width: none;
+}
+* {
+  -ms-overflow-style: none;
+}
+</style>

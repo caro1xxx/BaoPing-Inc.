@@ -1,5 +1,9 @@
 <template>
-  <athleteInformation v-if="enrollStatus.isAthleteConfig" @returnPage="getChild" :data="informationKey" />
+  <athleteInformation
+    v-if="enrollStatus.isAthleteConfig"
+    @returnPage="getChild"
+    :data="informationKey"
+  />
   <div class="body" v-else>
     <div class="content">
       <div class="content_top">
@@ -14,6 +18,9 @@
             "
           ></div>
           <div>优秀企业推荐</div>
+        </div>
+        <div class="content_top_scroll_text">
+          {{ $store.state.settings[0] }}
         </div>
       </div>
       <div class="content_body">
@@ -231,28 +238,24 @@
 
 <script setup>
 import { fether } from "@/utils/fether";
-import { reactive, ref } from "vue";
+import { reactive, ref, computed } from "vue";
 import base64 from "base-64";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
-import {HOST,HOST2}from '../ENV'
-import athleteInformation from '@/components/athleteInformation.vue';
+import { HOST, HOST2 } from "../ENV";
+import athleteInformation from "@/components/athleteInformation.vue";
 import { isNetWork } from "../utils/network";
 import Mobile from "mobile-detect";
 const $route = useRoute();
 const $router = useRouter();
-const $store =useStore()
-
-// console.log(enrollStatus.isAthleteConfig); 
+const $store = useStore();
 
 // 数据
-const informationData = reactive([
-]);
-
-const uploadImg = ref('')
-const headerImg = ref('')
-let activeRules = ''
-let informationKey = 0
+const informationData = reactive([]);
+const uploadImg = ref("");
+const headerImg = ref("");
+let activeRules = "";
+let informationKey = 0;
 
 const fileData = new FormData();
 
@@ -268,7 +271,7 @@ const enrollData = reactive({
 const enrollStatus = reactive({
   isEnrollProp: false,
   isActiveRules: false,
-})
+});
 
 //我要报名
 const goEnroll = () => {
@@ -287,9 +290,9 @@ const doenProp = () => {
 };
 
 //获取子级传递过来的数据
-const getChild = (value) =>{
-  enrollStatus.isAthleteConfig = value.status
-}
+const getChild = (value) => {
+  enrollStatus.isAthleteConfig = value.status;
+};
 
 //获取选手列表
 const getInformation = async () => {
@@ -299,10 +302,10 @@ const getInformation = async () => {
   });
   // 数组排序
   informationData.sort((a, b) => {
-    return b.count - a.count
-  })
-}
-getInformation()
+    return b.count - a.count;
+  });
+};
+getInformation();
 
 // 点击按钮分发到file click事件
 const dispatchUpload = () => {
@@ -401,13 +404,12 @@ const getKey = () => {
 };
 
 const athleteConfig = (e, value) => {
-  if (e.target.tagName === 'DIV') {
-    enrollStatus.isAthleteConfig = true
+  if (e.target.tagName === "DIV") {
+    enrollStatus.isAthleteConfig = true;
     // $store.commit('changeAthlete', true)
-    informationKey = value
+    informationKey = value;
   }
 };
-
 </script>
 
 <style lang="scss" scoped>
@@ -429,6 +431,7 @@ const athleteConfig = (e, value) => {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 .content_top_center {
   width: 80%;
@@ -667,5 +670,10 @@ button {
     height: 30px;
     margin-right: 10px;
   }
+}
+.content_top_scroll_text {
+  position: absolute;
+  height: 30px;
+  bottom: 0px;
 }
 </style>
