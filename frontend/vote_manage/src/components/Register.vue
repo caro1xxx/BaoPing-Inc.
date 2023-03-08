@@ -202,6 +202,8 @@ const register = () => {
           JSON.parse(data.data)[0].fields.token
         );
         loginSuccess();
+      } else {
+        $store.dispatch("GlobalMessageActions", data.msg);
       }
     });
 };

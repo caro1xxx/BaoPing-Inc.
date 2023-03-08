@@ -78,4 +78,13 @@ if (Cookies.get("token") === undefined) {
 * {
   font-family: Memo;
 }
+* {
+  scrollbar-width: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+* {
+  -ms-overflow-style: none;
+}
 </style>

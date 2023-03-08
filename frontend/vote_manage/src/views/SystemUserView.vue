@@ -128,7 +128,7 @@ const getUserInfoList = async () => {
       "token"
     )}`
   );
-  isAxiosStatus(result, true)
+  isAxiosStatus(result, true);
 
   // 关闭加载loading
   $store.commit("noticifyLoading", false);
@@ -136,7 +136,7 @@ const getUserInfoList = async () => {
 
 const isAxiosStatus = async (data, status) => {
   if (status === false) {
-    tableData.splice(0, tableData.length)
+    tableData.splice(0, tableData.length);
   }
   if (data.code === 200) {
     //serve
@@ -149,7 +149,7 @@ const isAxiosStatus = async (data, status) => {
     await $store.dispatch("refreshErroActions");
     await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
   }
-}
+};
 
 // 删除用户
 const deleteUser = async (target) => {
@@ -235,9 +235,9 @@ watch(
 watch(
   () => $store.state.filterData,
   (newVal) => {
-    isAxiosStatus(newVal, false)
-  },
-)
+    isAxiosStatus(newVal, false);
+  }
+);
 
 getUserInfoList();
 </script>
@@ -247,24 +247,27 @@ getUserInfoList();
   width: calc(100vw - 250px);
   height: calc(100vh);
   font-size: 20px;
+  scrollbar-width: none;
 }
 .title_style {
   font-weight: bold;
   margin-top: 20px;
 }
 .system_main_body {
-  padding: 20px 20px;
+  padding: 18px 20px;
+  scrollbar-width: none;
 }
 .home_table {
   margin-top: 20px;
   font-size: 10px;
   height: calc(100vh - 150px);
   overflow: scroll;
+  scrollbar-width: none;
 }
 .home_table::-webkit-scrollbar {
+  scrollbar-width: none;
   display: none;
   -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
 }
 .home_table_item {
   background-color: #fff;
