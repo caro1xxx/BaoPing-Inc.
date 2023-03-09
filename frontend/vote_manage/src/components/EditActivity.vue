@@ -298,7 +298,7 @@ const getStorage = () => {
       voteSetting[10].value = obj.enable_prize === 1 ? true : false;
       voteSetting[11].value = obj.enable_browser === 1 ? true : false;
       autoMation[0].value = obj.auto_comment_voteuser
-        ? auto_comment_voteuser
+        ? obj.auto_comment_voteuser
         : "空";
       autoMation[1].value[0] = stampToUTCtime(obj.auto_comment_begin_time);
       autoMation[1].value[1] = stampToUTCtime(obj.auto_comment_end_time);

@@ -50,7 +50,7 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="删除" width="180">
+        <el-table-column label="操作" width="180">
           <template #default="scope">
             <span
               v-if="!scope.row.isEdit"
@@ -63,6 +63,11 @@
               style="margin-right: 20px; color: #2479fb; cursor: pointer"
               @click="saveEidt({ ...scope.row })"
               >保存</span
+            >
+            <span
+              @click="exportData"
+              style="margin-right: 20px; color: #2479fb; cursor: pointer"
+              >导出</span
             >
           </template>
         </el-table-column>
@@ -77,6 +82,7 @@ import { fether } from "@/utils/fether";
 import { reactive } from "vue";
 import { HOST } from "@/ENV";
 import jsCookie from "js-cookie";
+import XLSX from "xlsx";
 const $store = new useStore();
 const tableData = reactive([]);
 
@@ -127,6 +133,35 @@ const saveEidt = async (target) => {
     });
   }
   await $store.dispatch("GlobalMessageActions", result.msg);
+};
+
+// 导出execl
+const exportData = () => {
+  const excleData = [["票数", "选手介绍", "姓名", "所属活动ID"]];
+  tableData.forEach((item) => {
+    excleData.push([item.count, item.detail, item.name, item.vote_id]);
+  });
+  const options = {
+    "!cols": [
+      { wpx: 100 },
+      { wpx: 100 },
+      { wpx: 100 },
+      { wpx: 100 },
+      { wpx: 100 },
+      { wpx: 100 },
+      { wpx: 100 },
+    ],
+  };
+  // json方式导入数据
+  const worksheet = XLSX.utils.json_to_sheet(excleData);
+  // const worksheet = XLSX.utils.aoa_to_sheet(excleData);
+
+  worksheet["!cols"] = options["!cols"]; // 设置每列的列宽，10代表10个字符，注意中文占2个字符
+  // worksheet["!merges"] = [{ e: { c: 1, r: 1 }, s: { c: 0, r: 0 } }]; //合并单元格
+  // 新建一个工作簿
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  XLSX.writeFile(workbook, `活动选手汇总表.xlsx`);
 };
 </script>
 
