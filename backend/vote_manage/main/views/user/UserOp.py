@@ -6,6 +6,7 @@ from django.core.mail import send_mail
 from vote_manage import settings
 from main.tools import *
 import base64
+from main.tasks import sendEmail
 
 
 # 关于用户的一些操作
@@ -205,6 +206,8 @@ class UserOp:
     # 发送六位数字验证码到邮箱
     def sendEmail(self, email):
         try:
+            sendEmail.delay(email)
+            return True, '发送验证码成功'
             code = generateCode6()
             content = code
             # my_email = send_mail('你的验证码是:{}'.format(email), content, settings.DEFAULT_FROM_EMAIL, [email])

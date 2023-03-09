@@ -15,7 +15,3 @@ app.config_from_object('django.conf:settings')
  # 自动从Django的已注册app中发现任务
 app.autodiscover_tasks()
  
- # 一个测试任务
-@app.task(bind=True)
-def debug_task(self):
-    print(f'Request: {self.request!r}')

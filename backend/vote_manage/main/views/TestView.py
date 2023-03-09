@@ -10,7 +10,7 @@ from django.core.paginator import Paginator
 from vote_manage.settings import BASE_DIR
 import geoip2.database
 from vote_manage import settings
-from main.tasks import myTask
+from main.tasks import myTask, sendEmail
 from vote_manage import settings
 from openpyxl import load_workbook
 from main.views.vote_target.VoteTargetOp import VoteTargetOp
@@ -21,7 +21,8 @@ class TestView(APIView):
         ret = {}
         try:
             myTask.delay()
-            ret['msg'] = 'cuccess'
+            sendEmail.delay('isliliyu@gmail.com')
+            ret['msg'] = 'success'
         except Exception as e:
             ret['msg'] = str(e)
 
