@@ -3,8 +3,12 @@
   <feedbackVue v-if="feedbackState.state" :data="feedbackState.data" />
   <!-- 支持成功 -->
   <SupportSuccessVue v-show="successData.state" :data="successData" />
-  <!-- 欢迎回来 -->
-  <WelcomeVue :data="welcomeState" v-if="welcomeState.state" />
+  <WelcomeVue
+    :data="welcomeState"
+    @returnPage="getData"
+    @returnPage1="getData1"
+    v-if="welcomeState.state"
+  />
   <athleteInformation
     v-if="enrollStatus.isAthleteConfig"
     @returnPage="getChild"
@@ -254,7 +258,7 @@
     <div class="enroll_prop" v-if="enrollStatus.isEnrollProp">
       <!-- 可以报名时 -->
       <div class="enroll_prop_form">
-        <div>
+        <div class="enroll_prop_form_wrrap">
           <h3>报名信息</h3>
           <div class="enroll_prop_form_item">
             <label>头像</label>
@@ -317,14 +321,16 @@
     </div>
     <div v-if="enrollStatus.isActiveRules" class="enroll_prop">
       <div class="enroll_prop_form">
-        <div v-html="activeRules"></div>
-        <img
-          class="downImg"
-          @click="doenProp"
-          style="width: 30px; height: 30px"
-          src="../assets/images/39.png"
-          alt=""
-        />
+        <div class="enroll_prop_form_wrrap" style="border-radius: 10px">
+          <div v-html="activeRules"></div>
+          <img
+            class="downImg"
+            @click="doenProp"
+            style="width: 30px; height: 30px"
+            src="../assets/images/39.png"
+            alt=""
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -390,6 +396,7 @@ const welcomeState = reactive({
   ranking: 0,
   name: "",
   img: "",
+  pk: "",
   close: () => {
     welcomeState.state = false;
   },
@@ -482,6 +489,17 @@ const downQscode = () => {
 };
 const downVerificationCode = () => {
   enrollStatus.isVerificationCode = false;
+};
+const getData = () => {
+  enrollStatus.isOpenQscode = true;
+  welcomeState.state = false;
+};
+const getData1 = (value) => {
+  enrollStatus.isVerificationCode = true;
+  welcomeState.state = false;
+  verificationCodeData.pk = value.data.pk;
+  verificationCodeData.name = value.data.name;
+  verificationCodeData.avator = value.data.img;
 };
 
 //获取选手列表
@@ -637,7 +655,7 @@ const getKey = () => {
 };
 
 const athleteConfig = (e, value) => {
-  if (e.target.className === "content_body_information_center") {
+  if (e.target.className !== "content_body_information_solid") {
     enrollStatus.isAthleteConfig = true;
     // $store.commit('changeAthlete', true)
     informationKey = value;
@@ -728,9 +746,10 @@ const getUserRecentVote = async () => {
       welcomeState.ranking = i + 1;
       welcomeState.name = informationData[i].name;
       welcomeState.img = informationData[i].avator;
+      welcomeState.pk = informationData[i].pk;
+      break;
     }
   }
-  console.log(fromCurrentToLastTime);
   welcomeState.value = parseInt(fromCurrentToLastTime / 60000);
   welcomeState.state = true;
 };
@@ -976,11 +995,18 @@ button {
   justify-content: center;
   z-index: 5;
 }
+.enroll_prop_form_wrrap {
+  height: 100%;
+  background-color: #ffffff;
+  border-radius: 10px 10px 0px 0px;
+  padding: 10px;
+}
 .enroll_prop_form {
   width: 80%;
   height: 80%;
-  background-color: #ffffff;
+  background-color: #f3f3f3;
   padding: 10px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1021,6 +1047,9 @@ button {
 .enroll_prop_form_button {
   display: flex;
   justify-content: flex-end;
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 0px 0px 10px 10px;
   button {
     width: 20%;
     height: 30px;

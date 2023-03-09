@@ -217,6 +217,7 @@ const close = async (e)=>{
             key: sercet,
             },
         });
+        console.log(result);
     } else {
         alert('验证码错误，请重新输入')
     }

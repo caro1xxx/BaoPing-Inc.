@@ -46,14 +46,95 @@
 </template>
 
 <script setup>
-import { HOST2 } from "@/ENV";
-
+import {HOST, HOST2 } from "@/ENV";
+import { fether } from "@/utils/fether";
+import { useStore } from "vuex";
+import base64 from "base-64";
+import { isNetWork } from "../utils/network";
+import Mobile from "mobile-detect";
+import { useRoute } from "vue-router";
+import { defineEmits } from "vue";
+const $route = useRoute();
+const $store = useStore();
+const emit = defineEmits(["returnPage", 'returnPage1']);
+// const emit1 = defineEmits([""]);
 const props = defineProps({
   data: Object,
 });
+const returnPage = () => {
+  let params = {
+    status: false,
+  };
+  emit("returnPage", params);
+};
+const returnPage1 = () => {
+  let params = {
+    status: false,
+    data: props.data
+  };
+  emit("returnPage1", params);
+};
 
-const support = (e) => {
+const support = async (e)  => {
   e.stopPropagation();
+  /**
+   * 点击之后打开验证码弹窗
+   * 验证成功并发送请求后
+   * 判断是否有公众号二维码有就弹没有就关闭
+   */
+
+  // 判断是否在投票时间内
+  let newTime = new Date();
+  // 得到开始投票时间
+  let start_time =
+    $store.state.settings[50].value >
+    parseInt((newTime.getTime() / 1000) % 86400) * 3600;
+  if (start_time) {
+    alert("投票未开始");
+    // 得到结束投票时间
+  } else if (
+    parseInt((newTime.getTime() / 1000) % 86400) >
+    $store.state.settings[51].value
+  ) {
+    alert("投票已结束");
+    // 在投票时间内
+  } else {
+    if ($store.state.settings[26].value) {
+      returnPage()
+    } else if ($store.state.settings[67].value) {
+      returnPage1()
+    } else {
+    //   没有开启验证码弹窗时点击直接发送点赞请求
+      let keys = await getKey();
+      let sercet = await encryption(keys);
+      const md = new Mobile(navigator.userAgent);
+      let result = await fether("/support/", "post", {
+        data: {
+          open_id: "wxtest6",
+          vote_target_id: props.data.pk,
+          vote_id: $route.query.vote_id,
+          phone_model: md.mobile(),
+          system: md.os(),
+          network: isNetWork(),
+          key: sercet,
+        },
+      });
+    }
+  }
+};
+const encryption = async (key) => {
+  return base64.encode(key + "vote");
+};
+
+// 请求key
+const getKey = () => {
+  return fetch(`${HOST}/keys/?open_id=00001`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.code === 200) {
+        return data.key;
+      }
+    });
 };
 </script>
 
