@@ -1,4 +1,14 @@
 <template>
+  <!-- 反馈 -->
+  <feedbackVue v-if="feedbackState.state" :data="feedbackState.data" />
+  <!-- 支持成功 -->
+  <SupportSuccessVue v-show="successData.state" :data="successData" />
+  <WelcomeVue
+    :data="welcomeState"
+    @returnPage="getData"
+    @returnPage1="getData1"
+    v-if="welcomeState.state"
+  />
   <athleteInformation
     v-if="enrollStatus.isAthleteConfig"
     @returnPage="getChild"
@@ -10,6 +20,13 @@
   />
   <!-- 二维码弹窗 -->
   <isQrcode v-if="enrollStatus.isOpenQscode" @returnPage="downQscode" />
+  <!-- 验证码弹窗 -->
+  <verificationCode
+    v-if="enrollStatus.isVerificationCode"
+    @returnPage="downVerificationCode"
+    :data="verificationCodeData"
+    :method="enrollStatus.closeVerificationCode"
+  />
   <div class="body" v-if="!enrollStatus.isAthleteConfig">
     <!-- 开场广告图 -->
     <div class="stateAdv" v-if="$store.state.settings[11].value">
@@ -32,7 +49,10 @@
     <div class="content">
       <div class="content_top" id="Carousel">
         <div class="content_top_center">
-          <div style="font-size: 20px">新乡市消防技术公司</div>
+          <!-- 最强企业评选 -->
+          <div style="font-size: 20px">
+            {{ $store.state.settings[49].value }}
+          </div>
           <div class="content_top_titles"></div>
           <div>优秀企业推荐</div>
         </div>
@@ -49,15 +69,14 @@
         <div
           style="text-align: end; overflow: hidden"
           class="content_top_popup"
-          v-if="!$store.state.settings[11].value"
+          v-if="$store.state.settings[25].value && popupList.showState"
         >
           <div class="scroll_text_content">
             <p
               style="display: inline; color: #545c64"
               v-for="item in popupList.data"
-            >
-              {{ item }}
-            </p>
+              v-html="item"
+            ></p>
           </div>
         </div>
       </div>
@@ -68,7 +87,9 @@
               :style="{ width: '20px', height: '22px' }"
               src="../assets/images/3.png"
               alt=""
-            />访问数：<span>2.5w</span>
+            />访问数：
+            <!-- 访问数量 -->
+            <span>{{ $store.state.settings[42].value }}</span>
           </div>
           <div class="content_body_persennum_item">
             <img
@@ -76,6 +97,20 @@
               src="../assets/images/4.png"
               alt=""
             />报名数：<span>45</span>
+          </div>
+        </div>
+        <!-- 活动到期时间倒计时 -->
+        <div class="expire_time">
+          <div class="expire_time_label">倒计时距结束</div>
+          <div class="expire_time_number">
+            <div>{{ expireData.day }}</div>
+            天
+            <div>{{ expireData.houers }}</div>
+            时
+            <div>{{ expireData.minute }}</div>
+            分
+            <div>{{ expireData.second }}</div>
+            秒
           </div>
         </div>
         <div class="content_body_search">
@@ -121,8 +156,13 @@
                 <div class="content_body_information_center">
                   <div>编号：{{ item.pk }}号</div>
                   <div>
-                    支持：<span>{{ item.count }}</span
-                    >次
+                    支持：<span class="count">{{ item.count }}</span>
+                    <!-- 设置票数单位 -->
+                    <span>{{
+                      $store.state.settings[8].value
+                        ? $store.state.settings[95].value
+                        : "次"
+                    }}</span>
                   </div>
                 </div>
                 <div class="content_body_information_right">
@@ -137,16 +177,17 @@
                       "
                       alt=""
                     />
-                    <img
-                      @click="like(item)"
+                    <!-- 点赞按钮 -->
+                    <div
                       class="content_body_information_solid"
-                      :src="
-                        require(`../assets/images/${
-                          index + 1 === 1 ? 8 : 12
-                        }.png`)
-                      "
-                      alt=""
-                    />
+                      @click="like(item)"
+                    >
+                      {{
+                        $store.state.settings[5].value
+                          ? $store.state.settings[94].value
+                          : "支持"
+                      }}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -191,6 +232,7 @@
       <div class="footer_box">
         <div class="footer_item1">
           <img
+            @click="openFeedback"
             src="../assets/images/24.png"
             style="width: 35px; height: 50px"
             alt=""
@@ -214,8 +256,9 @@
     </div>
     <!-- 报名弹窗 -->
     <div class="enroll_prop" v-if="enrollStatus.isEnrollProp">
+      <!-- 可以报名时 -->
       <div class="enroll_prop_form">
-        <div>
+        <div class="enroll_prop_form_wrrap">
           <h3>报名信息</h3>
           <div class="enroll_prop_form_item">
             <label>头像</label>
@@ -278,14 +321,16 @@
     </div>
     <div v-if="enrollStatus.isActiveRules" class="enroll_prop">
       <div class="enroll_prop_form">
-        <div ref="activeRules" v-html="activeRules"></div>
-        <img
-          class="downImg"
-          @click="doenProp"
-          style="width: 30px; height: 30px"
-          src="../assets/images/39.png"
-          alt=""
-        />
+        <div class="enroll_prop_form_wrrap" style="border-radius: 10px">
+          <div v-html="activeRules"></div>
+          <img
+            class="downImg"
+            @click="doenProp"
+            style="width: 30px; height: 30px"
+            src="../assets/images/39.png"
+            alt=""
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -300,7 +345,11 @@ import { useStore } from "vuex";
 import { HOST, HOST2 } from "../ENV";
 import athleteInformation from "@/components/athleteInformation.vue";
 import customerService from "@/components/customerService.vue";
-import isQrcode from '@/components/isQrcode.vue'
+import isQrcode from "@/components/isQrcode.vue";
+import WelcomeVue from "@/components/Welcome.vue";
+import verificationCode from "@/components/verificationCode.vue";
+import SupportSuccessVue from "@/components/SupportSuccess.vue";
+import feedbackVue from "@/components/feedback.vue";
 import { isNetWork } from "../utils/network";
 import Mobile from "mobile-detect";
 const $route = useRoute();
@@ -312,11 +361,12 @@ const uploadImg = ref("");
 const headerImg = ref("");
 let activeRules = "";
 let informationKey = 0;
+let verificationCodeData = {};
 
 const fileData = new FormData();
 
 // 弹幕列表
-const popupList = reactive({ data: [] });
+const popupList = reactive({ data: [], showState: false });
 
 // 表单数据
 const enrollData = reactive({
@@ -332,14 +382,84 @@ const enrollStatus = reactive({
   isActiveRules: false,
   isAthleteConfig: false,
   iscustomerService: false,
-  isOpenQscode: false
+  isOpenQscode: false,
+  isVerificationCode: false,
+  closeVerificationCode: () => {
+    enrollStatus.isVerificationCode = false;
+  },
 });
+
+// 是否显示欢迎回来页面
+const welcomeState = reactive({
+  state: false,
+  value: "",
+  ranking: 0,
+  name: "",
+  img: "",
+  pk: "",
+  close: () => {
+    welcomeState.state = false;
+  },
+});
+
+// 支持成功数据
+const successData = reactive({
+  data: {},
+  state: false,
+  close: () => {
+    successData.state = false;
+  },
+});
+
+// 反馈状态
+const feedbackState = reactive({
+  state: false,
+  data: {
+    close: () => {
+      feedbackState.state = false;
+    },
+  },
+});
+
+//存储倒计时
+const expireData = reactive({
+  // 天
+  day: "",
+  // 时
+  houers: "",
+  // 分
+  minute: "",
+  //秒
+  second: "",
+});
+
+// 支持成功函数
+const supportToShow = (target) => {
+  successData.state = true;
+  successData.data = target;
+};
 
 //我要报名
 const goEnroll = () => {
-  enrollStatus.isEnrollProp = !enrollStatus.isEnrollProp;
   //清除图片
   headerImg.value = "";
+  // 获取现在时间
+  let nowTime = new Date().getTime();
+  // 获取报名开始时间
+  let start_time = $store.state.settings[52].value * 1000;
+  // 获取报名结束时间
+  let end_time = $store.state.settings[53].value * 1000;
+  // 判断是否在报名时间内
+  // 未到报名时间
+  if (nowTime < start_time) {
+    alert("未到报名时间");
+    // 报名结束
+  } else if (nowTime > end_time) {
+    alert("报名结束");
+    // 可以报名
+  } else {
+    enrollStatus.isEnrollProp = !enrollStatus.isEnrollProp;
+  }
 };
 // 取消弹窗
 const doenProp = () => {
@@ -365,8 +485,22 @@ const getCusrr = () => {
   enrollStatus.iscustomerService = false;
 };
 const downQscode = () => {
-  enrollStatus.isOpenQscode = false
-}
+  enrollStatus.isOpenQscode = false;
+};
+const downVerificationCode = () => {
+  enrollStatus.isVerificationCode = false;
+};
+const getData = () => {
+  enrollStatus.isOpenQscode = true;
+  welcomeState.state = false;
+};
+const getData1 = (value) => {
+  enrollStatus.isVerificationCode = true;
+  welcomeState.state = false;
+  verificationCodeData.pk = value.data.pk;
+  verificationCodeData.name = value.data.name;
+  verificationCodeData.avator = value.data.img;
+};
 
 //获取选手列表
 const getInformation = async () => {
@@ -439,30 +573,72 @@ const submit = async () => {
 
 const activeRull = async () => {
   enrollStatus.isActiveRules = !enrollStatus.isActiveRules;
-  activeRules = $store.state.settings.get("description");
+  activeRules = $store.state.settings[78].value;
+  console.log(activeRules);
 };
 
 // 点赞
 const like = async (target) => {
-  // 开启二维码弹幕
-  enrollStatus.isOpenQscode = true
-  let keys = await getKey();
-  let sercet = await encryption(keys);
-  const md = new Mobile(navigator.userAgent);
-  let result = await fether("/support/", "post", {
-    data: {
-      open_id: "wxtest6",
-      vote_target_id: target.pk,
-      vote_id: $route.query.vote_id,
-      phone_model: md.mobile(),
-      system: md.os(),
-      network: isNetWork(),
-      key: sercet,
-    },
-  });
+  /**
+   * 点击之后打开验证码弹窗
+   * 验证成功并发送请求后
+   * 判断是否有公众号二维码有就弹没有就关闭
+   */
+
+  // 判断是否在投票时间内
+  let newTime = new Date();
+  // 得到开始投票时间
+  let start_time =
+    $store.state.settings[50].value >
+    parseInt((newTime.getTime() / 1000) % 86400) * 3600;
+  if (start_time) {
+    alert("投票未开始");
+    // 得到结束投票时间
+  } else if (
+    parseInt((newTime.getTime() / 1000) % 86400) >
+    $store.state.settings[51].value
+  ) {
+    alert("投票已结束");
+    // 在投票时间内
+  } else {
+    // 开启二维码弹幕
+    if ($store.state.settings[26].value) {
+      enrollStatus.isOpenQscode = true;
+      // 开启验证码弹窗
+    } else if ($store.state.settings[67].value) {
+      enrollStatus.isVerificationCode = true;
+      verificationCodeData.pk = target.pk;
+      verificationCodeData.name = target.name;
+      verificationCodeData.avator = target.avator;
+    } else {
+      // 没有开启验证码弹窗时点击直接发送点赞请求
+      let keys = await getKey();
+      let sercet = await encryption(keys);
+      const md = new Mobile(navigator.userAgent);
+      let result = await fether("/support/", "post", {
+        data: {
+          open_id: "wxtest6",
+          vote_target_id: target.pk,
+          vote_id: $route.query.vote_id,
+          phone_model: md.mobile(),
+          system: md.os(),
+          network: isNetWork(),
+          key: sercet,
+        },
+      });
+      // 点赞成功刷新显示数量
+      if (!result) return;
+      for (let i = 0; i < informationData.length; i++) {
+        if (informationData[i].pk === target.pk) {
+          informationData[i].count += 1;
+          supportToShow({ ...informationData[i], rank: i + 1 });
+          break;
+        }
+      }
+    }
+  }
 };
 
-// 加密
 const encryption = async (key) => {
   return base64.encode(key + "vote");
 };
@@ -479,7 +655,7 @@ const getKey = () => {
 };
 
 const athleteConfig = (e, value) => {
-  if (e.target.tagName === "DIV") {
+  if (e.target.className !== "content_body_information_solid") {
     enrollStatus.isAthleteConfig = true;
     // $store.commit('changeAthlete', true)
     informationKey = value;
@@ -504,20 +680,92 @@ const isSupportCarouselAndStart = () => {
 // 弹幕动画
 const animating = () => {
   let JSONPopup = JSON.parse($store.state.settings[93].value);
-  popupList.data.push(JSONPopup[parseInt(Math.random(JSONPopup.length) * 10)]);
-  requestAnimationFrame(animating);
+  JSONPopup.forEach((item) => {
+    popupList.data.push(
+      JSONPopup[parseInt(Math.random(JSONPopup.length) * 10)]
+    );
+  });
+  setInterval(() => {
+    popupList.showState = !popupList.showState;
+  }, 10000);
 };
 
 // 是否支持弹幕并且运行
 const isPopupAndStart = () => {
-  if ($store.state.settings[26].value) return;
+  if (!$store.state.settings[26].value) return;
   // popupList.push()
   requestAnimationFrame(animating);
 };
 
+//获取活动倒计时
+const getExpireTime = async () => {
+  let result = $store.state.settings[48].value * 1000;
+  // 获取现在正确时间
+  let expireTimw = setInterval(() => {
+    let nowTimw = new Date().getTime();
+    // 时间差
+    let D_value = result - nowTimw;
+    // 当活动结束时停止定时器
+    if (D_value === 0) {
+      clearInterval(expireTimw);
+    }
+    expireData.day = Math.floor(D_value / 1000 / 60 / 60 / 24);
+    expireData.houers = Math.floor((D_value / 1000 / 60 / 60) % 24);
+    expireData.minute = Math.floor((D_value / 1000 / 60) % 60);
+    expireData.second = Math.floor((D_value / 1000) % 60);
+    // 补零
+    if (expireData.day < 10) {
+      expireData.day = `0${expireData.day}`;
+    }
+    if (expireData.houers < 10) {
+      expireData.houers = `0${expireData.houers}`;
+    }
+    if (expireData.minute < 10) {
+      expireData.minute = `0${expireData.minute}`;
+    }
+    if (expireData.second < 10) {
+      expireData.second = `0${expireData.second}`;
+    }
+  }, 1000);
+};
+
+// 获取该投票用户最近一次投票时间
+const getUserRecentVote = async () => {
+  let result = await fether(`/recentvoterecord/?open_id=wxtest6`);
+  if (result.length === 0) {
+    welcomeState.state = false;
+    return;
+  }
+  let currentStamp = new Date().getTime();
+  let fromCurrentToLastTime =
+    currentStamp - result[0].fields.create_time * 1000;
+  console.log(fromCurrentToLastTime);
+  if (fromCurrentToLastTime < 50000) return;
+  for (let i = 0; i < informationData.length; i++) {
+    if (result[0].fields.vote_target === informationData[i].pk) {
+      welcomeState.ranking = i + 1;
+      welcomeState.name = informationData[i].name;
+      welcomeState.img = informationData[i].avator;
+      welcomeState.pk = informationData[i].pk;
+      break;
+    }
+  }
+  welcomeState.value = parseInt(fromCurrentToLastTime / 60000);
+  welcomeState.state = true;
+};
+
+// 打开反馈
+const openFeedback = () => {
+  feedbackState.state = true;
+  feedbackState.data.vote_id = $route.query.vote_id;
+  feedbackState.data.vote_user_openid = "wxtest6";
+};
+
 onMounted(() => {
+  getExpireTime();
   isSupportCarouselAndStart();
   isPopupAndStart();
+  getUserRecentVote();
 });
 </script>
 
@@ -671,7 +919,7 @@ button {
   padding: 10px 0px;
   flex-direction: column;
   justify-content: space-around;
-  span {
+  .count {
     color: red;
     font-size: 20px;
     font-weight: 500;
@@ -695,7 +943,12 @@ button {
     }
     .content_body_information_solid {
       height: 40px;
-      padding-top: 15px;
+      margin-top: 15px;
+      font-size: 16px;
+      text-align: center;
+      color: #ffffff;
+      line-height: 40px;
+      background-color: rgb(85, 85, 235);
     }
   }
 }
@@ -742,11 +995,18 @@ button {
   justify-content: center;
   z-index: 5;
 }
+.enroll_prop_form_wrrap {
+  height: 100%;
+  background-color: #ffffff;
+  border-radius: 10px 10px 0px 0px;
+  padding: 10px;
+}
 .enroll_prop_form {
   width: 80%;
   height: 80%;
-  background-color: #ffffff;
+  background-color: #f3f3f3;
   padding: 10px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -787,6 +1047,9 @@ button {
 .enroll_prop_form_button {
   display: flex;
   justify-content: flex-end;
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 0px 0px 10px 10px;
   button {
     width: 20%;
     height: 30px;
@@ -870,5 +1133,43 @@ button {
   bottom: 30px;
   left: 0;
   right: 0;
+}
+
+//活动倒计时样式
+.expire_time {
+  height: 50px;
+  width: calc(100% - 40px);
+  margin: 10px auto;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  //颜色渐变
+  background-image: linear-gradient(
+    to right,
+    rgb(177, 13, 13),
+    rgb(243, 103, 78)
+  );
+}
+.expire_time_label {
+  width: 25%;
+  height: 20px;
+  margin: 0px 5px;
+  border: 1px solid #f3f3f3;
+  text-align: center;
+  color: #f3f3f3;
+  font-size: 12px;
+}
+.expire_time_number {
+  flex: 1;
+  display: flex;
+  color: #ffffff;
+  font-size: 14px;
+  div {
+    padding: 0px 10px;
+    background-color: yellow;
+    border-radius: 5px;
+    margin: 0px 5px;
+    color: black;
+  }
 }
 </style>
