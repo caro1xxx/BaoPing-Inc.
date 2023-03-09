@@ -6,7 +6,7 @@ from main.tools import getTodayBeginTimeStamp, getNowTimeStamp, isSameDay
 class StaticsOp:
     def queryTimedeltaIncome(self, beginTime, endTime):
         sumIncome = models.PaymentRecord.objects.filter(
-            create_time__get = beginTime,
+            create_time__gte = beginTime,
             create_time__lt = endTime,
             payment_status = 1
         ).aggregate(sum_income=Sum('price'))

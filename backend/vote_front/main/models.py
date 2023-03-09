@@ -162,7 +162,7 @@ class Settings(models.Model):
 
 
 class CommentRecord(models.Model):
-    vote_activity = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
+    vote_target = models.ForeignKey(VoteTarget, to_field='id', on_delete=models.CASCADE)
     vote_user = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE)
     content = models.TextField(default='')
     create_time = models.IntegerField(default=0)
