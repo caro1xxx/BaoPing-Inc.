@@ -7,6 +7,13 @@ from main.tools import getTodayBeginTimeStamp, getNowTimeStamp, isSameDay
 from main.views.statics.StaticsOp import StaticsOp
 
 
+def test2():
+    try:
+        print("this is test 2")
+    except Exception as e:
+        return str(e)
+
+
 class Crontab:
     def updateStaticHistory(self):
         try:
@@ -28,7 +35,9 @@ class Crontab:
         if domainObj:
             domainObj.update(visit_count=0)
 
-    def test(self):
+    def testIn(self):
         print('test method test')
-        return 'test method test retun'
 
+
+def testOut():
+    print('t222est method test')

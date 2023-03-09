@@ -83,7 +83,7 @@ class VoteActivity(APIView):
             content = data.get('content', None)
             if content is None:
                 return JsonResponse({'code': 400, 'msg': '参数错误'})
-                
+            
             voteActivityOp = VoteActivityOp()
             if content == 'activity_settings':
                 ok, msg = voteActivityOp.checkActivityData(data)

@@ -18,7 +18,7 @@ class Voteuser(APIView):
             # data = models.VoteUser.objects.all()
             # data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
             # ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
-            ret['data'], ret['page_count'] = Common().getData(request, 'VoteUser')
+            ret['data'], ret['page_count'] = Common().getData(request, 'VoteUser', maxsize=20)
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
             # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}

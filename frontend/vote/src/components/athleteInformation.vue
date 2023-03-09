@@ -160,20 +160,32 @@ const returnPage = (value) => {
 
 // 点赞
 const like = async () => {
-  let keys = await getKey();
-  let sercet = await encryption(keys);
-  const md = new Mobile(navigator.userAgent);
-  let result = await fether("/support/", "post", {
-    data: {
-      open_id: "wxtest6",
-      vote_target_id: props.data,
-      vote_id: $route.query.vote_id,
-      phone_model: md.mobile(),
-      system: md.os(),
-      network: isNetWork(),
-      key: sercet,
-    },
-  });
+  // 判断是否在投票时间内
+  let newTime = new Date();
+  // 得到开始投票时间
+  let start_time = Math.floor(86400 / $store.state.settings[50].value / 24);
+  if (newTime.getHours() < start_time) {
+    alert("投票未开始");
+    // 得到结束投票时间
+  } else if (newTime.getTime() > $store.state.settings[51].value * 1000) {
+    alert("投票已结束");
+    // 在投票时间内
+  } else {
+    let keys = await getKey();
+    let sercet = await encryption(keys);
+    const md = new Mobile(navigator.userAgent);
+    let result = await fether("/support/", "post", {
+      data: {
+        open_id: "wxtest6",
+        vote_target_id: props.data,
+        vote_id: $route.query.vote_id,
+        phone_model: md.mobile(),
+        system: md.os(),
+        network: isNetWork(),
+        key: sercet,
+      },
+    });
+  }
 };
 
 // 加密

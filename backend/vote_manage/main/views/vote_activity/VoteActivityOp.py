@@ -68,11 +68,15 @@ class VoteActivityOp:
         validate.addCheck('checkIsNumber', data.get('enable_comment', None), '是否可以评论错误')
         validate.addCheck('checkIsNotEmpty', data.get('enable_vote_cert_code', None), '是否开启投票验证码不能为空')
         validate.addCheck('checkIsNumber', data.get('enable_vote_cert_code', None), '是否开启投票验证码错误')
-        validate.addCheck('checkIsNotEmpty', data.get('enable_prize', None), '是否开启投票验证码不能为空')
-        validate.addCheck('checkIsNumber', data.get('enable_prize', None), '是否开启投票验证码错误')
-        validate.addCheck('checkIsNotEmpty', data.get('enable_browser', None), '是否开启投票验证码不能为空')
-        validate.addCheck('checkIsNumber', data.get('enable_browser', None), '是否开启投票验证码错误')
+        validate.addCheck('checkIsNotEmpty', data.get('enable_prize', None), '是否可以送礼物不能为空')
+        validate.addCheck('checkIsNumber', data.get('enable_prize', None), '是否可以送礼物错误')
+        validate.addCheck('checkIsNotEmpty', data.get('enable_browser', None), '是否可以从浏览器打开不能为空')
+        validate.addCheck('checkIsNumber', data.get('enable_browser', None), '是否可以从浏览器打开错误')
         ok, msg = validate.startCheck()
+        return ok, msg
+        if not ok:
+            return ok, msg
+        ok, msg = self.checkVoteuserIsExist(data.get('auto_comment_voteuser_open_id', None))
         return ok, msg
     
     def checkAutoCommentData(self, data):
@@ -132,7 +136,7 @@ class VoteActivityOp:
         voteActivityObj = models.VoteActivity.objects.filter(vote_id=data.get('vote_id', None)).first()
         voteActivityObj.vote_count_restrict = data.get('vote_count_restrict', None)
         if data.get('today_start_voteuser_open_id', None) or data.get('today_start_voteuser_open_id', None) != '':
-            voteActivityObj.today_start_voteuser_id = data.get('today_start_voteuser_open_id', None)
+            voteActivityObj.today_start_voteuser = data.get('today_start_voteuser_open_id', None)
             voteActivityObj.today_star_update_begin_time = data.get('today_star_update_begin_time', None)
             voteActivityObj.today_star_update_end_time = data.get('today_star_update_end_time', None)
             voteActivityObj.allowed_alone_everyday_vote_count = data.get('allowed_alone_everyday_vote_count', None)
@@ -149,7 +153,7 @@ class VoteActivityOp:
     def updateAutoCommentData(self, data):
         voteActivityObj = models.VoteActivity.objects.filter(vote_id=data.get('vote_id', None)).first()
         if data.get('auto_comment_voteuser_open_id', None) or data.get('auto_comment_voteuser_open_id', None) != '':
-            voteActivityObj.auto_comment_voteuser_id = data.get('auto_comment_voteuser_open_id', None)
+            voteActivityObj.auto_comment_voteuser = data.get('auto_comment_voteuser_open_id', None)
             voteActivityObj.auto_comment_begin_time = data.get('auto_comment_begin_time', None)
             voteActivityObj.auto_comment_end_time = data.get('auto_comment_end_time', None)
             voteActivityObj.auto_comment_everyday_begin_time = data.get('auto_comment_everyday_begin_time', None)

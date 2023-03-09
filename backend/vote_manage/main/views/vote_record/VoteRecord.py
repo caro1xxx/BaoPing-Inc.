@@ -20,7 +20,7 @@ class VoteRecord(APIView):
                 voteRecordObj = models.VoteRecord.objects.filter(voteuser__wx_username__contains=value) if vote_id is None else models.VoteRecord.objects.filter(voteuser__wx_username__contains=value, vote_activity_id=vote_id)
 
             data = voteRecordObj
-            data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
+            data, ret['page_count'] = myPaginator(data, 20, request.GET.get('page_num', 1))
             ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
 
         except Exception as e:

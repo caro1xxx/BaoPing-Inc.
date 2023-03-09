@@ -84,9 +84,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'vote',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
-        'HOST':'192.168.0.135',
+        'USER': 'root',
+        'PASSWORD': 'loko5284',
+        'HOST':'localhost',
         'PORT':'3306',
     }
 }
@@ -173,5 +173,5 @@ CACHES = {
 
 
 CRONJOBS = [
-    ('*/1 * * * *', 'main.crontab.Crontab.updateStaticHistory', '>> ' + str(BASE_DIR) + '/logs/updateStaticHistory.log'), # 注意：/tmp/base_api 目录要手动创建
+    ('*/1 * * * *', 'main.crontab.Crontab.updateStaticHistory', '>> ' + str(BASE_DIR) + '/logs/updateStaticHistory.log'), 
 ]

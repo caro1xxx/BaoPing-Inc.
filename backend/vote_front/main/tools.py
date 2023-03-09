@@ -151,7 +151,9 @@ def b64Decode(data):
     data = base64.b64decode(str(data)).decode()
     return data
 
-def myPaginator(data, maxSize, pageNum):
+def myPaginator(data, maxSize, pageNum=1):
+    if pageNum in [None, '']:
+        pageNum = 1
     if type(list()) == type(data):
         paginator = Paginator(data, maxSize)
     else:

@@ -32,7 +32,10 @@
     <div class="content">
       <div class="content_top" id="Carousel">
         <div class="content_top_center">
-          <div style="font-size: 20px">新乡市消防技术公司</div>
+          <!-- 最强企业评选 -->
+          <div style="font-size: 20px">
+            {{ $store.state.settings[49].value }}
+          </div>
           <div class="content_top_titles"></div>
           <div>优秀企业推荐</div>
         </div>
@@ -67,7 +70,9 @@
               :style="{ width: '20px', height: '22px' }"
               src="../assets/images/3.png"
               alt=""
-            />访问数：<span>2.5w</span>
+            />访问数：
+            <!-- 访问数量 -->
+            <span>{{ $store.state.settings[42].value }}</span>
           </div>
           <div class="content_body_persennum_item">
             <img
@@ -75,6 +80,20 @@
               src="../assets/images/4.png"
               alt=""
             />报名数：<span>45</span>
+          </div>
+        </div>
+        <!-- 活动到期时间倒计时 -->
+        <div class="expire_time">
+          <div class="expire_time_label">倒计时距结束</div>
+          <div class="expire_time_number">
+            <div>{{ expireData.day }}</div>
+            天
+            <div>{{ expireData.houers }}</div>
+            时
+            <div>{{ expireData.minute }}</div>
+            分
+            <div>{{ expireData.second }}</div>
+            秒
           </div>
         </div>
         <div class="content_body_search">
@@ -213,6 +232,7 @@
     </div>
     <!-- 报名弹窗 -->
     <div class="enroll_prop" v-if="enrollStatus.isEnrollProp">
+      <!-- 可以报名时 -->
       <div class="enroll_prop_form">
         <div>
           <h3>报名信息</h3>
@@ -277,7 +297,7 @@
     </div>
     <div v-if="enrollStatus.isActiveRules" class="enroll_prop">
       <div class="enroll_prop_form">
-        <div ref="activeRules" v-html="activeRules"></div>
+        <div v-html="activeRules"></div>
         <img
           class="downImg"
           @click="doenProp"
@@ -334,11 +354,39 @@ const enrollStatus = reactive({
   isOpenQscode: false,
 });
 
+//存储倒计时
+const expireData = reactive({
+  // 天
+  day: "",
+  // 时
+  houers: "",
+  // 分
+  minute: "",
+  //秒
+  second: "",
+});
+
 //我要报名
 const goEnroll = () => {
-  enrollStatus.isEnrollProp = !enrollStatus.isEnrollProp;
   //清除图片
   headerImg.value = "";
+  // 获取现在时间
+  let nowTime = new Date().getTime();
+  // 获取报名开始时间
+  let start_time = $store.state.settings[52].value * 1000;
+  // 获取报名结束时间
+  let end_time = $store.state.settings[53].value * 1000;
+  // 判断是否在报名时间内
+  // 未到报名时间
+  if (nowTime < start_time) {
+    alert("未到报名时间");
+    // 报名结束
+  } else if (nowTime > end_time) {
+    alert("报名结束");
+    // 可以报名
+  } else {
+    enrollStatus.isEnrollProp = !enrollStatus.isEnrollProp;
+  }
 };
 // 取消弹窗
 const doenProp = () => {
@@ -439,6 +487,7 @@ const submit = async () => {
 const activeRull = async () => {
   enrollStatus.isActiveRules = !enrollStatus.isActiveRules;
   activeRules = $store.state.settings[78].value;
+  console.log(activeRules);
 };
 
 // 点赞
@@ -459,9 +508,36 @@ const like = async (target) => {
       key: sercet,
     },
   });
+  // 判断是否在投票时间内
+  let newTime = new Date();
+  // 得到开始投票时间
+  let start_time = Math.floor(86400 / $store.state.settings[50].value / 24);
+  if (newTime.getHours() < start_time) {
+    alert("投票未开始");
+    // 得到结束投票时间
+  } else if (newTime.getTime() > $store.state.settings[51].value * 1000) {
+    alert("投票已结束");
+    // 在投票时间内
+  } else {
+    // 开启二维码弹幕
+    enrollStatus.isOpenQscode = true;
+    let keys = await getKey();
+    let sercet = await encryption(keys);
+    const md = new Mobile(navigator.userAgent);
+    let result = await fether("/support/", "post", {
+      data: {
+        open_id: "wxtest6",
+        vote_target_id: target.pk,
+        vote_id: $route.query.vote_id,
+        phone_model: md.mobile(),
+        system: md.os(),
+        network: isNetWork(),
+        key: sercet,
+      },
+    });
+  }
 };
 
-// 加密
 const encryption = async (key) => {
   return base64.encode(key + "vote");
 };
@@ -515,11 +591,44 @@ const animating = () => {
 
 // 是否支持弹幕并且运行
 const isPopupAndStart = () => {
-  if (!$store.state.settings[25].value) return;
-  animating();
+  if (!$store.state.settings[26].value) return;
+  // popupList.push()
+  requestAnimationFrame(animating);
 };
 
+//获取活动倒计时
+const getExpireTime = async () => {
+  let result = $store.state.settings[48].value * 1000;
+  // 获取现在正确时间
+  let expireTimw = setInterval(() => {
+    let nowTimw = new Date().getTime();
+    // 时间差
+    let D_value = result - nowTimw;
+    // 当活动结束时停止定时器
+    if (D_value === 0) {
+      clearInterval(expireTimw);
+    }
+    expireData.day = Math.floor(D_value / 1000 / 60 / 60 / 24);
+    expireData.houers = Math.floor((D_value / 1000 / 60 / 60) % 24);
+    expireData.minute = Math.floor((D_value / 1000 / 60) % 60);
+    expireData.second = Math.floor((D_value / 1000) % 60);
+    // 补零
+    if (expireData.day < 10) {
+      expireData.day = `0${expireData.day}`;
+    }
+    if (expireData.houers < 10) {
+      expireData.houers = `0${expireData.houers}`;
+    }
+    if (expireData.minute < 10) {
+      expireData.minute = `0${expireData.minute}`;
+    }
+    if (expireData.second < 10) {
+      expireData.second = `0${expireData.second}`;
+    }
+  }, 1000);
+};
 onMounted(() => {
+  getExpireTime();
   isSupportCarouselAndStart();
   isPopupAndStart();
 });
@@ -874,5 +983,42 @@ button {
   bottom: 30px;
   left: 0;
   right: 0;
+}
+
+//活动倒计时样式
+.expire_time {
+  height: 50px;
+  width: calc(100% - 40px);
+  margin: 10px auto;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  //颜色渐变
+  background-image: linear-gradient(
+    to right,
+    rgb(177, 13, 13),
+    rgb(243, 103, 78)
+  );
+}
+.expire_time_label {
+  width: 25%;
+  height: 20px;
+  margin: 0px 5px;
+  border: 1px solid #f3f3f3;
+  text-align: center;
+  color: #f3f3f3;
+  font-size: 12px;
+}
+.expire_time_number {
+  flex: 1;
+  display: flex;
+  color: #ffffff;
+  div {
+    padding: 0px 10px;
+    background-color: yellow;
+    border-radius: 5px;
+    margin: 0px 5px;
+    color: black;
+  }
 }
 </style>

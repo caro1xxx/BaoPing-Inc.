@@ -59,7 +59,7 @@ const isEnv = () => {
 // 判断是否达到今日之星显示日期
 const getStarShowDate = () => {
   let currentDateStamp = new Date().getTime();
-  if (currentDateStamp > $store.state.settings[63].value * 1000)
+  if (!currentDateStamp > $store.state.settings[63].value * 1000)
     todayStarState.value = true;
   else todayStarState.value = false;
 };
