@@ -1,5 +1,5 @@
 <template>
-  <todayStarVue v-if="todayStarState" />
+  <todayStarVue v-if="todayStarState.state" :data="todayStarState.close" />
   <router-view />
 </template>
 
@@ -9,14 +9,19 @@ import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import todayStarVue from "@/components/todayStar.vue";
 import Mobile from "mobile-detect";
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 const $route = useRoute();
 const $router = useRouter();
 const $store = new useStore();
 // console.log($route.query.vote_id)
 
 // 今日执行是否显示
-const todayStarState = ref(false);
+const todayStarState = reactive({
+  state: false,
+  close: () => {
+    todayStarState.state = false;
+  },
+});
 
 // 获取初始化设置信息
 const getInitSetting = async () => {
@@ -59,9 +64,9 @@ const isEnv = () => {
 // 判断是否达到今日之星显示日期
 const getStarShowDate = () => {
   let currentDateStamp = new Date().getTime();
-  if (!currentDateStamp > $store.state.settings[63].value * 1000)
-    todayStarState.value = true;
-  else todayStarState.value = false;
+  if (currentDateStamp > $store.state.settings[63].value * 1000)
+    todayStarState.state = true;
+  else todayStarState.state = false;
 };
 
 getInitSetting();
