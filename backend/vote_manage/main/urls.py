@@ -10,7 +10,7 @@ from main.views.domain import Domain
 from main.views.applyprize import ApplyPrize
 from main.views.vote_record import VoteRecord
 from main.views.payment_record import PaymentRecord
-from main.views.voteuser import Voteuser
+from main.views.voteuser import Voteuser, Comment
 from main.views.statics import Statics, StaticsHistory
 from main.views.settings import Settings
 from main.views.vote_target import VoteTarget
@@ -45,6 +45,7 @@ urlpatterns = [
     url(r'^alonevoteactivity/$', AloneVoteActivity.AloneVoteActivity.as_view()),
     url(r'^votetarget/$', VoteTarget.VoteTarget.as_view()),
     url(r'^gift/$', Gift.Gift.as_view()),
+    url(r'^comment/$', Comment.Comment.as_view()),
     url(r'^test/$', TestView.TestView.as_view()),
     url(r'$', Request404.Request404.as_view())
 ]

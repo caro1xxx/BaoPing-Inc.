@@ -57,7 +57,7 @@ class CommentOp:
         return True, None
     
     def queryWithVoteActivity(self, voteId):
-        return models.CommentRecord.objects.filter(vote_activity_id=voteId)
+        return models.CommentRecord.objects.filter(vote_activity_id=voteId).order_by('-create_time')
 
     def checkDataOnDelete(self, pk):
         data = {'pk': pk}

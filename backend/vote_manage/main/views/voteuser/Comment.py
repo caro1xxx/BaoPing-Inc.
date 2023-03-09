@@ -7,9 +7,9 @@ from main.views.voteuser.CommentOp import CommentOp
 import json
 
 
-# 用户进行评论操作
+# 管理员进行评论管理
 class Comment(APIView):
-    # 查看某活动的全部评论按照时间降序
+    # 获取某活动的全部评论按照发布时间降序
     def get(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
@@ -41,6 +41,41 @@ class Comment(APIView):
                 return JsonResponse({'code': 400, 'msg': msg})
             
             commentOp.create(data)
+
+        except Exception as e:
+            ret = {'code': 500, 'msg': 'Timeout'}
+        return JsonResponse(ret)
+
+    # 修改评论状态
+    def put(self, request, *args, **kwargs):
+        ret = {'code': 200, 'msg': '修改成功'}
+        try:
+            data = json.loads(request.body).get('data', None)
+
+            commentOp = CommentOp()
+            ok, msg = commentOp.checkDataOnUpdate(data)
+            if not ok:
+                return JsonResponse({'code': 400, 'msg': msg})
+            
+            commentOp.update(data)
+
+        except Exception as e:
+            ret = {'code': 500, 'msg': 'Timeout'}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+        return JsonResponse(ret)
+
+    # 删除评论
+    def delete(self, request, *args, **kwargs):
+        ret = {'code': 200, 'msg': '修改成功'}
+        try:
+            pk = json.loads(request.body).get('pk', None)
+
+            commentOp = CommentOp()
+            ok, msg = commentOp.checkDataOnDelete(pk)
+            if not ok:
+                return JsonResponse({'code': 400, 'msg': msg})
+            
+            commentOp.delete(pk)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
