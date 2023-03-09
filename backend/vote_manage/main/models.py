@@ -60,7 +60,7 @@ class VoteActivity(models.Model):
     visit_count = models.IntegerField(default=0)
     visit_count_multiple = models.IntegerField(default=1)
     vote_count_restrict = models.TextField(default='[]')
-    today_start_voteuser = models.CharField(max_length=128)
+    today_start_voteuser = models.CharField(max_length=128, default='')
     today_star_update_begin_time = models.IntegerField(default=0)
     today_star_update_end_time = models.IntegerField(default=0)
     allowed_alone_everyday_vote_count = models.IntegerField(default=0)
@@ -72,7 +72,7 @@ class VoteActivity(models.Model):
     enable_vote_cert_code = models.IntegerField(default=0)
     enable_prize = models.IntegerField(default=0)
     enable_browser = models.IntegerField(default=0)
-    auto_comment_voteuser = models.CharField(max_length=128)
+    auto_comment_voteuser = models.CharField(max_length=128, default='')
     auto_comment_begin_time = models.IntegerField(default=0)
     auto_comment_end_time = models.IntegerField(default=0)
     auto_comment_everyday_begin_time = models.IntegerField(default=0)
@@ -122,7 +122,7 @@ class VoteTarget(models.Model):
 class Feedback(models.Model):
     voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE)
     content = models.TextField(null=False)
-    # vote_id = models.models.IntegerField()
+    vote_activity = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
     create_time = models.IntegerField(null=False)
 
 
@@ -215,6 +215,7 @@ class Gift(models.Model):
     value = models.IntegerField(default=0)
     price = models.IntegerField(default=0)
     status = models.IntegerField(default=0)
+    img = models.FileField(upload_to='img/gift', blank=True, verbose_name='礼物图标')
 
 
 class CommentRecord(models.Model):
@@ -226,8 +227,8 @@ class CommentRecord(models.Model):
 
 
 class BlackList(models.Model):
-    open_id = models.TextField(default='')
-    domain = models.TextField(default='')
+    open_id = models.TextField(default='', null=True)
+    ip = models.TextField(default='', null=True)
 
 
 class TempFile(models.Model):

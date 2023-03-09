@@ -1,7 +1,8 @@
 from main import models
 from main.tools import Validate
-from main.tools import getNowTimeStamp, getIp
-from django.db.models import F
+from main.tools import getNowTimeStamp, getIp, getLocationFromIp, getTodayBeginTimeStamp
+from django.db.models import F, Q, Count
+from main.views.BlankListOp import BlankListOp
 
 
 class SupportOp:
@@ -21,7 +22,40 @@ class SupportOp:
         return True, None
 
     def checkSettingsOnCreate(self, data):
-        pass
+        location = getLocationFromIp(data['ip'])
+        voteActivity = models.VoteActivity.objects.filter(vote_id=data['vote_id']).first()
+        settingsRegion = voteActivity.allowed_vote_region
+        if settingsRegion not in ['全国', location['city']]:
+            return False, '暂不支持您所在地区投票'
+        
+        blankListOp = BlankListOp()
+        if blankListOp.checkVoteUserIsExist(data['open_id']):
+            return False, '该用户已进入黑名单'
+        if blankListOp.checkIpIsExist(data['ip']):
+            return False, '该ip已进入黑名单'
+        
+        nowTime = getNowTimeStamp()
+        todayBeginTime = getTodayBeginTimeStamp(nowTime)
+        lastHourTime = nowTime - 3600
+
+        user_vote_count_day = models.VoteRecord.objects.filter(
+            Q(voteuser_id = data['open_id']) &
+            Q(vote_activity_id = data['vote_id']) &
+            Q(create_time__gte = todayBeginTime) &
+            Q(create_time__lt = nowTime)
+        ).aggregate(cnt=Count('create_time'))['cnt']
+        if user_vote_count_day >= voteActivity.allowed_alone_everyday_vote_count:
+            return False, '今日投票数量已到上限'
+
+        user_vote_count_hour = models.VoteRecord.objects.filter(
+            Q(voteuser_id = data['open_id']) &
+            Q(vote_activity_id = data['vote_id']) &
+            Q(create_time__gte = lastHourTime) &
+            Q(create_time__lt = nowTime)
+        ).aggregate(cnt=Count('create_time'))['cnt']
+        if user_vote_count_hour >= voteActivity.allowed_alone_everyhour_vote_count:
+            return False, '每小时投票数量已到上限'
+        return True, None
 
     def checkDataOnCreate(self, data):
         validate = Validate()
@@ -51,7 +85,7 @@ class SupportOp:
                 vote_target_id = data['vote_target_id'],
                 create_time = getNowTimeStamp(),
                 vote_activity_id = data['vote_id'],
-                ip = getIp(request),
+                ip = data['ip'],
                 phone_model = data['phone_model'],
                 system = data['system'],
                 network = data['network'],

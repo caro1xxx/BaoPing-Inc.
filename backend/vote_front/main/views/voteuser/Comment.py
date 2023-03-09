@@ -41,6 +41,7 @@ class Comment(APIView):
                 return JsonResponse({'code': 400, 'msg': msg})
             
             commentOp.create(data)
+            ret['data'] = '{}'
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}

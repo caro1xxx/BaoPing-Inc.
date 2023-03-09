@@ -121,6 +121,12 @@ class VoteActivityOp:
         ok, msg = validate.startCheck()
         return ok, msg
 
+    def checkOtherData(self, data):
+        ok, msg = self.checkVoteIdIsExist(data.get('vote_id', None))
+        if not ok:
+            return False, msg
+        return True, None
+
     def updateActivityData(self, data):
         voteActivityObj = models.VoteActivity.objects.filter(vote_id=data.get('vote_id', None)).first()
         voteActivityObj.vote_everyday_begin_time = data.get('vote_everyday_begin_time', None)
@@ -139,9 +145,9 @@ class VoteActivityOp:
             voteActivityObj.today_start_voteuser = data.get('today_start_voteuser_open_id', None)
             voteActivityObj.today_star_update_begin_time = data.get('today_star_update_begin_time', None)
             voteActivityObj.today_star_update_end_time = data.get('today_star_update_end_time', None)
-            voteActivityObj.allowed_alone_everyday_vote_count = data.get('allowed_alone_everyday_vote_count', None)
-            voteActivityObj.allowed_alone_everyhour_vote_count = data.get('allowed_alone_everyhour_vote_count', None)
             voteActivityObj.open_today_star_with = data.get('open_today_star_with', None)
+        voteActivityObj.allowed_alone_everyday_vote_count = data.get('allowed_alone_everyday_vote_count', None)
+        voteActivityObj.allowed_alone_everyhour_vote_count = data.get('allowed_alone_everyhour_vote_count', None)
         voteActivityObj.visible_no1_with = data.get('visible_no1_with', None)
         voteActivityObj.enable_vote_to_me = data.get('enable_vote_to_me', None)
         voteActivityObj.enable_comment = data.get('enable_comment', None)
@@ -170,6 +176,24 @@ class VoteActivityOp:
         voteActivityObj.prize = data.get('prize', None)
         voteActivityObj.contact = data.get('contact', None)
         voteActivityObj.support = data.get('support', None)
+        voteActivityObj.save()
+
+    def updateOtherData(self, data):
+        voteActivityObj = models.VoteActivity.objects.filter(vote_id=data.get('vote_id', None)).first()
+        voteActivityObj.top_roll_text = data['top_roll_text']
+        voteActivityObj.start_adv_img = data['start_adv_img']
+        voteActivityObj.bottom_text = data['bottom_text']
+        voteActivityObj.video_adv = data['video_adv']
+        # voteActivityObj.target_video_adv = data['target_video_adv']
+        # voteActivityObj.bottom_support_text = data['bottom_support_text']
+        # voteActivityObj.carousel_list = data['carousel_list']
+        # voteActivityObj.temp_file = data['temp_file']
+        # voteActivityObj.bottom_copyright = data['bottom_copyright']
+        # voteActivityObj.officialcount_qrcode = data['officialcount_qrcode']
+        # voteActivityObj.bottom_copyright = data['bottom_copyright']
+        # voteActivityObj.popup = data['popup']
+        # voteActivityObj.vote_button_name = data['vote_button_name']
+        # voteActivityObj.vote_unit_name = data['vote_unit_name']
         voteActivityObj.save()
 
     def queryAllVoteuser(self, vote_id):
