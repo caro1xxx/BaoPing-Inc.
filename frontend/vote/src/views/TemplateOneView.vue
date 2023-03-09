@@ -11,6 +11,13 @@
   />
   <!-- 二维码弹窗 -->
   <isQrcode v-if="enrollStatus.isOpenQscode" @returnPage="downQscode" />
+  <!-- 验证码弹窗 -->
+  <verificationCode
+    v-if="enrollStatus.isVerificationCode"
+    @returnPage="downVerificationCode"
+    :data="verificationCodeData"
+    :method="enrollStatus.closeVerificationCode"
+  />
   <div class="body" v-if="!enrollStatus.isAthleteConfig">
     <!-- 开场广告图 -->
     <div class="stateAdv" v-if="$store.state.settings[11].value">
@@ -140,8 +147,13 @@
                 <div class="content_body_information_center">
                   <div>编号：{{ item.pk }}号</div>
                   <div>
-                    支持：<span>{{ item.count }}</span
-                    >次
+                    支持：<span class="count">{{ item.count }}</span>
+                    <!-- 设置票数单位 -->
+                    <span>{{
+                      $store.state.settings[8].value
+                        ? $store.state.settings[95].value
+                        : "次"
+                    }}</span>
                   </div>
                 </div>
                 <div class="content_body_information_right">
@@ -156,16 +168,17 @@
                       "
                       alt=""
                     />
-                    <img
-                      @click="like(item)"
+                    <!-- 点赞按钮 -->
+                    <div
                       class="content_body_information_solid"
-                      :src="
-                        require(`../assets/images/${
-                          index + 1 === 1 ? 8 : 12
-                        }.png`)
-                      "
-                      alt=""
-                    />
+                      @click="like(item)"
+                    >
+                      {{
+                        $store.state.settings[5].value
+                          ? $store.state.settings[94].value
+                          : "支持"
+                      }}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -322,6 +335,7 @@ import athleteInformation from "@/components/athleteInformation.vue";
 import customerService from "@/components/customerService.vue";
 import isQrcode from "@/components/isQrcode.vue";
 import WelcomeVue from "@/components/Welcome.vue";
+import verificationCode from "@/components/verificationCode.vue";
 import { isNetWork } from "../utils/network";
 import Mobile from "mobile-detect";
 const $route = useRoute();
@@ -333,6 +347,7 @@ const uploadImg = ref("");
 const headerImg = ref("");
 let activeRules = "";
 let informationKey = 0;
+let verificationCodeData = {};
 
 const fileData = new FormData();
 
@@ -354,6 +369,10 @@ const enrollStatus = reactive({
   isAthleteConfig: false,
   iscustomerService: false,
   isOpenQscode: false,
+  isVerificationCode: false,
+  closeVerificationCode: () => {
+    enrollStatus.isVerificationCode = false;
+  },
 });
 
 // 是否显示欢迎回来页面
@@ -427,6 +446,9 @@ const getCusrr = () => {
 };
 const downQscode = () => {
   enrollStatus.isOpenQscode = false;
+};
+const downVerificationCode = () => {
+  enrollStatus.isVerificationCode = false;
 };
 
 //获取选手列表
@@ -506,49 +528,54 @@ const activeRull = async () => {
 
 // 点赞
 const like = async (target) => {
-  // 开启二维码弹幕
-  enrollStatus.isOpenQscode = true;
-  let keys = await getKey();
-  let sercet = await encryption(keys);
-  const md = new Mobile(navigator.userAgent);
-  let result = await fether("/support/", "post", {
-    data: {
-      open_id: "wxtest6",
-      vote_target_id: target.pk,
-      vote_id: $route.query.vote_id,
-      phone_model: md.mobile(),
-      system: md.os(),
-      network: isNetWork(),
-      key: sercet,
-    },
-  });
+  /**
+   * 点击之后打开验证码弹窗
+   * 验证成功并发送请求后
+   * 判断是否有公众号二维码有就弹没有就关闭
+   */
+
   // 判断是否在投票时间内
   let newTime = new Date();
   // 得到开始投票时间
-  let start_time = Math.floor(86400 / $store.state.settings[50].value / 24);
-  if (newTime.getHours() < start_time) {
+  let start_time =
+    $store.state.settings[50].value >
+    parseInt((newTime.getTime() / 1000) % 86400) * 3600;
+  if (start_time) {
     alert("投票未开始");
     // 得到结束投票时间
-  } else if (newTime.getTime() > $store.state.settings[51].value * 1000) {
+  } else if (
+    parseInt((newTime.getTime() / 1000) % 86400) >
+    $store.state.settings[51].value
+  ) {
     alert("投票已结束");
     // 在投票时间内
   } else {
     // 开启二维码弹幕
-    enrollStatus.isOpenQscode = true;
-    let keys = await getKey();
-    let sercet = await encryption(keys);
-    const md = new Mobile(navigator.userAgent);
-    let result = await fether("/support/", "post", {
-      data: {
-        open_id: "wxtest6",
-        vote_target_id: target.pk,
-        vote_id: $route.query.vote_id,
-        phone_model: md.mobile(),
-        system: md.os(),
-        network: isNetWork(),
-        key: sercet,
-      },
-    });
+    if ($store.state.settings[26].value) {
+      enrollStatus.isOpenQscode = true;
+      // 开启验证码弹窗
+    } else if ($store.state.settings[67].value) {
+      enrollStatus.isVerificationCode = true;
+      verificationCodeData.pk = target.pk;
+      verificationCodeData.name = target.name;
+      verificationCodeData.avator = target.avator;
+    } else {
+      // 没有开启验证码弹窗时点击直接发送点赞请求
+      let keys = await getKey();
+      let sercet = await encryption(keys);
+      const md = new Mobile(navigator.userAgent);
+      let result = await fether("/support/", "post", {
+        data: {
+          open_id: "wxtest6",
+          vote_target_id: target.pk,
+          vote_id: $route.query.vote_id,
+          phone_model: md.mobile(),
+          system: md.os(),
+          network: isNetWork(),
+          key: sercet,
+        },
+      });
+    }
   }
 };
 
@@ -568,7 +595,7 @@ const getKey = () => {
 };
 
 const athleteConfig = (e, value) => {
-  if (e.target.tagName === "DIV") {
+  if (e.target.className === "content_body_information_center") {
     enrollStatus.isAthleteConfig = true;
     // $store.commit('changeAthlete', true)
     informationKey = value;
@@ -824,7 +851,7 @@ button {
   padding: 10px 0px;
   flex-direction: column;
   justify-content: space-around;
-  span {
+  .count {
     color: red;
     font-size: 20px;
     font-weight: 500;
@@ -848,7 +875,12 @@ button {
     }
     .content_body_information_solid {
       height: 40px;
-      padding-top: 15px;
+      margin-top: 15px;
+      font-size: 16px;
+      text-align: center;
+      color: #ffffff;
+      line-height: 40px;
+      background-color: rgb(85, 85, 235);
     }
   }
 }
@@ -1053,6 +1085,7 @@ button {
   flex: 1;
   display: flex;
   color: #ffffff;
+  font-size: 14px;
   div {
     padding: 0px 10px;
     background-color: yellow;
