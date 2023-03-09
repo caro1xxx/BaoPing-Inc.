@@ -12,7 +12,6 @@
           获得<span style="color: #f5c85f; font-weight: bold">今日之星</span>
         </div>
       </div>
-      <div class="support_do" @click="(e) => support(e)">支持一下</div>
       <div class="close">点击任意位置关闭弹窗</div>
     </div>
   </div>
@@ -28,11 +27,6 @@ const props = defineProps({
   },
 });
 
-// 支持一下
-const support = (e) => {
-  e.stopPropagation();
-  console.log(1);
-};
 </script>
 
 <style lang="scss" scoped>
