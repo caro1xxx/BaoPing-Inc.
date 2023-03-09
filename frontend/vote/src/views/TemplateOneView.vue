@@ -1,4 +1,9 @@
 <template>
+  <!-- 反馈 -->
+  <feedbackVue v-if="feedbackState.state" :data="feedbackState.data" />
+  <!-- 支持成功 -->
+  <SupportSuccessVue v-show="successData.state" :data="successData" />
+  <!-- 欢迎回来 -->
   <WelcomeVue :data="welcomeState" v-if="welcomeState.state" />
   <athleteInformation
     v-if="enrollStatus.isAthleteConfig"
@@ -223,6 +228,7 @@
       <div class="footer_box">
         <div class="footer_item1">
           <img
+            @click="openFeedback"
             src="../assets/images/24.png"
             style="width: 35px; height: 50px"
             alt=""
@@ -336,6 +342,8 @@ import customerService from "@/components/customerService.vue";
 import isQrcode from "@/components/isQrcode.vue";
 import WelcomeVue from "@/components/Welcome.vue";
 import verificationCode from "@/components/verificationCode.vue";
+import SupportSuccessVue from "@/components/SupportSuccess.vue";
+import feedbackVue from "@/components/feedback.vue";
 import { isNetWork } from "../utils/network";
 import Mobile from "mobile-detect";
 const $route = useRoute();
@@ -387,6 +395,25 @@ const welcomeState = reactive({
   },
 });
 
+// 支持成功数据
+const successData = reactive({
+  data: {},
+  state: false,
+  close: () => {
+    successData.state = false;
+  },
+});
+
+// 反馈状态
+const feedbackState = reactive({
+  state: false,
+  data: {
+    close: () => {
+      feedbackState.state = false;
+    },
+  },
+});
+
 //存储倒计时
 const expireData = reactive({
   // 天
@@ -398,6 +425,12 @@ const expireData = reactive({
   //秒
   second: "",
 });
+
+// 支持成功函数
+const supportToShow = (target) => {
+  successData.state = true;
+  successData.data = target;
+};
 
 //我要报名
 const goEnroll = () => {
@@ -575,6 +608,15 @@ const like = async (target) => {
           key: sercet,
         },
       });
+      // 点赞成功刷新显示数量
+      if (!result) return;
+      for (let i = 0; i < informationData.length; i++) {
+        if (informationData[i].pk === target.pk) {
+          informationData[i].count += 1;
+          supportToShow({ ...informationData[i], rank: i + 1 });
+          break;
+        }
+      }
     }
   }
 };
@@ -691,6 +733,13 @@ const getUserRecentVote = async () => {
   console.log(fromCurrentToLastTime);
   welcomeState.value = parseInt(fromCurrentToLastTime / 60000);
   welcomeState.state = true;
+};
+
+// 打开反馈
+const openFeedback = () => {
+  feedbackState.state = true;
+  feedbackState.data.vote_id = $route.query.vote_id;
+  feedbackState.data.vote_user_openid = "wxtest6";
 };
 
 onMounted(() => {
