@@ -10,37 +10,54 @@ from django.core.paginator import Paginator
 from vote_manage.settings import BASE_DIR
 import geoip2.database
 from vote_manage import settings
+from main.tasks import myTask, sendEmail
+from vote_manage import settings
+from openpyxl import load_workbook
+from main.views.vote_target.VoteTargetOp import VoteTargetOp
 
 
 class TestView(APIView):
     def get(self, request, *args, **kwargs):
         ret = {}
-            
-        reader = geoip2.database.Reader(str(settings.STATIC_ROOT) + '/GeoLite2-City_20230307/' + 'GeoLite2-City.mmdb')
-        ip = request.GET.get('ip', None)
-        response = reader.city(ip)
-        # ret['region'] = "地区：{}({})".format(response.continent.names["es"], response.continent.names["zh-CN"])
-        # ret['country'] = "国家：{}({}) ，简称:{}".format(response.country.name, response.country.names["zh-CN"], response.country.iso_code)
-        # ret['city'] = "城市：{}({})".format(response.city.name, response.city.names["zh-CN"])
-        # ret['rgion'] = str(response.continent)
-        ret['city'] = str(response.country.name)
-        ret['city'] = str(response.city.name)
+        try:
+            myTask.delay()
+            sendEmail.delay('isliliyu@gmail.com')
+            ret['msg'] = 'success'
+        except Exception as e:
+            ret['msg'] = str(e)
+
         return JsonResponse(ret)
     
     def post(self, request, *args, **kwargs):
-        print('test')
-        return JsonResponse({})
+        ret = {'code': 200}
         try:
-            file_obj = request.FILES.get('file')
-            import os
-            f = open(os.path.join(BASE_DIR, 'static', 'pic', file_obj.name), 'wb')
-            print(file_obj,type(file_obj))
-            for chunk in file_obj.chunks():
-                f.write(chunk)
-            f.close()
-            print('11111')
-            return JsonResponse({})
+            file = request.FILES.get('file', None)
+
+            models.TempFile.objects.create(file=file)
+            path = str(settings.MEDIA_ROOT) + '/temp/' + file.name
+            wb = load_workbook(path)
+            sheet = wb.worksheets[0]
+
+            data, isFirst = [], True
+            for row in sheet.rows:
+                if isFirst:
+                    isFirst = False
+                    continue
+                tmp = {}
+                tmp['vote_id'] = row[0].value 
+                tmp['name'] = row[1].value 
+                tmp['detail'] = row[2].value 
+                tmp['count'] = row[3].value 
+                data.append(tmp)
+
+            voteTargetOp = VoteTargetOp()
+            for voteTarget in data:
+                ok, msg = voteTargetOp.checkData(voteTarget)
+                if ok:
+                    voteTargetOp.create(data)
+
+
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
             ret = {'code': 500, 'msg': 'Timeout', 'msg': str(e)}
-            return JsonResponse(ret)
+        return JsonResponse(ret)

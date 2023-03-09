@@ -5,6 +5,7 @@ from main import models
 from main.tools import generateCode6, myPaginator
 import json
 from main.tools import Validate
+from django.db.models import F
 
 
 class AloneVoteActivity(APIView):
@@ -17,8 +18,12 @@ class AloneVoteActivity(APIView):
                 return JsonResponse({'code': 400, 'msg': 'not found'})
             
             ret['data'] = serializers.serialize('json', [voteObj])
+            
+            voteObj.flow = F('flow') + 1
+            voteObj.visit_count = F('visit_count') + F('visit_count_multiple')
+            voteObj.save()
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            # ret = {'code': 500, 'msg': 'Timeout', 'msg': str(e)}
+            ret = {'code': 500, 'msg': 'Timeout', 'msg': str(e)}
         return JsonResponse(ret)

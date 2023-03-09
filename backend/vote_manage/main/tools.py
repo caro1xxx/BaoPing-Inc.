@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 from datetime import datetime, timedelta
 import geoip2.database
 from vote_manage import settings
+import datetime
 
 
 # 验证类，通过addCheck()增加验证规则，start()进行统一验证
@@ -129,6 +130,9 @@ def genearteMD5(text):
 
 def getNowTimeStamp():
     return int(time.time())
+
+def getTimeStr(timeStamp):
+    return datetime.datetime.fromtimestamp(timeStamp)
 
 def generateString16():
     # random.sample('1234567890abcdefghijklmnopqrstuvwxyz!@#$%^&*()', 16)

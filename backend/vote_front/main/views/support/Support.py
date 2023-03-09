@@ -6,6 +6,7 @@ from main.views.support.SupportOp import SupportOp
 from main.views.keys.KeysOp import KeysOp
 from main.tools import getNowTimeStamp, getIp
 import json
+from main.tools import getIp
 
 
 class Support(APIView):
@@ -18,10 +19,17 @@ class Support(APIView):
             if not ok:
                 return JsonResponse({'code': 400, 'msg': msg})
             
-            ok, msg = KeysOp().checkKey(data['key'])
+            # ok, msg = KeysOp().checkKey(data['key'])
             if not ok:
                 return JsonResponse({'code': 400, 'msg': msg})
+
+            data['ip'] = getIp(request)
+            ok, msg = SupportOp().checkSettingsOnCreate(data)
+            if not ok:
+                return JsonResponse({'code': 400, 'msg': msg})
+
             SupportOp().create(data, request)
+            ret['data'] = "{}"
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}

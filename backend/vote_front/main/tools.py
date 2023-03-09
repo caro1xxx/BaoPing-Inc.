@@ -7,6 +7,8 @@ import base64
 from Crypto.Cipher import AES
 from django.core.paginator import Paginator
 from datetime import datetime, timedelta
+import geoip2.database
+from vote_front import settings
 
 # 验证类，通过addCheck()增加验证规则，start()进行统一验证
 # 验证类的check开头的方法，如果验证通过为True，否则为False
@@ -183,3 +185,17 @@ def getIp(request):
     else:
         ip = request.META.get('REMOTE_ADDR')  # 未使用代理获取IP
     return ip
+
+def getLocationFromIp(ip):
+    reader = geoip2.database.Reader(str(settings.STATIC_ROOT) + '/GeoLite2-City_20230307/' + 'GeoLite2-City.mmdb')
+    # ip = "123.60.38.9"
+    response = reader.city(ip)
+    # ret['region'] = "地区：{}({})".format(response.continent.names["es"], response.continent.names["zh-CN"])
+    # ret['country'] = "国家：{}({}) ，简称:{}".format(response.country.name, response.country.names["zh-CN"], response.country.iso_code)
+    # ret['city'] = "城市：{}({})".format(response.city.name, response.city.names["zh-CN"])
+    ret = {
+        'region': response.continent.names['zh-CN'],
+        'country': response.country.names['zh-CN'],
+        'city': response.city.names['zh-CN']
+    }
+    return ret

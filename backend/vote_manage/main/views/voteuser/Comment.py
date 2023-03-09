@@ -13,14 +13,14 @@ class Comment(APIView):
     def get(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
-            voteId = request.GET.get('vote_id', None)
+            voteTargetId = request.GET.get('vote_target_id', None)
 
             commentOp = CommentOp()
-            ok, msg = commentOp.checkDataOnQuery(voteId)
+            ok, msg = commentOp.checkDataOnQuery(voteTargetId)
             if not ok:
                 return JsonResponse({'code': 400, 'msg': msg})
             
-            data = commentOp.queryWithVoteActivity(voteId)
+            data = commentOp.queryWithVoteActivity(voteTargetId)
             data, ret['page_count'] =  myPaginator(data, 20)
             ret['data'] = serializers.serialize('json', data)
 
@@ -44,8 +44,9 @@ class Comment(APIView):
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
-
+        
     # 修改评论状态
     def put(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': '修改成功'}
@@ -66,7 +67,7 @@ class Comment(APIView):
 
     # 删除评论
     def delete(self, request, *args, **kwargs):
-        ret = {'code': 200, 'msg': '修改成功'}
+        ret = {'code': 200, 'msg': '删除成功'}
         try:
             pk = json.loads(request.body).get('pk', None)
 

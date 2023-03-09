@@ -173,5 +173,26 @@ CACHES = {
 
 
 CRONJOBS = [
-    ('*/1 * * * *', 'main.crontab.Crontab.updateStaticHistory', '>> ' + str(BASE_DIR) + '/logs/updateStaticHistory.log'), 
+    ('0 0 * * *', 'main.crontab.updateStaticHistory', '>> ' + str(BASE_DIR) + '/logs/updateStaticHistory.log'), 
+    ('0 0 * * *', 'main.crontab.clearAllDomainVisitCount', '>> ' + str(BASE_DIR) + '/logs/clearalldomainvisitcount.log'), 
+    ('*/1 * * * *', 'main.crontab.clearKeys', '>> ' + str(BASE_DIR) + '/logs/clearkeys.log'), 
 ]
+
+
+CELERY_BROKER_URL = "redis://redis:6379"
+CELERY_TIMEZONE = TIME_ZONE
+# CELERY_RESULT_BACKEND = "django-db"
+CELERY_ACCEPT_CONTENT = ['application/json', ]
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_TIME_LIMIT = 5
+ # 为存储结果设置过期日期，默认1天过期。如果beat开启，Celery每天会自动清除。
+ # 设为0，存储结果永不过期
+CELERY_RESULT_EXPIRES = 1
+ # 任务限流
+CELERY_TASK_ANNOTATIONS = {'tasks.add': {'rate_limit': '10/s'}}
+ # Worker并发数量，一般默认CPU核数，可以不设置
+CELERY_WORKER_CONCURRENCY = 2
+
+ # 每个worker执行了多少任务就会死掉，默认是无限的
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 200

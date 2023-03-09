@@ -23,7 +23,7 @@ class Keys(APIView):
             
             keysObj = keysOp.create(openId)
             ret['key'] = keysObj.value
-
+            ret['data'] = "{}"
             # ret['base64key'] = base64.b64encode((ret['key'] + 'vote').encode(encoding='utf-8')).decode()
             # ret['decodekey'] = base64.b64decode(ret['base64key'].encode()).decode().replace('vote', '')
 

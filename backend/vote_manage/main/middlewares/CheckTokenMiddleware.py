@@ -24,7 +24,8 @@ class CheckTokenMiddleware(MiddlewareMixin):
                 # print(str(request.body, encoding='utf-8'))
                 if pathInfo in ['setnewpassword']:
                     return None
-                if request.FILES:
+
+                if request.FILES != None:
                     token = request.POST.get('token', None)
                 else:
                     token = json.loads(request.body).get("token", None)

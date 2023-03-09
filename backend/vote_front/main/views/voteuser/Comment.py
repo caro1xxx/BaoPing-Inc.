@@ -9,18 +9,18 @@ import json
 
 # 用户进行评论操作
 class Comment(APIView):
-    # 查看某活动的全部评论按照时间降序
+    # 查看某活动的全部评论按照时间升序
     def get(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
-            voteId = request.GET.get('vote_id', None)
+            voteTargetId = request.GET.get('vote_target_id', None)
 
             commentOp = CommentOp()
-            ok, msg = commentOp.checkDataOnQuery(voteId)
+            ok, msg = commentOp.checkDataOnQuery(voteTargetId)
             if not ok:
                 return JsonResponse({'code': 400, 'msg': msg})
             
-            data = commentOp.queryWithVoteActivity(voteId)
+            data = commentOp.queryWithVoteActivity(voteTargetId)
             data, ret['page_count'] =  myPaginator(data, 20)
             ret['data'] = serializers.serialize('json', data)
 
@@ -41,6 +41,7 @@ class Comment(APIView):
                 return JsonResponse({'code': 400, 'msg': msg})
             
             commentOp.create(data)
+            ret['data'] = '{}'
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
