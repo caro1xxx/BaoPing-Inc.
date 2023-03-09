@@ -15,7 +15,7 @@ const $router = useRouter();
 const $store = new useStore();
 // console.log($route.query.vote_id)
 
-// 今日执行是否显示
+// 今日之星是否显示
 const todayStarState = reactive({
   state: false,
   close: () => {
@@ -64,7 +64,10 @@ const isEnv = () => {
 // 判断是否达到今日之星显示日期
 const getStarShowDate = () => {
   let currentDateStamp = new Date().getTime();
-  if (currentDateStamp > $store.state.settings[63].value * 1000)
+  if (
+    currentDateStamp > $store.state.settings[63].value * 1000 &&
+    $store.state.settings[58].value !== ""
+  )
     todayStarState.state = true;
   else todayStarState.state = false;
 };

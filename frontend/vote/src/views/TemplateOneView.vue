@@ -1,4 +1,5 @@
 <template>
+  <WelcomeVue :data="welcomeState" v-if="welcomeState.state" />
   <athleteInformation
     v-if="enrollStatus.isAthleteConfig"
     @returnPage="getChild"
@@ -320,6 +321,7 @@ import { HOST, HOST2 } from "../ENV";
 import athleteInformation from "@/components/athleteInformation.vue";
 import customerService from "@/components/customerService.vue";
 import isQrcode from "@/components/isQrcode.vue";
+import WelcomeVue from "@/components/Welcome.vue";
 import { isNetWork } from "../utils/network";
 import Mobile from "mobile-detect";
 const $route = useRoute();
@@ -352,6 +354,18 @@ const enrollStatus = reactive({
   isAthleteConfig: false,
   iscustomerService: false,
   isOpenQscode: false,
+});
+
+// 是否显示欢迎回来页面
+const welcomeState = reactive({
+  state: false,
+  value: "",
+  ranking: 0,
+  name: "",
+  img: "",
+  close: () => {
+    welcomeState.state = false;
+  },
 });
 
 //存储倒计时
@@ -627,10 +641,36 @@ const getExpireTime = async () => {
     }
   }, 1000);
 };
+
+// 获取该投票用户最近一次投票时间
+const getUserRecentVote = async () => {
+  let result = await fether(`/recentvoterecord/?open_id=wxtest6`);
+  if (result.length === 0) {
+    welcomeState.state = false;
+    return;
+  }
+  let currentStamp = new Date().getTime();
+  let fromCurrentToLastTime =
+    currentStamp - result[0].fields.create_time * 1000;
+  console.log(fromCurrentToLastTime);
+  if (fromCurrentToLastTime < 50000) return;
+  for (let i = 0; i < informationData.length; i++) {
+    if (result[0].fields.vote_target === informationData[i].pk) {
+      welcomeState.ranking = i + 1;
+      welcomeState.name = informationData[i].name;
+      welcomeState.img = informationData[i].avator;
+    }
+  }
+  console.log(fromCurrentToLastTime);
+  welcomeState.value = parseInt(fromCurrentToLastTime / 60000);
+  welcomeState.state = true;
+};
+
 onMounted(() => {
   getExpireTime();
   isSupportCarouselAndStart();
   isPopupAndStart();
+  getUserRecentVote();
 });
 </script>
 
