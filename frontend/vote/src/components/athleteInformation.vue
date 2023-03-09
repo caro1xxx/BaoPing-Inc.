@@ -66,9 +66,10 @@
       <!-- 评论 -->
       <div v-if="$store.state.settings[66].value">
         <div class="conment_body">
-          <input type="text" class="comment_input" />
-          <div>评论</div>
+          <input v-model="commtentData" type="text" class="comment_input" />
+          <div @click="check">评论</div>
         </div>
+        <div style="font-size: 10px">提交评论后需审核后才能显示</div>
         <div v-for="item in comments" class="comment_item">
           <div class="comment_item_user">{{ item.vote_user }}</div>
           <div class="comment_item_content">
@@ -111,7 +112,7 @@
 
 <script setup>
 import { fether } from "@/utils/fether";
-import { reactive, defineEmits, onMounted } from "vue";
+import { reactive, defineEmits, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { HOST, HOST2 } from "../ENV";
@@ -132,6 +133,9 @@ const props = defineProps({
 
 // 选手评论
 const comments = reactive([]);
+
+// 评论输入数据
+let commtentData = ref("");
 
 // 获取选手详情
 const getAthleteInformation = async () => {
@@ -213,6 +217,21 @@ const getUserComment = async () => {
     comments.push({ ...item.fields });
   });
 };
+
+// 校验评论输入
+const check = async () => {
+  if (!commtentData.value) return;
+  let result = await fether("/comment/", "post", {
+    data: {
+      vote_target_id: props.data,
+      vote_user_open_id: "wxtest6",
+      content: commtentData.value,
+    },
+  });
+  if (!result) return;
+  getUserComment();
+};
+
 onMounted(() => {
   getUserComment();
 });
