@@ -1,4 +1,6 @@
 <template>
+  <!-- 礼物 -->
+  <GifiVue :data="props.data" v-if="giftState.state" :method="giftState" />
   <!-- 选手页视频广告 -->
   <div class="stateAdv" v-if="$store.state.settings[11].value">
     <video
@@ -102,7 +104,15 @@
       </div>
       <!-- 是否显示助力 -->
       <div class="footer_item1" v-if="$store.state.settings[68].value">
-        <button style="background-color: rgb(36, 105, 77); color: #ffffff">
+        <button
+          @click="
+            (e) => {
+              e.stopPropagation();
+              giftState.state = true;
+            }
+          "
+          style="background-color: rgb(36, 105, 77); color: #ffffff"
+        >
           助力
         </button>
       </div>
@@ -119,11 +129,19 @@ import { HOST, HOST2 } from "../ENV";
 import Mobile from "mobile-detect";
 import { isNetWork } from "../utils/network";
 import { parseStampTime } from "../utils/times";
+import GifiVue from "./Gifi.vue";
 const emit = defineEmits(["returnPage"]);
 
 const $route = useRoute();
 const athleteInformation = reactive({});
 const $store = useStore();
+
+const giftState = reactive({
+  close: () => {
+    giftState.state = false;
+  },
+  state: false,
+});
 
 const props = defineProps({
   data: {
