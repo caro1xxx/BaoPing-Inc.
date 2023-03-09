@@ -341,7 +341,6 @@ const onMouseLeaveAvator = () => {
 // 从localstorage获取用户信息
 const getUserinfoFromStorage = () => {
   let info = JSON.parse(localStorage.getItem("userinfo"));
-  console.log(info);
   if (!info) return;
   userInfo.auth = info.auth;
   userInfo.avator = info.avator;
