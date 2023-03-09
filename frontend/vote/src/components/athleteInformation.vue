@@ -43,13 +43,13 @@
         </div>
         <div
           class="body_content_ranking_item"
-          style="font-size: 17px; color: #33cc66"
+          style="font-size: 30px; color: #33cc66"
         >
           {{ athleteInformation.count }}
         </div>
         <div
           class="body_content_ranking_item"
-          style="font-size: 17px; color: #33cc66"
+          style="font-size: 30px; color: #33cc66"
         >
           {{ props.data }}
         </div>
@@ -63,6 +63,22 @@
         <span>你的付出我们有目共睹</span>
       </div>
       <div class="body_content_detail">{{ athleteInformation.detail }}</div>
+      <!-- 评论 -->
+      <div v-if="$store.state.settings[66].value">
+        <div class="conment_body">
+          <input type="text" class="comment_input" />
+          <div>评论</div>
+        </div>
+        <div v-for="item in comments" class="comment_item">
+          <div class="comment_item_user">{{ item.vote_user }}</div>
+          <div class="comment_item_content">
+            <div class="comment_item_content_body">{{ item.content }}</div>
+            <div class="comment_item_content_time">
+              {{ parseStampTime(item.create_time) }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="footer">
       <div class="footer_item1">
@@ -73,12 +89,18 @@
           首页
         </button>
       </div>
-      <div class="footer_item2">
+      <!-- 如果不显示助力那么将投一票宽度变大-->
+      <div
+        :class="
+          $store.state.settings[68].value ? 'footer_item2' : 'footer_item3'
+        "
+      >
         <button style="background-color: orange; color: #ffffff" @click="like">
           投一票
         </button>
       </div>
-      <div class="footer_item1">
+      <!-- 是否显示助力 -->
+      <div class="footer_item1" v-if="$store.state.settings[68].value">
         <button style="background-color: rgb(36, 105, 77); color: #ffffff">
           助力
         </button>
@@ -89,22 +111,28 @@
 
 <script setup>
 import { fether } from "@/utils/fether";
-import { reactive, defineEmits } from "vue";
+import { reactive, defineEmits, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { HOST, HOST2 } from "../ENV";
 import Mobile from "mobile-detect";
 import { isNetWork } from "../utils/network";
+import { parseStampTime } from "../utils/times";
 const emit = defineEmits(["returnPage"]);
 
 const $route = useRoute();
 const athleteInformation = reactive({});
 const $store = useStore();
+
 const props = defineProps({
   data: {
     informationKey: Number,
   },
 });
+
+// 选手评论
+const comments = reactive([]);
+
 // 获取选手详情
 const getAthleteInformation = async () => {
   let Arr = [];
@@ -163,6 +191,19 @@ const getKey = () => {
       }
     });
 };
+
+// 获取选手评论
+const getUserComment = async () => {
+  if ($store.state.settings[66].value === 0) return;
+  let result = await fether(`/comment/?vote_target_id=${props.data}`);
+  if (!result) return;
+  result.forEach((item) => {
+    comments.push({ ...item.fields });
+  });
+};
+onMounted(() => {
+  getUserComment();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -210,7 +251,7 @@ const getKey = () => {
 }
 .body_content_ranking_item {
   text-align: center;
-  padding: 20px 0;
+  padding: 10px 0;
 }
 .body_content_sign {
   height: 60px;
@@ -246,6 +287,10 @@ button {
   grid-column-start: 2;
   grid-column-end: 4;
 }
+.footer_item3 {
+  grid-column-start: 2;
+  grid-column-end: 6;
+}
 .stateAdv {
   position: absolute;
   right: 0px;
@@ -262,6 +307,45 @@ button {
     width: 90%;
     height: 90%;
     border: 5px;
+  }
+}
+.comment_input {
+  border: 0.5px solid #cecece;
+  padding: 10px 10px;
+  width: 63%;
+  border-radius: 5px;
+}
+.conment_body {
+  display: flex;
+  div {
+    width: 25%;
+    margin-left: 5%;
+    background-color: green;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 35px;
+    color: white;
+  }
+}
+.comment_item {
+  margin-top: 20px;
+  border-bottom: 0.5px solid #cecece88;
+  .comment_item_user {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .comment_item_content {
+    display: flex;
+    padding: 20px 0px;
+    .comment_item_content_body {
+      width: 60%;
+    }
+    .comment_item_content_time {
+      width: 40%;
+      font-size: 10px;
+      color: #c3c3c3;
+      text-align: end;
+    }
   }
 }
 </style>

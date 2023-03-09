@@ -49,15 +49,14 @@
         <div
           style="text-align: end; overflow: hidden"
           class="content_top_popup"
-          v-if="!$store.state.settings[11].value"
+          v-if="$store.state.settings[25].value && popupList.showState"
         >
           <div class="scroll_text_content">
             <p
               style="display: inline; color: #545c64"
               v-for="item in popupList.data"
-            >
-              {{ item }}
-            </p>
+              v-html="item"
+            ></p>
           </div>
         </div>
       </div>
@@ -300,7 +299,7 @@ import { useStore } from "vuex";
 import { HOST, HOST2 } from "../ENV";
 import athleteInformation from "@/components/athleteInformation.vue";
 import customerService from "@/components/customerService.vue";
-import isQrcode from '@/components/isQrcode.vue'
+import isQrcode from "@/components/isQrcode.vue";
 import { isNetWork } from "../utils/network";
 import Mobile from "mobile-detect";
 const $route = useRoute();
@@ -316,7 +315,7 @@ let informationKey = 0;
 const fileData = new FormData();
 
 // 弹幕列表
-const popupList = reactive({ data: [] });
+const popupList = reactive({ data: [], showState: false });
 
 // 表单数据
 const enrollData = reactive({
@@ -332,7 +331,7 @@ const enrollStatus = reactive({
   isActiveRules: false,
   isAthleteConfig: false,
   iscustomerService: false,
-  isOpenQscode: false
+  isOpenQscode: false,
 });
 
 //我要报名
@@ -365,8 +364,8 @@ const getCusrr = () => {
   enrollStatus.iscustomerService = false;
 };
 const downQscode = () => {
-  enrollStatus.isOpenQscode = false
-}
+  enrollStatus.isOpenQscode = false;
+};
 
 //获取选手列表
 const getInformation = async () => {
@@ -439,13 +438,13 @@ const submit = async () => {
 
 const activeRull = async () => {
   enrollStatus.isActiveRules = !enrollStatus.isActiveRules;
-  activeRules = $store.state.settings.get("description");
+  activeRules = $store.state.settings[78].value;
 };
 
 // 点赞
 const like = async (target) => {
   // 开启二维码弹幕
-  enrollStatus.isOpenQscode = true
+  enrollStatus.isOpenQscode = true;
   let keys = await getKey();
   let sercet = await encryption(keys);
   const md = new Mobile(navigator.userAgent);
@@ -504,15 +503,20 @@ const isSupportCarouselAndStart = () => {
 // 弹幕动画
 const animating = () => {
   let JSONPopup = JSON.parse($store.state.settings[93].value);
-  popupList.data.push(JSONPopup[parseInt(Math.random(JSONPopup.length) * 10)]);
-  requestAnimationFrame(animating);
+  JSONPopup.forEach((item) => {
+    popupList.data.push(
+      JSONPopup[parseInt(Math.random(JSONPopup.length) * 10)]
+    );
+  });
+  setInterval(() => {
+    popupList.showState = !popupList.showState;
+  }, 10000);
 };
 
 // 是否支持弹幕并且运行
 const isPopupAndStart = () => {
-  if ($store.state.settings[26].value) return;
-  // popupList.push()
-  requestAnimationFrame(animating);
+  if (!$store.state.settings[25].value) return;
+  animating();
 };
 
 onMounted(() => {
