@@ -13,7 +13,7 @@ from main.views.payment_record import PaymentRecord
 from main.views.voteuser import Voteuser, Comment
 from main.views.statics import Statics, StaticsHistory
 from main.views.settings import Settings
-from main.views.vote_target import VoteTarget
+from main.views.vote_target import VoteTarget, AddVoteTargets
 from main.views.gift import Gift
 from main.views import Request404, TestView
 from vote_manage import settings
@@ -44,6 +44,7 @@ urlpatterns = [
     url(r'^settings/$', Settings.Settings.as_view()),
     url(r'^alonevoteactivity/$', AloneVoteActivity.AloneVoteActivity.as_view()),
     url(r'^votetarget/$', VoteTarget.VoteTarget.as_view()),
+    url(r'^addvotetargets/$', AddVoteTargets.AddVoteTargets.as_view()),
     url(r'^gift/$', Gift.Gift.as_view()),
     url(r'^comment/$', Comment.Comment.as_view()),
     url(r'^test/$', TestView.TestView.as_view()),

@@ -36,3 +36,13 @@ class VoteTargetOp:
         if models.VoteTarget.objects.filter(pk=pk).first() is None:
             return False, 'pk不存在'
         return True, 'pk重复'
+
+    def create(self, data):
+        models.VoteTarget.objects.create(
+            vote_id_id = data['vote_id'],
+            name = data['name'],
+            detail = data['detail'],
+            count = data['count']
+        )
+
+    # def addMany(self, file):

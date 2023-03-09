@@ -2,38 +2,23 @@ from rest_framework.views import APIView
 from django.core import serializers
 from django.http import JsonResponse
 from main import models
-from main.tools import generateCode6
 import json
-from main.tools import Validate
-from main.views.vote_activity.VoteActivityOp import VoteActivityOp
+from main.tools import *
 from django.core.paginator import Paginator
-from vote_manage.settings import BASE_DIR
-import geoip2.database
-from vote_manage import settings
-from main.tasks import myTask
-from vote_manage import settings
-from openpyxl import load_workbook
 from main.views.vote_target.VoteTargetOp import VoteTargetOp
+from openpyxl import load_workbook
 
 
-class TestView(APIView):
-    def get(self, request, *args, **kwargs):
-        ret = {}
-        try:
-            myTask.delay()
-            ret['msg'] = 'cuccess'
-        except Exception as e:
-            ret['msg'] = str(e)
-
-        return JsonResponse(ret)
-    
+# 批量添加选手，上传一个excel文件，只有通过验证的数据才会添加，并且不会提示错误信息
+class AddVoteTargets(APIView):
     def post(self, request, *args, **kwargs):
-        ret = {'code': 200}
+        ret = {'code': 200, 'msg': '添加成功'}
         try:
             file = request.FILES.get('file', None)
 
-            models.TempFile.objects.create(file=file)
-            path = str(settings.MEDIA_ROOT) + '/temp/' + file.name
+            fileObj = models.TempFile.objects.create(file=file)
+            path = str(settings.MEDIA_ROOT) + '/' + str(fileObj.file)
+            print(path)
             wb = load_workbook(path)
             sheet = wb.worksheets[0]
 
@@ -51,12 +36,12 @@ class TestView(APIView):
 
             voteTargetOp = VoteTargetOp()
             for voteTarget in data:
-                ok, msg = voteTargetOp.checkData(voteTarget)
+                ok, msg = voteTargetOp.checkData(voteTarget['name'], voteTarget['detail'], voteTarget['vote_id'], voteTarget['count'])
                 if ok:
-                    voteTargetOp.create(data)
-
+                    voteTargetOp.create(voteTarget)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'msg': str(e)}
+            # ret = {'?code': 500, 'msg': 'Timeout', 'error': str(e)}
+
         return JsonResponse(ret)

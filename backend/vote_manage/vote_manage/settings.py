@@ -177,3 +177,11 @@ CRONJOBS = [
     ('0 0 * * *', 'main.crontab.clearAllDomainVisitCount', '>> ' + str(BASE_DIR) + '/logs/clearalldomainvisitcount.log'), 
     ('*/1 * * * *', 'main.crontab.clearKeys', '>> ' + str(BASE_DIR) + '/logs/clearkeys.log'), 
 ]
+
+# Celery配置
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_TIMEZONE = 'Asia/Shanghai'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
