@@ -16,10 +16,13 @@
   />
   <customerService
     v-if="enrollStatus.iscustomerService"
-    @returnPage="getCusrr"
+    :data="enrollStatus.data"
   />
   <!-- 二维码弹窗 -->
-  <isQrcode v-if="enrollStatus.isOpenQscode" @returnPage="downQscode" />
+  <isQrcode
+    v-if="enrollStatus.isOpenQscode"
+    :data="enrollStatus.data1"
+  />
   <!-- 验证码弹窗 -->
   <verificationCode
     v-if="enrollStatus.isVerificationCode"
@@ -255,9 +258,11 @@
       </div>
     </div>
     <!-- 报名弹窗 -->
-    <div class="enroll_prop" v-if="enrollStatus.isEnrollProp">
+    <div class="enroll_prop"
+    v-if="enrollStatus.isEnrollProp"
+    @click="doenProp">
       <!-- 可以报名时 -->
-      <div class="enroll_prop_form">
+      <div class="enroll_prop_form" @click="(e) => e.stopPropagation()">
         <div class="enroll_prop_form_wrrap">
           <h3>报名信息</h3>
           <div class="enroll_prop_form_item">
@@ -310,26 +315,12 @@
             确定
           </button>
         </div>
-        <img
-          class="downImg"
-          @click="doenProp"
-          style="width: 30px; height: 30px"
-          src="../assets/images/39.png"
-          alt=""
-        />
       </div>
     </div>
-    <div v-if="enrollStatus.isActiveRules" class="enroll_prop">
-      <div class="enroll_prop_form">
+    <div v-if="enrollStatus.isActiveRules" @click="doenProp1" class="enroll_prop">
+      <div class="enroll_prop_form" @click="(e) => e.stopPropagation()">
         <div class="enroll_prop_form_wrrap" style="border-radius: 10px">
           <div v-html="activeRules"></div>
-          <img
-            class="downImg"
-            @click="doenProp"
-            style="width: 30px; height: 30px"
-            src="../assets/images/39.png"
-            alt=""
-          />
         </div>
       </div>
     </div>
@@ -386,6 +377,16 @@ const enrollStatus = reactive({
   isVerificationCode: false,
   closeVerificationCode: () => {
     enrollStatus.isVerificationCode = false;
+  },
+  data: {
+    close: () => {
+      enrollStatus.iscustomerService = !enrollStatus.iscustomerService;
+    },
+  },
+  data1: {
+    close: () => {
+      enrollStatus.isOpenQscode = !enrollStatus.isOpenQscode;
+    },
   },
 });
 
@@ -463,13 +464,11 @@ const goEnroll = () => {
 };
 // 取消弹窗
 const doenProp = () => {
-  if (enrollStatus.isEnrollProp === true) {
-    enrollStatus.isEnrollProp = !enrollStatus.isEnrollProp;
-  }
-  if (enrollStatus.isActiveRules === true) {
-    enrollStatus.isActiveRules = !enrollStatus.isActiveRules;
-  }
+  enrollStatus.isEnrollProp = !enrollStatus.isEnrollProp;
 };
+const doenProp1 = () => {
+  enrollStatus.isActiveRules = !enrollStatus.isActiveRules
+}
 
 // 客服
 const customerSure = () => {

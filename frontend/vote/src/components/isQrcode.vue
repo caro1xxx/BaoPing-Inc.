@@ -1,6 +1,6 @@
 <template>
-  <div class="body">
-    <div class="body_content">
+  <div class="body" @click="props.data.close">
+    <div class="body_content" @click="(e) => e.stopPropagation()">
       <div>你已点赞成功</div>
       <img
         class="qscodeImg"
@@ -9,13 +9,6 @@
         alt=""
       />
     </div>
-    <img
-      @click="returnPage"
-      class="downImg"
-      style="width: 30px; height: 30px"
-      src="../assets/images/39.png"
-      alt=""
-    />
   </div>
 </template>
 
@@ -25,13 +18,9 @@ import { useStore } from "vuex";
 import { HOST } from "../ENV";
 const emit = defineEmits(["returnPage"]);
 const $store = new useStore();
-
-const returnPage = () => {
-  let params = {
-    status: false,
-  };
-  emit("returnPage", params);
-};
+const props = defineProps({
+  data: Object,
+});
 </script>
 
 <style lang="scss" scoped>
