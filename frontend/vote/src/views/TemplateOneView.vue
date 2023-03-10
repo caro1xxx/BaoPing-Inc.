@@ -156,8 +156,7 @@
             />
             <div class="content_body_information_body">
               <div class="content_body_information_title">
-                <div style="width: 80px"></div>
-                <div class="content_body_information_name">
+                <div :class="(index + 1) < 4 ? `content_body_information_name1` : `content_body_information_name`">
                   {{ item.name }}
                 </div>
               </div>
@@ -884,7 +883,7 @@ button {
 .content_body_information_top {
   position: absolute;
   z-index: 5;
-  top: 5px;
+  top: -5px;
   left: 20px;
 }
 // 绘制倒三角型
@@ -923,17 +922,31 @@ button {
 .content_body_information_title {
   display: flex;
   align-items: center;
+  justify-content: center;
   height: 35px;
+  margin-top: 10px;
   .content_body_information_name {
-    margin-left: 10px;
+    width: 60%;
+    padding-left: 5%;
     font-size: 20px;
     font-family: BlackSimplyBlod;
+  }
+  .content_body_information_name1{
+    width: 60%;
+    padding-left: 5%;
+    font-size: 20px;
+    font-family: BlackSimplyBlod;
+    //颜色渐变
+    background-image: linear-gradient(
+    to right,
+    rgb(241, 211, 111),
+    rgb(218, 243, 78)
+  );
   }
 }
 .content_body_information_content {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  margin-top: 10px;
 }
 .content_body_information_center {
   grid-column: span 2 / auto;
@@ -941,6 +954,7 @@ button {
   padding: 10px 0px;
   flex-direction: column;
   justify-content: space-around;
+  margin-left: 10px;
   .count {
     color: red;
     font-size: 20px;
@@ -949,7 +963,7 @@ button {
 }
 .content_body_information_left {
   height: 80px;
-  padding: 10px;
+  padding: 10px 0px;
 }
 .content_body_information_right {
   height: 100%;
@@ -965,7 +979,7 @@ button {
     }
     .content_body_information_solid {
       height: 40px;
-      margin-top: 15px;
+      margin-top: 25px;
       font-size: 16px;
       text-align: center;
       color: #ffffff;
@@ -1175,8 +1189,8 @@ button {
 .expire_time_label {
   width: 25%;
   height: 20px;
+  line-height: 20px;
   margin: 0px 5px;
-  border: 1px solid #f3f3f3;
   text-align: center;
   color: #f3f3f3;
   font-size: 12px;
