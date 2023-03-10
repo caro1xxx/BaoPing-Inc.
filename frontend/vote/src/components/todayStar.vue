@@ -26,7 +26,6 @@ const props = defineProps({
     close: () => {},
   },
 });
-
 </script>
 
 <style lang="scss" scoped>
@@ -37,7 +36,6 @@ const props = defineProps({
   right: 0;
   left: 0;
   background-color: #00000074;
-
   background-size: 100% 110%;
   background-repeat: no-repeat;
   display: inline-flex;

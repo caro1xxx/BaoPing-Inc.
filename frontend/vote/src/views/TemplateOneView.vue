@@ -1,4 +1,6 @@
 <template>
+  <!-- 追踪报道 -->
+  <trackVue v-if="trackState.state" :data="trackState" />
   <!-- 反馈 -->
   <feedbackVue v-if="feedbackState.state" :data="feedbackState.data" />
   <!-- 支持成功 -->
@@ -115,7 +117,14 @@
         </div>
         <div class="content_body_search">
           <input type="text" placeholder="搜索名称或编号" />
-          <div class="content_body_search_button">
+          <div
+            class="content_body_search_button"
+            @click="
+              () => {
+                trackState.state = true;
+              }
+            "
+          >
             <div class="content_body_search_text"></div>
             <div class="content_body_search_status">已更新</div>
           </div>
@@ -350,6 +359,7 @@ import WelcomeVue from "@/components/Welcome.vue";
 import verificationCode from "@/components/verificationCode.vue";
 import SupportSuccessVue from "@/components/SupportSuccess.vue";
 import feedbackVue from "@/components/feedback.vue";
+import trackVue from "@/components/track.vue";
 import { isNetWork } from "../utils/network";
 import Mobile from "mobile-detect";
 const $route = useRoute();
@@ -431,6 +441,14 @@ const expireData = reactive({
   minute: "",
   //秒
   second: "",
+});
+
+// 追踪报道状态
+const trackState = reactive({
+  state: false,
+  close: () => {
+    trackState.state = false;
+  },
 });
 
 // 支持成功函数
@@ -780,6 +798,10 @@ onMounted(() => {
   flex: 1;
   overflow-y: scroll;
 }
+
+.content::-webkit-scrollbar {
+  display: none;
+}
 .content_top {
   height: 200px;
   background-image: url("../assets/images/2.png");
@@ -906,6 +928,7 @@ button {
   .content_body_information_name {
     margin-left: 10px;
     font-size: 20px;
+    font-family: BlackSimplyBlod;
   }
 }
 .content_body_information_content {
@@ -1171,5 +1194,16 @@ button {
     margin: 0px 5px;
     color: black;
   }
+}
+* {
+  font-family: BlackSimply;
+}
+@font-face {
+  font-family: BlackSimply;
+  src: url("../assets/font/方正正黑简体.TTF");
+}
+@font-face {
+  font-family: BlackSimplyBlod;
+  src: url("../assets/font/方正正粗黑简体.TTF");
 }
 </style>
