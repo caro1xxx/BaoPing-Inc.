@@ -8,6 +8,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 
 
+# 步骤三 下单
 def transactions():
     url = 'https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi'
     headers = {
@@ -35,7 +36,6 @@ def transactions():
         return True, prepayId
     return False, 'error'
 
-
 def generateSignData():
     appId = 'wx8888888888888888'
     timeStamp = '1414561699'
@@ -46,7 +46,7 @@ def generateSignData():
     text = appId + '\n' + timeStamp + '\n' + nonceStr + '\n' +  + '\n' + package + '\n'
     return text
 
-def getSign():
+def getSign(data):
     # 生成RSA密钥对
     private_key = rsa.generate_private_key(
         public_exponent=65537,
@@ -58,8 +58,9 @@ def getSign():
         format=serialization.PrivateFormat.PKCS8,
         encryption_algorithm=serialization.NoEncryption(),
     )
+    print(private_key_pem)
     # 要签名的数据
-    data = b"Hello, world!"
+    # data = b"Hello, world!"
     # 计算SHA256散列值
     digest = hashlib.sha256(data).digest()
     # 使用RSA私钥对SHA256散列进行签名
@@ -74,6 +75,9 @@ def getSign():
     # 将签名结果进行Base64编码
     signature_base64 = base64.b64encode(signature).decode('utf-8')
     return signature_base64
+
+sign = getSign(generateSignData())
+print(sign)
 
 # decrypted_str = decrypt("要解密的字符串", "私钥文件路径")
 def decrypt(ciphertext, private_key_path):
@@ -96,5 +100,22 @@ def queryOrderStatus(self):
     if res.status_code == 200:
         return True, res
     return False, 'query status error'
+
+
+# 步骤八 调起支付 签名
+def arousePay():
+    text = generateSignData()
+    signText = getSign(text)
+    data = {
+        "appId": "wx2421b1c4370ec43b",          
+        "timeStamp": "1395712654",     
+        "nonceStr": "e61463f8efa94090b1f366cccfbbb444",    
+        "package": "prepay_id=up_wx21201855730335ac86f8c43d1889123400",
+        "signType": "RSA",        
+        "paySign": signText
+    }
+    return data
+
+
 
 # print(getSign())
