@@ -13,6 +13,7 @@ import VoteRecordView from "../views/VoteRecordView.vue";
 import PaymentRecordView from "../views/PaymentRecordView.vue";
 import VoteParentView from "../views/VoteParentView.vue";
 import PrizeView from "../views/PrizeView.vue";
+import GlobalSettingsView from "../views/GlobalSettingsView.vue";
 
 const routes = [
   // 登录注册
@@ -74,6 +75,12 @@ const routes = [
     path: "/vote/prize",
     name: "PrizeView",
     component: PrizeView,
+  },
+  // 全局设置
+  {
+    path: "/vote/settings",
+    name: "GlobalSettingsView",
+    component: GlobalSettingsView,
   },
   // 支付
   {
