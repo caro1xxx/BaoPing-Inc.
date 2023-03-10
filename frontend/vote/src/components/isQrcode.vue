@@ -5,7 +5,7 @@
       <img
         class="qscodeImg"
         v-if="$store.state.settings[26].value"
-        :src="`${HOST}/media/${$store.state.settings[92].value}`"
+        :src="`${HOST2}/media/${$store.state.settings[92].value}`"
         alt=""
       />
     </div>
@@ -15,7 +15,7 @@
 <script setup>
 import { defineEmits } from "vue";
 import { useStore } from "vuex";
-import { HOST } from "../ENV";
+import { HOST2 } from "../ENV";
 const emit = defineEmits(["returnPage"]);
 const $store = new useStore();
 const props = defineProps({

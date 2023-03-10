@@ -1,3 +1,4 @@
+
 <template>
   <!-- 追踪报道 -->
   <trackVue v-if="trackState.state" :data="trackState" />
@@ -34,19 +35,21 @@
   />
   <div class="body" v-if="!enrollStatus.isAthleteConfig">
     <!-- 开场广告图 -->
-    <div class="stateAdv" v-if="$store.state.settings[11].value">
+    <div class="stateAdv" @click="downStateAdv" v-if="$store.state.settings[11].value">
       <img
         class="state_img"
-        :src="HOST + '/media/' + $store.state.settings[84].value"
+        :src="HOST2 + '/media/' + $store.state.settings[84].value"
+        @click="(e)=> e.stopPropagation()"
       />
     </div>
     <!-- 开场视频广告 -->
-    <div class="stateAdv" v-if="$store.state.settings[11].value">
+    <div class="stateAdv" @click="downStateAdv" v-if="$store.state.settings[14].value">
       <video
         style="background-color: #000"
         class="state_img"
-        :src="HOST + '/media/' + $store.state.settings[86].value"
+        :src="HOST2 + '/media/' + $store.state.settings[86].value"
         controls="controls"
+        @click="(e)=> e.stopPropagation()"
       >
         您的浏览器不支持 video 标签。
       </video>
@@ -362,12 +365,9 @@ const headerImg = ref("");
 let activeRules = "";
 let informationKey = 0;
 let verificationCodeData = {};
-
 const fileData = new FormData();
-
 // 弹幕列表
 const popupList = reactive({ data: [], showState: false });
-
 // 表单数据
 const enrollData = reactive({
   imgUrl: "",
@@ -375,7 +375,6 @@ const enrollData = reactive({
   athletename: "",
   file: fileData,
 });
-
 // 状态
 const enrollStatus = reactive({
   isEnrollProp: false,
@@ -398,7 +397,6 @@ const enrollStatus = reactive({
     },
   },
 });
-
 // 是否显示欢迎回来页面
 const welcomeState = reactive({
   state: false,
@@ -411,7 +409,6 @@ const welcomeState = reactive({
     welcomeState.state = false;
   },
 });
-
 // 支持成功数据
 const successData = reactive({
   data: {},
@@ -420,7 +417,6 @@ const successData = reactive({
     successData.state = false;
   },
 });
-
 // 反馈状态
 const feedbackState = reactive({
   state: false,
@@ -430,7 +426,6 @@ const feedbackState = reactive({
     },
   },
 });
-
 //存储倒计时
 const expireData = reactive({
   // 天
@@ -442,7 +437,6 @@ const expireData = reactive({
   //秒
   second: "",
 });
-
 // 追踪报道状态
 const trackState = reactive({
   state: false,
@@ -450,13 +444,11 @@ const trackState = reactive({
     trackState.state = false;
   },
 });
-
 // 支持成功函数
 const supportToShow = (target) => {
   successData.state = true;
   successData.data = target;
 };
-
 //我要报名
 const goEnroll = () => {
   //清除图片
@@ -486,22 +478,14 @@ const doenProp = () => {
 const doenProp1 = () => {
   enrollStatus.isActiveRules = !enrollStatus.isActiveRules
 }
-
 // 客服
 const customerSure = () => {
   console.log(1);
   enrollStatus.iscustomerService = true;
 };
-
 //获取子级传递过来的数据
 const getChild = (value) => {
   enrollStatus.isAthleteConfig = value.status;
-};
-const getCusrr = () => {
-  enrollStatus.iscustomerService = false;
-};
-const downQscode = () => {
-  enrollStatus.isOpenQscode = false;
 };
 const downVerificationCode = () => {
   enrollStatus.isVerificationCode = false;
@@ -517,7 +501,10 @@ const getData1 = (value) => {
   verificationCodeData.name = value.data.name;
   verificationCodeData.avator = value.data.img;
 };
-
+const downStateAdv = () => {
+  $store.state.settings[11].value = false
+  $store.state.settings[14].value = false
+}
 //获取选手列表
 const getInformation = async () => {
   let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}`);
@@ -530,7 +517,6 @@ const getInformation = async () => {
   });
 };
 getInformation();
-
 // 点击按钮分发到file click事件
 const dispatchUpload = () => {
   let box = document.getElementById("fileImage");
@@ -551,7 +537,6 @@ const showImg = () => {
     enrollData.imgUrl = e.target.result;
   };
 };
-
 //获取描述数据
 const getDescribe = (e) => {
   enrollData.describe = e.target.value;
@@ -586,13 +571,11 @@ const submit = async () => {
       }
     });
 };
-
 const activeRull = async () => {
   enrollStatus.isActiveRules = !enrollStatus.isActiveRules;
   activeRules = $store.state.settings[78].value;
   console.log(activeRules);
 };
-
 // 点赞
 const like = async (target) => {
   /**
@@ -600,7 +583,6 @@ const like = async (target) => {
    * 验证成功并发送请求后
    * 判断是否有公众号二维码有就弹没有就关闭
    */
-
   // 判断是否在投票时间内
   let newTime = new Date();
   // 得到开始投票时间
@@ -654,11 +636,9 @@ const like = async (target) => {
     }
   }
 };
-
 const encryption = async (key) => {
   return base64.encode(key + "vote");
 };
-
 // 请求key
 const getKey = () => {
   return fetch(`${HOST}/keys/?open_id=00001`)
@@ -669,7 +649,6 @@ const getKey = () => {
       }
     });
 };
-
 const athleteConfig = (e, value) => {
   if (e.target.className !== "content_body_information_solid") {
     enrollStatus.isAthleteConfig = true;
@@ -677,7 +656,6 @@ const athleteConfig = (e, value) => {
     informationKey = value;
   }
 };
-
 // 支持轮播图
 const isSupportCarouselAndStart = () => {
   if (!$store.state.settings[36].value) return;
@@ -692,7 +670,6 @@ const isSupportCarouselAndStart = () => {
     flag = flag + 1 > 2 ? 0 : flag + 1;
   }, 4000);
 };
-
 // 弹幕动画
 const animating = () => {
   let JSONPopup = JSON.parse($store.state.settings[93].value);
@@ -705,14 +682,12 @@ const animating = () => {
     popupList.showState = !popupList.showState;
   }, 10000);
 };
-
 // 是否支持弹幕并且运行
 const isPopupAndStart = () => {
   if (!$store.state.settings[26].value) return;
   // popupList.push()
   requestAnimationFrame(animating);
 };
-
 //获取活动倒计时
 const getExpireTime = async () => {
   let result = $store.state.settings[48].value * 1000;
@@ -744,7 +719,6 @@ const getExpireTime = async () => {
     }
   }, 1000);
 };
-
 // 获取该投票用户最近一次投票时间
 const getUserRecentVote = async () => {
   let result = await fether(`/recentvoterecord/?open_id=wxtest6`);
@@ -769,14 +743,12 @@ const getUserRecentVote = async () => {
   welcomeState.value = parseInt(fromCurrentToLastTime / 60000);
   welcomeState.state = true;
 };
-
 // 打开反馈
 const openFeedback = () => {
   feedbackState.state = true;
   feedbackState.data.vote_id = $route.query.vote_id;
   feedbackState.data.vote_user_openid = "wxtest6";
 };
-
 onMounted(() => {
   getExpireTime();
   isSupportCarouselAndStart();
@@ -796,7 +768,6 @@ onMounted(() => {
   flex: 1;
   overflow-y: scroll;
 }
-
 .content::-webkit-scrollbar {
   display: none;
 }
@@ -1017,7 +988,6 @@ button {
 .footer_color2 > button {
   background-color: blue;
 }
-
 // 弹窗样式
 .enroll_prop {
   position: absolute;
@@ -1091,14 +1061,12 @@ button {
     margin-right: 10px;
   }
 }
-
 .content_top_titles {
   width: 50%;
   height: 2px;
   background-color: white;
   margin: 10px 0px;
 }
-
 .content_top_scroll_text {
   position: absolute;
   height: 30px;
@@ -1150,12 +1118,11 @@ button {
   justify-content: center;
   align-items: center;
   .state_img {
-    width: 90%;
-    height: 90%;
+    width: 80%;
+    height: 45%;
     border: 5px;
   }
 }
-
 // 底部技术信息支持
 .technicalsupport {
   height: 30px;
@@ -1169,7 +1136,6 @@ button {
   left: 0;
   right: 0;
 }
-
 //活动倒计时样式
 .expire_time {
   height: 50px;

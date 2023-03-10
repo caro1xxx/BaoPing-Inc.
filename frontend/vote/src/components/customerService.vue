@@ -48,7 +48,6 @@ customerData.data = result.value.value
 }
 .body_content{
     width: 80%;
-    height: 60%;
     background-color: #f3f3f3;
     border-radius: 10px;
     display: flex;
@@ -73,6 +72,7 @@ customerData.data = result.value.value
     }
 }
 .body_content_config_botton{
+    margin: 10px;
     padding: 10px;
 }
 .downImg{

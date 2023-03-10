@@ -2,12 +2,13 @@
   <!-- 礼物 -->
   <GifiVue :data="props.data" v-if="giftState.state" :method="giftState" />
   <!-- 选手页视频广告 -->
-  <div class="stateAdv" v-if="$store.state.settings[11].value">
+  <div class="stateAdv" @click="downStateAdv" v-if="$store.state.settings[15].value">
     <video
       style="background-color: #000"
       class="state_img"
       :src="HOST + '/media/' + $store.state.settings[87].value"
       controls="controls"
+      @click="(e)=> e.stopPropagation()"
     >
       您的浏览器不支持 video 标签。
     </video>
@@ -129,6 +130,7 @@ import Mobile from "mobile-detect";
 import { isNetWork } from "../utils/network";
 import { parseStampTime } from "../utils/times";
 import GifiVue from "./Gifi.vue";
+import base64 from "base-64";
 const emit = defineEmits(["returnPage"]);
 
 const $route = useRoute();
@@ -184,11 +186,16 @@ const like = async () => {
   // 判断是否在投票时间内
   let newTime = new Date();
   // 得到开始投票时间
-  let start_time = Math.floor(86400 / $store.state.settings[50].value / 24);
-  if (newTime.getHours() < start_time) {
+  let start_time =
+    $store.state.settings[50].value >
+    parseInt((newTime.getTime() / 1000) % 86400) * 3600;
+  if (start_time) {
     alert("投票未开始");
     // 得到结束投票时间
-  } else if (newTime.getTime() > $store.state.settings[51].value * 1000) {
+  } else if (
+    parseInt((newTime.getTime() / 1000) % 86400) >
+    $store.state.settings[51].value
+  ) {
     alert("投票已结束");
     // 在投票时间内
   } else {
@@ -248,6 +255,10 @@ const check = async () => {
   if (!result) return;
   getUserComment();
 };
+
+const downStateAdv = () => {
+  $store.state.settings[15].value = false
+}
 
 onMounted(() => {
   getUserComment();
@@ -347,8 +358,8 @@ button {
   justify-content: center;
   align-items: center;
   .state_img {
-    width: 90%;
-    height: 90%;
+    width: 80%;
+    height: 45%;
     border: 5px;
   }
 }
