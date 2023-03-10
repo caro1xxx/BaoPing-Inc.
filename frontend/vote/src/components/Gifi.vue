@@ -1,7 +1,7 @@
 <template>
   <div class="gift" @click="props.method.close">
     <div class="gift_body">
-      <div class="gift_body_wrap">
+      <div class="gift_body_wrap" @click="(e)=>{e.stopPropagation()}">
         <!-- <div class="title">为选手{{ props.data }}助力</div> -->
         <div class="gift_body_list">
           <div
@@ -14,7 +14,7 @@
           >
             <img
               class="gift_body_list_img"
-              :src="HOST + '/media/' + item.img"
+              :src="HOST2 + '/media/' + item.img"
               alt=""
             />
           </div>
@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import { HOST } from "@/ENV";
+import { HOST2 } from "@/ENV";
 import { fether } from "@/utils/fether";
 import { reactive } from "vue";
 import { useRoute } from "vue-router";

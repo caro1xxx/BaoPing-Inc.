@@ -7,7 +7,7 @@
         <div>
           <img
             class="support_body_avator"
-            :src="HOST + '/media/' + props.data.data.avator"
+            :src="HOST2 + '/media/' + props.data.data.avator"
             alt=""
           />
         </div>
@@ -28,7 +28,7 @@
       <div class="bot">
         <div>
           <img
-            :src="HOST + '/media/' + $store.state.settings[92].value"
+            :src="HOST2 + '/media/' + $store.state.settings[92].value"
             alt=""
           />
         </div>
@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { HOST } from "@/ENV";
+import { HOST2 } from "@/ENV";
 
 const props = defineProps({
   data: Object,

@@ -1,3 +1,4 @@
+
 <template>
   <!-- 追踪报道 -->
   <trackVue v-if="trackState.state" :data="trackState" />
@@ -18,10 +19,13 @@
   />
   <customerService
     v-if="enrollStatus.iscustomerService"
-    @returnPage="getCusrr"
+    :data="enrollStatus.data"
   />
   <!-- 二维码弹窗 -->
-  <isQrcode v-if="enrollStatus.isOpenQscode" @returnPage="downQscode" />
+  <isQrcode
+    v-if="enrollStatus.isOpenQscode"
+    :data="enrollStatus.data1"
+  />
   <!-- 验证码弹窗 -->
   <verificationCode
     v-if="enrollStatus.isVerificationCode"
@@ -31,19 +35,21 @@
   />
   <div class="body" v-if="!enrollStatus.isAthleteConfig">
     <!-- 开场广告图 -->
-    <div class="stateAdv" v-if="$store.state.settings[11].value">
+    <div class="stateAdv" @click="downStateAdv" v-if="$store.state.settings[11].value">
       <img
         class="state_img"
-        :src="HOST + '/media/' + $store.state.settings[84].value"
+        :src="HOST2 + '/media/' + $store.state.settings[84].value"
+        @click="(e)=> e.stopPropagation()"
       />
     </div>
     <!-- 开场视频广告 -->
-    <div class="stateAdv" v-if="$store.state.settings[11].value">
+    <div class="stateAdv" @click="downStateAdv" v-if="$store.state.settings[14].value">
       <video
         style="background-color: #000"
         class="state_img"
-        :src="HOST + '/media/' + $store.state.settings[86].value"
+        :src="HOST2 + '/media/' + $store.state.settings[86].value"
         controls="controls"
+        @click="(e)=> e.stopPropagation()"
       >
         您的浏览器不支持 video 标签。
       </video>
@@ -153,8 +159,7 @@
             />
             <div class="content_body_information_body">
               <div class="content_body_information_title">
-                <div style="width: 80px"></div>
-                <div class="content_body_information_name">
+                <div :class="(index + 1) < 4 ? `content_body_information_name1` : `content_body_information_name`">
                   {{ item.name }}
                 </div>
               </div>
@@ -264,9 +269,11 @@
       </div>
     </div>
     <!-- 报名弹窗 -->
-    <div class="enroll_prop" v-if="enrollStatus.isEnrollProp">
+    <div class="enroll_prop"
+    v-if="enrollStatus.isEnrollProp"
+    @click="doenProp">
       <!-- 可以报名时 -->
-      <div class="enroll_prop_form">
+      <div class="enroll_prop_form" @click="(e) => e.stopPropagation()">
         <div class="enroll_prop_form_wrrap">
           <h3>报名信息</h3>
           <div class="enroll_prop_form_item">
@@ -298,7 +305,7 @@
               name="textarea"
               @change="getDescribe"
               cols="50"
-              rows="10"
+              rows="5"
             ></textarea>
           </div>
           <div class="enroll_prop_form_item">
@@ -319,26 +326,12 @@
             确定
           </button>
         </div>
-        <img
-          class="downImg"
-          @click="doenProp"
-          style="width: 30px; height: 30px"
-          src="../assets/images/39.png"
-          alt=""
-        />
       </div>
     </div>
-    <div v-if="enrollStatus.isActiveRules" class="enroll_prop">
-      <div class="enroll_prop_form">
+    <div v-if="enrollStatus.isActiveRules" @click="doenProp1" class="enroll_prop">
+      <div class="enroll_prop_form" @click="(e) => e.stopPropagation()">
         <div class="enroll_prop_form_wrrap" style="border-radius: 10px">
           <div v-html="activeRules"></div>
-          <img
-            class="downImg"
-            @click="doenProp"
-            style="width: 30px; height: 30px"
-            src="../assets/images/39.png"
-            alt=""
-          />
         </div>
       </div>
     </div>
@@ -372,12 +365,9 @@ const headerImg = ref("");
 let activeRules = "";
 let informationKey = 0;
 let verificationCodeData = {};
-
 const fileData = new FormData();
-
 // 弹幕列表
 const popupList = reactive({ data: [], showState: false });
-
 // 表单数据
 const enrollData = reactive({
   imgUrl: "",
@@ -385,7 +375,6 @@ const enrollData = reactive({
   athletename: "",
   file: fileData,
 });
-
 // 状态
 const enrollStatus = reactive({
   isEnrollProp: false,
@@ -397,8 +386,17 @@ const enrollStatus = reactive({
   closeVerificationCode: () => {
     enrollStatus.isVerificationCode = false;
   },
+  data: {
+    close: () => {
+      enrollStatus.iscustomerService = !enrollStatus.iscustomerService;
+    },
+  },
+  data1: {
+    close: () => {
+      enrollStatus.isOpenQscode = !enrollStatus.isOpenQscode;
+    },
+  },
 });
-
 // 是否显示欢迎回来页面
 const welcomeState = reactive({
   state: false,
@@ -411,7 +409,6 @@ const welcomeState = reactive({
     welcomeState.state = false;
   },
 });
-
 // 支持成功数据
 const successData = reactive({
   data: {},
@@ -420,7 +417,6 @@ const successData = reactive({
     successData.state = false;
   },
 });
-
 // 反馈状态
 const feedbackState = reactive({
   state: false,
@@ -430,7 +426,6 @@ const feedbackState = reactive({
     },
   },
 });
-
 //存储倒计时
 const expireData = reactive({
   // 天
@@ -442,7 +437,6 @@ const expireData = reactive({
   //秒
   second: "",
 });
-
 // 追踪报道状态
 const trackState = reactive({
   state: false,
@@ -450,13 +444,11 @@ const trackState = reactive({
     trackState.state = false;
   },
 });
-
 // 支持成功函数
 const supportToShow = (target) => {
   successData.state = true;
   successData.data = target;
 };
-
 //我要报名
 const goEnroll = () => {
   //清除图片
@@ -481,29 +473,19 @@ const goEnroll = () => {
 };
 // 取消弹窗
 const doenProp = () => {
-  if (enrollStatus.isEnrollProp === true) {
-    enrollStatus.isEnrollProp = !enrollStatus.isEnrollProp;
-  }
-  if (enrollStatus.isActiveRules === true) {
-    enrollStatus.isActiveRules = !enrollStatus.isActiveRules;
-  }
+  enrollStatus.isEnrollProp = !enrollStatus.isEnrollProp;
 };
-
+const doenProp1 = () => {
+  enrollStatus.isActiveRules = !enrollStatus.isActiveRules
+}
 // 客服
 const customerSure = () => {
   console.log(1);
   enrollStatus.iscustomerService = true;
 };
-
 //获取子级传递过来的数据
 const getChild = (value) => {
   enrollStatus.isAthleteConfig = value.status;
-};
-const getCusrr = () => {
-  enrollStatus.iscustomerService = false;
-};
-const downQscode = () => {
-  enrollStatus.isOpenQscode = false;
 };
 const downVerificationCode = () => {
   enrollStatus.isVerificationCode = false;
@@ -519,7 +501,10 @@ const getData1 = (value) => {
   verificationCodeData.name = value.data.name;
   verificationCodeData.avator = value.data.img;
 };
-
+const downStateAdv = () => {
+  $store.state.settings[11].value = false
+  $store.state.settings[14].value = false
+}
 //获取选手列表
 const getInformation = async () => {
   let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}`);
@@ -532,7 +517,6 @@ const getInformation = async () => {
   });
 };
 getInformation();
-
 // 点击按钮分发到file click事件
 const dispatchUpload = () => {
   let box = document.getElementById("fileImage");
@@ -553,7 +537,6 @@ const showImg = () => {
     enrollData.imgUrl = e.target.result;
   };
 };
-
 //获取描述数据
 const getDescribe = (e) => {
   enrollData.describe = e.target.value;
@@ -588,13 +571,11 @@ const submit = async () => {
       }
     });
 };
-
 const activeRull = async () => {
   enrollStatus.isActiveRules = !enrollStatus.isActiveRules;
   activeRules = $store.state.settings[78].value;
   console.log(activeRules);
 };
-
 // 点赞
 const like = async (target) => {
   /**
@@ -602,7 +583,6 @@ const like = async (target) => {
    * 验证成功并发送请求后
    * 判断是否有公众号二维码有就弹没有就关闭
    */
-
   // 判断是否在投票时间内
   let newTime = new Date();
   // 得到开始投票时间
@@ -656,11 +636,9 @@ const like = async (target) => {
     }
   }
 };
-
 const encryption = async (key) => {
   return base64.encode(key + "vote");
 };
-
 // 请求key
 const getKey = () => {
   return fetch(`${HOST}/keys/?open_id=00001`)
@@ -671,7 +649,6 @@ const getKey = () => {
       }
     });
 };
-
 const athleteConfig = (e, value) => {
   if (e.target.className !== "content_body_information_solid") {
     enrollStatus.isAthleteConfig = true;
@@ -679,7 +656,6 @@ const athleteConfig = (e, value) => {
     informationKey = value;
   }
 };
-
 // 支持轮播图
 const isSupportCarouselAndStart = () => {
   if (!$store.state.settings[36].value) return;
@@ -694,7 +670,6 @@ const isSupportCarouselAndStart = () => {
     flag = flag + 1 > 2 ? 0 : flag + 1;
   }, 4000);
 };
-
 // 弹幕动画
 const animating = () => {
   let JSONPopup = JSON.parse($store.state.settings[93].value);
@@ -707,14 +682,12 @@ const animating = () => {
     popupList.showState = !popupList.showState;
   }, 10000);
 };
-
 // 是否支持弹幕并且运行
 const isPopupAndStart = () => {
   if (!$store.state.settings[26].value) return;
   // popupList.push()
   requestAnimationFrame(animating);
 };
-
 //获取活动倒计时
 const getExpireTime = async () => {
   let result = $store.state.settings[48].value * 1000;
@@ -746,7 +719,6 @@ const getExpireTime = async () => {
     }
   }, 1000);
 };
-
 // 获取该投票用户最近一次投票时间
 const getUserRecentVote = async () => {
   let result = await fether(`/recentvoterecord/?open_id=wxtest6`);
@@ -771,14 +743,12 @@ const getUserRecentVote = async () => {
   welcomeState.value = parseInt(fromCurrentToLastTime / 60000);
   welcomeState.state = true;
 };
-
 // 打开反馈
 const openFeedback = () => {
   feedbackState.state = true;
   feedbackState.data.vote_id = $route.query.vote_id;
   feedbackState.data.vote_user_openid = "wxtest6";
 };
-
 onMounted(() => {
   getExpireTime();
   isSupportCarouselAndStart();
@@ -798,7 +768,6 @@ onMounted(() => {
   flex: 1;
   overflow-y: scroll;
 }
-
 .content::-webkit-scrollbar {
   display: none;
 }
@@ -885,7 +854,7 @@ button {
 .content_body_information_top {
   position: absolute;
   z-index: 5;
-  top: 5px;
+  top: -5px;
   left: 20px;
 }
 // 绘制倒三角型
@@ -924,17 +893,31 @@ button {
 .content_body_information_title {
   display: flex;
   align-items: center;
+  justify-content: center;
   height: 35px;
+  margin-top: 10px;
   .content_body_information_name {
-    margin-left: 10px;
+    width: 60%;
+    padding-left: 5%;
     font-size: 20px;
     font-family: BlackSimplyBlod;
+  }
+  .content_body_information_name1{
+    width: 60%;
+    padding-left: 5%;
+    font-size: 20px;
+    font-family: BlackSimplyBlod;
+    //颜色渐变
+    background-image: linear-gradient(
+    to right,
+    rgb(241, 211, 111),
+    rgb(218, 243, 78)
+  );
   }
 }
 .content_body_information_content {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  margin-top: 10px;
 }
 .content_body_information_center {
   grid-column: span 2 / auto;
@@ -942,6 +925,7 @@ button {
   padding: 10px 0px;
   flex-direction: column;
   justify-content: space-around;
+  margin-left: 10px;
   .count {
     color: red;
     font-size: 20px;
@@ -950,7 +934,7 @@ button {
 }
 .content_body_information_left {
   height: 80px;
-  padding: 10px;
+  padding: 10px 0px;
 }
 .content_body_information_right {
   height: 100%;
@@ -966,7 +950,7 @@ button {
     }
     .content_body_information_solid {
       height: 40px;
-      margin-top: 15px;
+      margin-top: 25px;
       font-size: 16px;
       text-align: center;
       color: #ffffff;
@@ -1004,7 +988,6 @@ button {
 .footer_color2 > button {
   background-color: blue;
 }
-
 // 弹窗样式
 .enroll_prop {
   position: absolute;
@@ -1026,7 +1009,6 @@ button {
 }
 .enroll_prop_form {
   width: 80%;
-  height: 80%;
   background-color: #f3f3f3;
   padding: 10px;
   border-radius: 10px;
@@ -1079,14 +1061,12 @@ button {
     margin-right: 10px;
   }
 }
-
 .content_top_titles {
   width: 50%;
   height: 2px;
   background-color: white;
   margin: 10px 0px;
 }
-
 .content_top_scroll_text {
   position: absolute;
   height: 30px;
@@ -1138,12 +1118,11 @@ button {
   justify-content: center;
   align-items: center;
   .state_img {
-    width: 90%;
-    height: 90%;
+    width: 80%;
+    height: 45%;
     border: 5px;
   }
 }
-
 // 底部技术信息支持
 .technicalsupport {
   height: 30px;
@@ -1157,7 +1136,6 @@ button {
   left: 0;
   right: 0;
 }
-
 //活动倒计时样式
 .expire_time {
   height: 50px;
@@ -1176,8 +1154,8 @@ button {
 .expire_time_label {
   width: 25%;
   height: 20px;
+  line-height: 20px;
   margin: 0px 5px;
-  border: 1px solid #f3f3f3;
   text-align: center;
   color: #f3f3f3;
   font-size: 12px;

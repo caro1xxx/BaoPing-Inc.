@@ -1,6 +1,6 @@
 <template>
-    <div class="body">
-        <div class="body_content">
+    <div class="body" @click="props.data.close">
+        <div class="body_content" @click="(e) => e.stopPropagation()">
             <div class="body_content_config">
                 <div class="body_content_config_top">
                     <div></div>
@@ -8,7 +8,6 @@
                 <div class="body_content_config_botton">{{ customerData.data }}</div>
             </div>
         </div>
-        <img @click="returnPage" class="downImg" style="width: 30px;height: 30px;" src="../assets/images/39.png" alt="">
     </div>
 </template>
 
@@ -23,14 +22,9 @@ const customerData = reactive({
     data: ''
 })
 
-const returnPage = (value) => {
-    let params = {
-        status: value
-    }
-    emit('returnPage', params)
-}
-
-
+const props = defineProps({
+  data: Object,
+});
 
 let result = computed(() => {
 return $store.state.settings[82]
@@ -54,7 +48,6 @@ customerData.data = result.value.value
 }
 .body_content{
     width: 80%;
-    height: 60%;
     background-color: #f3f3f3;
     border-radius: 10px;
     display: flex;
@@ -79,6 +72,7 @@ customerData.data = result.value.value
     }
 }
 .body_content_config_botton{
+    margin: 10px;
     padding: 10px;
 }
 .downImg{
