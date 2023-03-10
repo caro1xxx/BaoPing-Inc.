@@ -77,7 +77,6 @@ class VoteActivity(APIView):
         ret = {'code': 200, 'msg': '修改成功'}
         try:
             data = json.loads(request.body).get('data', None)
-            print(data)
 
             if data is None:
                 return JsonResponse({'code': 400, 'msg': '数据错误'})
@@ -109,6 +108,13 @@ class VoteActivity(APIView):
                 if not ok:
                     return JsonResponse({'code': 400, 'msg': msg})
                 voteActivityOp.updateTemplateData(data)
+            
+            elif content == 'other':
+                ok, msg = voteActivityOp.checkOtherData(data)
+                if not ok:
+                    return JsonResponse({'code': 400, 'msg': msg})
+                voteActivityOp.updateOtherData(data)
+
             else:
                 return JsonResponse({'code': 400, 'msg': '参数错误'})
             

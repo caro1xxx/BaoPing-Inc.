@@ -36,7 +36,8 @@ class VoteTarget(APIView):
         try:
             detail = request.POST.get('detail', None)
             name = request.POST.get('name', None)
-            avator = request.FILES.get('avator', None)
+            # avator = request.FILES.get('avator', None)
+            avator = request.POST.get('avator', None)
             voteId = request.POST.get('vote_id', None)
             
             ok, msg = VoteTargetOp().checkDataOnCreate(detail, name, voteId)
@@ -50,7 +51,6 @@ class VoteTarget(APIView):
                 vote_id_id = voteId,
             ).save()
             
-
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
             ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}

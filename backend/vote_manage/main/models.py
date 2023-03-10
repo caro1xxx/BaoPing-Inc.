@@ -95,10 +95,11 @@ class VoteActivity(models.Model):
     carousel_list = models.TextField(default='')
     temp_file = models.FileField(upload_to='temp', blank=True, verbose_name='临时文件')
     bottom_copyright = models.TextField(default='')
-    officialcount_qrcode = models.FileField(upload_to='pr', blank=True, verbose_name='公众号二维码')
+    officialcount_qrcode = models.FileField(upload_to='qr', blank=True, verbose_name='公众号二维码')
     popup = models.TextField(default='')
     vote_button_name = models.TextField(default='点赞')
     vote_unit_name = models.TextField(default='个')
+    track_report = models.TextField(default='')
     vote_voteusers = models.ManyToManyField(
         VoteUser,
         through='VoteRecord',
@@ -233,3 +234,16 @@ class BlackList(models.Model):
 
 class TempFile(models.Model):
     file = models.FileField(upload_to='temp', blank=True, verbose_name='临时文件')
+
+
+class AutoComment(models.Model):
+    vote_id = models.TextField(default='')
+    vote_target_id = models.TextField(default='')
+    begin_time = models.IntegerField(default=0)
+    end_time = models.IntegerField(default=0)
+    day_begin_time = models.IntegerField(default=0)
+    day_end_time = models.IntegerField(default=0)
+    space = models.IntegerField(default=0)
+    day_count_strict = models.IntegerField(default=0)
+    update_time = models.IntegerField(default=0)
+    day_vote_count = models.IntegerField(default=0)

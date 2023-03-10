@@ -10,7 +10,7 @@ class StaticsHistory(APIView):
     def get(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
-            staticsObj = models.StaticsHistory.objects.all().order_by('day_time')[0:5]
+            staticsObj = models.StaticsHistory.objects.all().order_by('-day_time')[0:5]
 
             ret['data'] = serializers.serialize('json', staticsObj)
             return JsonResponse(ret)          

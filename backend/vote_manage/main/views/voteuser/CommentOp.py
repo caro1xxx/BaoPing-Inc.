@@ -26,7 +26,7 @@ class CommentOp:
             vote_user_id = data['vote_user_open_id'],
             content = data['content'],
             create_time = getNowTimeStamp(),
-            status = 0
+            status = data.get('status', 0)
         )
 
     def checkDataOnUpdate(self, data):

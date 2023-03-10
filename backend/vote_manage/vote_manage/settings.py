@@ -173,9 +173,10 @@ CACHES = {
 
 
 CRONJOBS = [
-    ('0 0 * * *', 'main.crontab.updateStaticHistory', '>> ' + str(BASE_DIR) + '/logs/updateStaticHistory.log'), 
-    ('0 0 * * *', 'main.crontab.clearAllDomainVisitCount', '>> ' + str(BASE_DIR) + '/logs/clearalldomainvisitcount.log'), 
-    ('*/1 * * * *', 'main.crontab.clearKeys', '>> ' + str(BASE_DIR) + '/logs/clearkeys.log'), 
+    # ('0 0 * * *', 'main.crontab.updateStaticHistory', '>> ' + str(BASE_DIR) + '/logs/updateStaticHistory.log'), 
+    # ('0 0 * * *', 'main.crontab.clearAllDomainVisitCount', '>> ' + str(BASE_DIR) + '/logs/clearalldomainvisitcount.log'), 
+    # ('*/1 * * * *', 'main.crontab.clearKeys', '>> ' + str(BASE_DIR) + '/logs/clearkeys.log'), 
+    ('*/1 * * * *', 'main.crontab.autoComment', '>> ' + str(BASE_DIR) + '/logs/autocomment.log'), 
 ]
 
 

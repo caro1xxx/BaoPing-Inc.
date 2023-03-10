@@ -96,6 +96,7 @@ class VoteActivity(models.Model):
     popup = models.TextField(default='')
     vote_button_name = models.TextField(default='点赞')
     vote_unit_name = models.TextField(default='个')
+    track_report = models.TextField(default='')
     vote_voteusers = models.ManyToManyField(
         VoteUser,
         through='VoteRecord',

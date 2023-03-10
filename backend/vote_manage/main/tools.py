@@ -170,25 +170,25 @@ def myPaginator(data, maxSize, pageNum=1):
         data = paginator.page(int(pageNum))
     return data, pageCount
 
-def isSameDay(timestamp1, timestamp2):
-    d1 = datetime.fromtimestamp(timestamp1)
-    d2 = datetime.fromtimestamp(timestamp2)
-    return (d1.date() == d2.date() and
-            abs(d1 - d2) <= timedelta(hours=24))
-
 def getTodayBeginTimeStamp(nowTime):
     return nowTime - (nowTime- time.timezone)%86400
 
+def isSameDay(timestamp1, timestamp2):
+    # d1 = datetime.fromtimestamp(timestamp1)
+    # d2 = datetime.fromtimestamp(timestamp2)
+    # return (d1.date() == d2.date() and
+    #         abs(d1 - d2) <= timedelta(hours=24))
+    return getTodayBeginTimeStamp(timestamp1) == getTodayBeginTimeStamp(timestamp2)
+
 def getLocationFromIp(ip):
     reader = geoip2.database.Reader(str(settings.STATIC_ROOT) + '/GeoLite2-City_20230307/' + 'GeoLite2-City.mmdb')
-    ip = "123.60.38.9"
     response = reader.city(ip)
     # ret['region'] = "地区：{}({})".format(response.continent.names["es"], response.continent.names["zh-CN"])
     # ret['country'] = "国家：{}({}) ，简称:{}".format(response.country.name, response.country.names["zh-CN"], response.country.iso_code)
     # ret['city'] = "城市：{}({})".format(response.city.name, response.city.names["zh-CN"])
     ret = {
-        'region': response.continent.names['zh-CN'],
-        'country': response.country.name['zh-CN'],
-        'city': response.city.names['zh-CN']
+        'region': response.continent.names.get('zh-CN', 'other'),
+        'country': response.country.names.get('zh-CN', 'other'),
+        'city': response.city.names.get('zh-CN', 'other')
     }
     return ret

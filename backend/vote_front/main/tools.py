@@ -188,14 +188,13 @@ def getIp(request):
 
 def getLocationFromIp(ip):
     reader = geoip2.database.Reader(str(settings.STATIC_ROOT) + '/GeoLite2-City_20230307/' + 'GeoLite2-City.mmdb')
-    # ip = "123.60.38.9"
     response = reader.city(ip)
     # ret['region'] = "地区：{}({})".format(response.continent.names["es"], response.continent.names["zh-CN"])
     # ret['country'] = "国家：{}({}) ，简称:{}".format(response.country.name, response.country.names["zh-CN"], response.country.iso_code)
     # ret['city'] = "城市：{}({})".format(response.city.name, response.city.names["zh-CN"])
     ret = {
-        'region': response.continent.names['zh-CN'],
-        'country': response.country.names['zh-CN'],
-        'city': response.city.names['zh-CN']
+        'region': response.continent.names.get('zh-CN', 'other'),
+        'country': response.country.names.get('zh-CN', 'other'),
+        'city': response.city.names.get('zh-CN', 'other')
     }
     return ret

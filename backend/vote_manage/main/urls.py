@@ -5,7 +5,7 @@ from main.views.user import Login, Register, ForgetPasswordSendEmail, CheckEmail
 from main.views.logs import Logs
 from main.views.system_manage import OfficialAccount
 from main.views.feedback import Feedback
-from main.views.vote_activity import VoteActivity, AloneVoteActivity
+from main.views.vote_activity import VoteActivity, AloneVoteActivity, UploadFile
 from main.views.domain import Domain
 from main.views.applyprize import ApplyPrize
 from main.views.vote_record import VoteRecord
@@ -47,6 +47,7 @@ urlpatterns = [
     url(r'^addvotetargets/$', AddVoteTargets.AddVoteTargets.as_view()),
     url(r'^gift/$', Gift.Gift.as_view()),
     url(r'^comment/$', Comment.Comment.as_view()),
+    url(r'^uploadfile/$', UploadFile.UploadFile.as_view()),
     url(r'^test/$', TestView.TestView.as_view()),
     url(r'$', Request404.Request404.as_view())
 ]

@@ -1,6 +1,8 @@
 from main import models
 from main.tools import myPaginator
 from django.core import serializers
+from vote_manage import settings
+import os
 
 
 class Common:
@@ -28,3 +30,18 @@ class Common:
         data, pageCount = myPaginator(data, maxSize, pageNum)
         data = serializers.serialize('json', data, use_natural_foreign_keys=True)
         return data, pageCount
+
+    def uploadFile(self, request):
+        # file = request.FILES.get('file', None)
+        # fileObj = models.TempFile.objects.create(file=file)
+        # return str(fileObj.file)
+
+        file = request.FILES.get('file')
+        category = request.POST.get('category', 'img') + '/'
+        category = category.replace('.', '')
+        f = open(os.path.join(settings.MEDIA_ROOT, category + file.name), 'wb')
+    
+        for chunk in file.chunks():
+            f.write(chunk)
+        f.close()
+        return category + file.name
