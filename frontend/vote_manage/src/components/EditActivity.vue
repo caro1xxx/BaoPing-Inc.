@@ -690,9 +690,9 @@ const saveEditData = async () => {
           bottom_text: others[1].value.value,
           bottom_support_text: others[2].value.value,
           bottom_copyright: others[3].value.value,
-          vote_button_name: others[4].value.value,
-          vote_unit_name: others[5].value.value,
-          popup: others[6].value.value,
+          vote_button_name: others[5].value.value,
+          vote_unit_name: others[6].value.value,
+          popup: others[4].value.value,
           track_report: others[7].value.value,
           video_adv: others[8].value.value,
           target_video_adv: others[9].value.value,
@@ -905,6 +905,10 @@ onMounted(() => {
   padding: 0px 10px;
   margin: 5px;
   position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   box-shadow: 0 4px 4px 0 rgba(191, 191, 191, 0.2),
     0 4px 4px 0 rgba(183, 183, 183, 0.19);
   svg {

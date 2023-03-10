@@ -1,4 +1,3 @@
-
 <template>
   <!-- 追踪报道 -->
   <trackVue v-if="trackState.state" :data="trackState" />
@@ -24,10 +23,7 @@
     :data="enrollStatus.data"
   />
   <!-- 二维码弹窗 -->
-  <isQrcode
-    v-if="enrollStatus.isOpenQscode"
-    :data="enrollStatus.data1"
-  />
+  <isQrcode v-if="enrollStatus.isOpenQscode" :data="enrollStatus.data1" />
   <!-- 验证码弹窗 -->
   <verificationCode
     v-if="enrollStatus.isVerificationCode"
@@ -37,21 +33,29 @@
   />
   <div class="body" v-if="!enrollStatus.isAthleteConfig">
     <!-- 开场广告图 -->
-    <div class="stateAdv" @click="downStateAdv" v-if="$store.state.settings[11].value">
+    <div
+      class="stateAdv"
+      @click="downStateAdv"
+      v-if="$store.state.settings[11].value"
+    >
       <img
         class="state_img"
         :src="HOST2 + '/media/' + $store.state.settings[84].value"
-        @click="(e)=> e.stopPropagation()"
+        @click="(e) => e.stopPropagation()"
       />
     </div>
     <!-- 开场视频广告 -->
-    <div class="stateAdv" @click="downStateAdv" v-if="$store.state.settings[14].value">
+    <div
+      class="stateAdv"
+      @click="downStateAdv"
+      v-if="$store.state.settings[14].value"
+    >
       <video
         style="background-color: #000"
         class="state_img"
         :src="HOST2 + '/media/' + $store.state.settings[86].value"
         controls="controls"
-        @click="(e)=> e.stopPropagation()"
+        @click="(e) => e.stopPropagation()"
       >
         您的浏览器不支持 video 标签。
       </video>
@@ -161,7 +165,13 @@
             />
             <div class="content_body_information_body">
               <div class="content_body_information_title">
-                <div :class="(index + 1) < 4 ? `content_body_information_name1` : `content_body_information_name`">
+                <div
+                  :class="
+                    index + 1 < 4
+                      ? `content_body_information_name1`
+                      : `content_body_information_name`
+                  "
+                >
                   {{ item.name }}
                 </div>
               </div>
@@ -271,9 +281,7 @@
       </div>
     </div>
     <!-- 报名弹窗 -->
-    <div class="enroll_prop"
-    v-if="enrollStatus.isEnrollProp"
-    @click="doenProp">
+    <div class="enroll_prop" v-if="enrollStatus.isEnrollProp" @click="doenProp">
       <!-- 可以报名时 -->
       <div class="enroll_prop_form" @click="(e) => e.stopPropagation()">
         <div class="enroll_prop_form_wrrap">
@@ -330,7 +338,11 @@
         </div>
       </div>
     </div>
-    <div v-if="enrollStatus.isActiveRules" @click="doenProp1" class="enroll_prop">
+    <div
+      v-if="enrollStatus.isActiveRules"
+      @click="doenProp1"
+      class="enroll_prop"
+    >
       <div class="enroll_prop_form" @click="(e) => e.stopPropagation()">
         <div class="enroll_prop_form_wrrap" style="border-radius: 10px">
           <div v-html="activeRules"></div>
@@ -387,10 +399,10 @@ const enrollStatus = reactive({
   isVerificationCode: false,
   closeVerificationCode: (value) => {
     if (value) {
-      console.log(value, '1');
-      successData.state = true
-      successData.data = value
-      successData.data.rank = value.rank
+      console.log(value, "1");
+      successData.state = true;
+      successData.data = value;
+      successData.data.rank = value.rank;
     }
     enrollStatus.isVerificationCode = false;
   },
@@ -413,7 +425,7 @@ const welcomeState = reactive({
   name: "",
   img: "",
   pk: "",
-  rank: '',
+  rank: "",
   close: () => {
     welcomeState.state = false;
   },
@@ -485,8 +497,8 @@ const doenProp = () => {
   enrollStatus.isEnrollProp = !enrollStatus.isEnrollProp;
 };
 const doenProp1 = () => {
-  enrollStatus.isActiveRules = !enrollStatus.isActiveRules
-}
+  enrollStatus.isActiveRules = !enrollStatus.isActiveRules;
+};
 // 客服
 const customerSure = () => {
   enrollStatus.iscustomerService = true;
@@ -498,17 +510,16 @@ const getChild = (value) => {
 const getChild1 = (value) => {
   enrollStatus.isOpenQscode = true;
   welcomeState.state = false;
-}
+};
 const getChild2 = (value) => {
   enrollStatus.isVerificationCode = true;
   welcomeState.state = false;
   verificationCodeData.pk = value.data.pk;
   verificationCodeData.name = value.data.name;
   verificationCodeData.avator = value.data.avator;
-  verificationCodeData.rank =value.data.rank
-  verificationCodeData.count =value.data.count
-
-}
+  verificationCodeData.rank = value.data.rank;
+  verificationCodeData.count = value.data.count;
+};
 const downVerificationCode = () => {
   enrollStatus.isVerificationCode = false;
 };
@@ -524,9 +535,9 @@ const getData1 = (value) => {
   verificationCodeData.avator = value.data.img;
 };
 const downStateAdv = () => {
-  $store.state.settings[11].value = false
-  $store.state.settings[14].value = false
-}
+  $store.state.settings[11].value = false;
+  $store.state.settings[14].value = false;
+};
 //获取选手列表
 const getInformation = async () => {
   let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}`);
@@ -629,8 +640,8 @@ const like = async (target, index) => {
       verificationCodeData.pk = target.pk;
       verificationCodeData.name = target.name;
       verificationCodeData.avator = target.avator;
-      verificationCodeData.count = target.count
-      verificationCodeData.rank = index + 1
+      verificationCodeData.count = target.count;
+      verificationCodeData.rank = index + 1;
     } else {
       // 没有开启验证码弹窗时点击直接发送点赞请求
       let keys = await getKey();
@@ -707,7 +718,7 @@ const animating = () => {
 };
 // 是否支持弹幕并且运行
 const isPopupAndStart = () => {
-  if (!$store.state.settings[26].value) return;
+  if (!$store.state.settings[25].value) return;
   // popupList.push()
   requestAnimationFrame(animating);
 };
@@ -924,17 +935,17 @@ button {
     font-size: 20px;
     font-family: BlackSimplyBlod;
   }
-  .content_body_information_name1{
+  .content_body_information_name1 {
     width: 60%;
     padding-left: 5%;
     font-size: 20px;
     font-family: BlackSimplyBlod;
     //颜色渐变
     background-image: linear-gradient(
-    to right,
-    rgb(241, 211, 111),
-    rgb(218, 243, 78)
-  );
+      to right,
+      rgb(241, 211, 111),
+      rgb(218, 243, 78)
+    );
   }
 }
 .content_body_information_content {

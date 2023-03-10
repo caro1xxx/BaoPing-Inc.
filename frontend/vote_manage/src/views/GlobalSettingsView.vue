@@ -11,7 +11,7 @@
         <el-switch
           class="switch"
           v-model="item.value"
-          @change="saveSettings(index)"
+          @change="saveSettings(item.name, index)"
         />
       </div>
     </div>
@@ -28,6 +28,33 @@ import { useStore } from "vuex";
 const $store = new useStore();
 const optionList = reactive([]);
 const optionList2 = reactive([]);
+const optionList3 = reactive([]);
+
+// 暂时不显示的功能列表
+const temporaryHindFeature = reactive([
+  "每场投票最大访问量",
+  "设置选手排序方式",
+  "设置页面漂浮物",
+  "设置选手称号",
+  "设置微信票数限制",
+  "设置选手票数限制",
+  "开场广告显示",
+  "视频广告",
+  "设置选手每天最多获取票数",
+  "实名制验证",
+  "活动专题",
+  "报名审核",
+  "不限制选手个数",
+  "添加活动动态",
+  "添加活动公告",
+  "图片报名",
+  "视频报名",
+  "导出报名选手资料",
+  "设置选手名称",
+  "设置选手展示列数",
+  "批量添加选手",
+  "下载活动数据",
+]);
 
 // 获取全局设置
 const getSettings = async () => {
@@ -37,7 +64,14 @@ const getSettings = async () => {
   if (result.code === 200) {
     let JSONResult = JSON.parse(result.data);
     JSONResult.forEach((item) => {
-      optionList.push({
+      if (!temporaryHindFeature.includes(item.fields.name)) {
+        optionList.push({
+          name: item.fields.name,
+          value: item.fields.value === "1" ? true : false,
+          pk: item.pk,
+        });
+      }
+      optionList3.push({
         name: item.fields.name,
         value: item.fields.value === "1" ? true : false,
         pk: item.pk,
@@ -56,15 +90,20 @@ const getSettings = async () => {
 };
 
 // 提交保存
-const saveSettings = async (target) => {
-  //开启加载loading
-  await $store.dispatch("NoticifyActions", true);
-  optionList2[target].value = optionList[target].value ? "1" : "0";
-  let result = await fether("/settings/", "put", {
-    token: jsCookie.get("token"),
-    data: { pk: optionList2[target].pk, value: optionList2[target].value },
-  });
-  await $store.dispatch("GlobalMessageActions", result.msg);
+const saveSettings = async (target, index) => {
+  for (let i = 0; i < optionList3.length; i++) {
+    if (optionList3[i].name === target) {
+      await $store.dispatch("NoticifyActions", true);
+      optionList2[i].value = optionList[index].value ? "1" : "0";
+      let result = await fether("/settings/", "put", {
+        token: jsCookie.get("token"),
+        data: { pk: optionList2[i].pk, value: optionList2[i].value },
+      });
+      await $store.dispatch("GlobalMessageActions", result.msg);
+      break;
+    }
+  }
+
   // 关闭加载loading
   $store.commit("noticifyLoading", false);
 };
