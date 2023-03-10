@@ -55,13 +55,15 @@ const save = async () => {
   z-index: 6;
 }
 .body {
-  background-color: white;
+  background-color: #f3f3f3;
   width: 80%;
   border-radius: 5px;
 }
 .content {
   display: block;
   margin: 10px;
+  padding: 10px;
+  background-color: #ffffff;
   input {
     display: block;
     width: 96%;
