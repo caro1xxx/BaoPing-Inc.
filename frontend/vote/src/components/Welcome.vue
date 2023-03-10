@@ -100,13 +100,10 @@ const support = async (e)  => {
     // 在投票时间内
   } else {
     if ($store.state.settings[26].value) {
-      console.log(1);
       returnPage()
-    } else if ($store.state.settings[67].value) {
-      console.log(2);
+    } else if ($store.state.settings[20].value) {
       returnPage1()
     } else {
-      console.log(3);
     //   没有开启验证码弹窗时点击直接发送点赞请求
       let keys = await getKey();
       let sercet = await encryption(keys);

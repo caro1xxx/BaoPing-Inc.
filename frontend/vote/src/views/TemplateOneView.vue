@@ -15,6 +15,8 @@
   <athleteInformation
     v-if="enrollStatus.isAthleteConfig"
     @returnPage="getChild"
+    @returnPage1="getChild1"
+    @returnPage2="getChild2"
     :data="informationKey"
   />
   <customerService
@@ -194,7 +196,7 @@
                     <!-- 点赞按钮 -->
                     <div
                       class="content_body_information_solid"
-                      @click="like(item)"
+                      @click="like(item, index)"
                     >
                       {{
                         $store.state.settings[5].value
@@ -383,7 +385,13 @@ const enrollStatus = reactive({
   iscustomerService: false,
   isOpenQscode: false,
   isVerificationCode: false,
-  closeVerificationCode: () => {
+  closeVerificationCode: (value) => {
+    if (value) {
+      console.log(value, '1');
+      successData.state = true
+      successData.data = value
+      successData.data.rank = value.rank
+    }
     enrollStatus.isVerificationCode = false;
   },
   data: {
@@ -405,6 +413,7 @@ const welcomeState = reactive({
   name: "",
   img: "",
   pk: "",
+  rank: '',
   close: () => {
     welcomeState.state = false;
   },
@@ -480,13 +489,26 @@ const doenProp1 = () => {
 }
 // 客服
 const customerSure = () => {
-  console.log(1);
   enrollStatus.iscustomerService = true;
 };
 //获取子级传递过来的数据
 const getChild = (value) => {
   enrollStatus.isAthleteConfig = value.status;
 };
+const getChild1 = (value) => {
+  enrollStatus.isOpenQscode = true;
+  welcomeState.state = false;
+}
+const getChild2 = (value) => {
+  enrollStatus.isVerificationCode = true;
+  welcomeState.state = false;
+  verificationCodeData.pk = value.data.pk;
+  verificationCodeData.name = value.data.name;
+  verificationCodeData.avator = value.data.avator;
+  verificationCodeData.rank =value.data.rank
+  verificationCodeData.count =value.data.count
+
+}
 const downVerificationCode = () => {
   enrollStatus.isVerificationCode = false;
 };
@@ -574,10 +596,9 @@ const submit = async () => {
 const activeRull = async () => {
   enrollStatus.isActiveRules = !enrollStatus.isActiveRules;
   activeRules = $store.state.settings[78].value;
-  console.log(activeRules);
 };
 // 点赞
-const like = async (target) => {
+const like = async (target, index) => {
   /**
    * 点击之后打开验证码弹窗
    * 验证成功并发送请求后
@@ -603,11 +624,13 @@ const like = async (target) => {
     if ($store.state.settings[26].value) {
       enrollStatus.isOpenQscode = true;
       // 开启验证码弹窗
-    } else if ($store.state.settings[67].value) {
+    } else if ($store.state.settings[20].value) {
       enrollStatus.isVerificationCode = true;
       verificationCodeData.pk = target.pk;
       verificationCodeData.name = target.name;
       verificationCodeData.avator = target.avator;
+      verificationCodeData.count = target.count
+      verificationCodeData.rank = index + 1
     } else {
       // 没有开启验证码弹窗时点击直接发送点赞请求
       let keys = await getKey();
@@ -729,7 +752,6 @@ const getUserRecentVote = async () => {
   let currentStamp = new Date().getTime();
   let fromCurrentToLastTime =
     currentStamp - result[0].fields.create_time * 1000;
-  console.log(fromCurrentToLastTime);
   if (fromCurrentToLastTime < 50000) return;
   for (let i = 0; i < informationData.length; i++) {
     if (result[0].fields.vote_target === informationData[i].pk) {

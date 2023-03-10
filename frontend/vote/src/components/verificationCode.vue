@@ -54,7 +54,11 @@ const props = defineProps({
   data: {
     verificationCodeData: Object,
   },
-  method:{close:()=>{}}
+  method:{
+    close:()=>{
+    },
+    data: false
+  }
 });
 const nowTime = reactive({
   // 年
@@ -85,7 +89,7 @@ const draw = async (show_num) => {
     canvas.width = canvas_width;
     canvas.height = canvas_height;
     let sCode =
-      "a,b,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,E,F,G,H,J,K,L,M,N,P,Q,R,S,T,W,X,Y,Z,1,2,3,4,5,6,7,8,9,0";
+      "a,b,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,1,2,3,4,5,6,7,8,9,0";
     let aCode = sCode.split(",");
     let aLength = aCode.length; //获取到数组的长度
     //4个验证码数
@@ -130,7 +134,6 @@ const draw = async (show_num) => {
     }
     //最后把取得的验证码数组存起来，方式不唯一
     let num = show_num.join("");
-    // console.log(num);
     true_code = num
 }
 //得到随机的颜色值
@@ -149,7 +152,7 @@ const handleCanvas = async (e) => {
 // 输入框获取输入值比较验证码
 const enterCode = async (e) => {
     if (true_code === e.target.value) {
-        isCode = true
+        isCode = true;
     }
 }
 const sureInput = async (e) => {
@@ -217,7 +220,9 @@ const close = async (e)=>{
             key: sercet,
             },
         });
-        console.log(result);
+        if (!result) return
+        console.log(1);
+        props.method(props.data)
     } else {
         alert('验证码错误，请重新输入')
     }

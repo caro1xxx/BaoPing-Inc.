@@ -13,7 +13,6 @@ import { ref, reactive } from "vue";
 const $route = useRoute();
 const $router = useRouter();
 const $store = new useStore();
-// console.log($route.query.vote_id)
 
 // 今日之星是否显示
 const todayStarState = reactive({

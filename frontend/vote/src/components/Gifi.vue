@@ -65,7 +65,6 @@ const getGiftList = async () => {
   result.forEach((item) => {
     giftList.push({ ...item.fields, isClick: false });
   });
-  console.log(giftList);
 };
 
 // 选择礼物

@@ -19,7 +19,7 @@
         <div class="body_content_brief_item">
           <img
             v-if="athleteInformation.avator"
-            :src="`${HOST2}/media/${athleteInformation.avator}`"
+            :src="HOST2+'/media/'+athleteInformation.avator"
             alt=""
           />
         </div>
@@ -159,18 +159,29 @@ let commtentData = ref("");
 // 获取选手详情
 const getAthleteInformation = async () => {
   let Arr = [];
+  let arr = []
   let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}`);
-  result.map((item) => {
-    Arr.push({ ...item.fields, pk: item.pk, model: item.model });
+  result.map((item, index) => {
+    Arr.push({ ...item.fields, pk: item.pk, model: item.model,});
   });
-  let arr = [];
-  arr = Arr.filter((item) => {
-    return item.pk === props.data;
+  // 数组排序
+  Arr.sort((a, b) => {
+  return b.count - a.count;
   });
-  athleteInformation.avator = arr[0].avator;
-  athleteInformation.name = arr[0].name;
-  athleteInformation.detail = arr[0].detail;
-  athleteInformation.count = arr[0].count;
+  Arr.map((item,index)=>{
+    arr.push({ ...item, pk: item.pk, model: item.model,rank:index+1})
+  })
+  Arr.forEach((item,index)=>{
+    if(item.pk === props.data){
+      athleteInformation.avator = arr[index].avator;
+      athleteInformation.name = arr[index].name;
+      athleteInformation.detail = arr[index].detail;
+      athleteInformation.count = arr[index].count;
+      athleteInformation.pk = arr[index].pk
+      athleteInformation.rank = arr[index].rank
+    }
+  })
+ 
 };
 getAthleteInformation();
 
@@ -179,6 +190,19 @@ const returnPage = (value) => {
     status: value,
   };
   emit("returnPage", params);
+};
+const returnPage1 = () => {
+  let params = {
+    status: false
+  };
+  emit("returnPage1", params);
+};
+const returnPage2 = () => {
+  let params = {
+    status: false,
+    data: athleteInformation
+  };
+  emit("returnPage2", params);
 };
 
 // 点赞
@@ -199,20 +223,26 @@ const like = async () => {
     alert("投票已结束");
     // 在投票时间内
   } else {
-    let keys = await getKey();
-    let sercet = await encryption(keys);
-    const md = new Mobile(navigator.userAgent);
-    let result = await fether("/support/", "post", {
-      data: {
-        open_id: "wxtest6",
-        vote_target_id: props.data,
-        vote_id: $route.query.vote_id,
-        phone_model: md.mobile(),
-        system: md.os(),
-        network: isNetWork(),
-        key: sercet,
-      },
-    });
+    if ($store.state.settings[26].value) {
+      returnPage1()
+    } else if ($store.state.settings[20].value) {
+      returnPage2()
+    } else {
+      let keys = await getKey();
+      let sercet = await encryption(keys);
+      const md = new Mobile(navigator.userAgent);
+      let result = await fether("/support/", "post", {
+        data: {
+          open_id: "wxtest6",
+          vote_target_id: props.data,
+          vote_id: $route.query.vote_id,
+          phone_model: md.mobile(),
+          system: md.os(),
+          network: isNetWork(),
+          key: sercet,
+        },
+      });
+    }
   }
 };
 
