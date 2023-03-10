@@ -302,7 +302,7 @@
               name="textarea"
               @change="getDescribe"
               cols="50"
-              rows="10"
+              rows="5"
             ></textarea>
           </div>
           <div class="enroll_prop_form_item">
@@ -1039,7 +1039,6 @@ button {
 }
 .enroll_prop_form {
   width: 80%;
-  height: 80%;
   background-color: #f3f3f3;
   padding: 10px;
   border-radius: 10px;

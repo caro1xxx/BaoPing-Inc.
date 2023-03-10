@@ -29,7 +29,6 @@
           </div>
         </div>
       </div>
-      <div class="body_content_separate"></div>
       <div class="body_content_ranking">
         <div
           class="body_content_ranking_item"
@@ -270,6 +269,7 @@ onMounted(() => {
   padding: 0px 0px 20px 0px;
   display: flex;
   justify-content: space-between;
+  border-bottom: 1px dashed rgb(138, 135, 135);
 }
 .body_content_brief_item {
   width: 45%;
@@ -285,12 +285,6 @@ onMounted(() => {
 .body_content_brief_name {
   height: 50px;
   margin-top: 10px;
-}
-.body_content_separate {
-  width: 80%;
-  height: 0px;
-  border: 1px dashed black;
-  margin: auto;
 }
 .body_content_ranking {
   display: grid;
@@ -313,7 +307,7 @@ onMounted(() => {
   font-size: 20px;
 }
 .body_content_detail {
-  margin-top: 20px;
+  margin: 20px 0px;
 }
 .footer {
   height: 55px;
