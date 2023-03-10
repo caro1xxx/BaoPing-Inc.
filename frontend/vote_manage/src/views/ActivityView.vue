@@ -212,6 +212,7 @@ const isAxiosStatus = async (data, status) => {
     JSONResult.forEach((item) => {
       voteList.push({ ...item, isQr: false });
     });
+    console.log(voteList);
     localStorage.setItem("vote", JSON.stringify(voteList));
   } else {
     // 请求发送错误
