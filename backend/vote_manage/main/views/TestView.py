@@ -15,15 +15,17 @@ from vote_manage import settings
 from openpyxl import load_workbook
 from main.views.vote_target.VoteTargetOp import VoteTargetOp
 from main.views.Common import Common
+from main.views.wxpay.wxpay import *
 
 
 class TestView(APIView):
     def get(self, request, *args, **kwargs):
         ret = {}
         try:
-            ip = request.GET.get('ip', None)
-            location = getLocationFromIp(ip)
-            # print(location)
+            # wxpay = Wxpay()
+            test()  
+            pass
+            
         except Exception as e:
             ret['msg'] = str(e)
 

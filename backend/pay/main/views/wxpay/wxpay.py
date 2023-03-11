@@ -43,7 +43,8 @@ def generateSignData():
     prepayId = 'wx201410272009395522657a690389285100 '
     package = 'prepay_id=' + prepayId
 
-    text = appId + '\n' + timeStamp + '\n' + nonceStr + '\n' +  + '\n' + package + '\n'
+    text = appId + '\n' + timeStamp + '\n' + nonceStr + '\n' + package + '\n'
+    # text = ' '
     return text
 
 def getSign(data):
@@ -58,7 +59,8 @@ def getSign(data):
         format=serialization.PrivateFormat.PKCS8,
         encryption_algorithm=serialization.NoEncryption(),
     )
-    print(private_key_pem)
+    # print(private_key_pem)
+    data = data.encode()
     # 要签名的数据
     # data = b"Hello, world!"
     # 计算SHA256散列值
@@ -75,9 +77,6 @@ def getSign(data):
     # 将签名结果进行Base64编码
     signature_base64 = base64.b64encode(signature).decode('utf-8')
     return signature_base64
-
-sign = getSign(generateSignData())
-print(sign)
 
 # decrypted_str = decrypt("要解密的字符串", "私钥文件路径")
 def decrypt(ciphertext, private_key_path):
@@ -112,10 +111,15 @@ def arousePay():
         "nonceStr": "e61463f8efa94090b1f366cccfbbb444",    
         "package": "prepay_id=up_wx21201855730335ac86f8c43d1889123400",
         "signType": "RSA",        
-        "paySign": signText
+        "paySign": signText 
     }
     return data
 
 
+def test():
+    sign = getSign(generateSignData())
+    # print(generateSignData())
+    print(sign)
 
+test()    
 # print(getSign())
