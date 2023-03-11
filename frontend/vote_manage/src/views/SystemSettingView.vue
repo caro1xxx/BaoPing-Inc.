@@ -73,7 +73,7 @@
         </div>
       </div>
       <div class="systemseting-content-right">
-        <img class="images" src="../assets/img/1.png" alt="" />
+        <img class="images" :src="HOST + '/media/' + officialdata.data.qr_img" alt="" />
       </div>
     </div>
   </div>
@@ -85,6 +85,7 @@ import { fether } from "@/utils/fether";
 import { reactive } from "vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
+import { HOST } from '../ENV'
 const $store = new useStore();
 
 // 公众号数据
@@ -109,7 +110,8 @@ const getofficial = async () => {
   //   `/officialaccount/?token=h0iLxzKyDbZCAJg9m3Yd8BWRrsHQtEvG`
   // )
   if (result.code === 200) {
-    officialdata.data = { ...result.data };
+    console.log();
+    officialdata.data = { ...JSON.parse(result.data)[0].fields};
     // officialdata = {...result.data}
     // officialdata.push({ ...result.data, isMove: false });
   } else {

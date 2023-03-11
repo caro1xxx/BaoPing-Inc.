@@ -61,11 +61,11 @@ const realmAddData = reactive({
 const statusData = reactive([
     {
         value: 0,
-        label: '0'
+        label: '关'
     },
     {
         value: 1,
-        label: '1'
+        label: '开'
     }
 ])
 

@@ -23,7 +23,11 @@
             <span>{{ getTime(scope.row.create_time) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="payment_status" label="支付状态" />
+        <el-table-column prop="payment_status" label="支付状态">
+          <template #default="scope">
+            <div>{{ scope.row.payment_status ? '开' : '关' }}</div>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
             <span
