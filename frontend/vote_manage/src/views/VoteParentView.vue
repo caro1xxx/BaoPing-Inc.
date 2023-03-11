@@ -6,11 +6,19 @@
       <el-table :data="athleteData" class="home_table">
         <el-table-column prop="id" label="编号">
           <template #default="scope">
-            <span>{{ scope.$index }}</span>
+            <span>#{{ scope.$index }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="open_id" label="用户名" />
-        <el-table-column prop="avator" label="姓名" />
+        <el-table-column prop="avator" label="头像">
+          <template #default="scope">
+            <img
+              style="width: 30px; height: 30px"
+              :src="HOST + '/media/' + scope.row.avator"
+              alt=""
+            />
+          </template>
+        </el-table-column>
         <el-table-column prop="open_id" label="open_id" />
         <el-table-column prop="create_time" label="首次创建时间">
           <template #default="scope">
@@ -28,6 +36,7 @@ import { fether } from "@/utils/fether";
 import { reactive, watch } from "vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
+import { HOST } from "@/ENV";
 const $store = new useStore();
 
 //投票选手数据
@@ -50,6 +59,7 @@ const isAxiosStatus = async (data, status) => {
     Arr.map((item) => {
       athleteData.push({ ...item.fields, pk: item.pk });
     });
+    console.log(athleteData);
   }
 };
 

@@ -6,7 +6,7 @@
       <el-table :data="voteNotesData" class="home_body_table">
         <el-table-column prop="id" label="编号">
           <template #default="scope">
-            <span>{{ scope.$index }}</span>
+            <span>#{{ scope.$index }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="open_id" label="openid(用户名)" />
@@ -54,9 +54,11 @@ const getVoteData = async () => {
       voteNotesData.push({
         ...item.fields,
         pk: item.pk,
+        open_id: item.fields.voteuser.open_id,
         wx_username: item.fields.voteuser.wx_username,
       });
     });
+    console.log(voteNotesData);
   } else {
     // 请求发送错误
     await $store.dispatch("refreshErroActions");

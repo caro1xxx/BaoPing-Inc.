@@ -25,7 +25,7 @@
       <el-table :data="realmAddData.data" class="home_body_table">
         <el-table-column prop="id" label="编号">
           <template #default="scope">
-            <span>{{ scope.$index }}</span>
+            <span>#{{ scope.$index }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="domain_name" label="域名" />
@@ -65,32 +65,32 @@ import Cookies from "js-cookie";
 const $store = new useStore();
 
 const isAxiosStatus = async (data, status) => {
-    if (data.code === 200) {
-      if (status === false) {
-        realmAddData.splice(0, realmAddData.length);
-      }
-      realmAddData.data = []
-      let Arr = [];
-      Arr = JSON.parse(data.data);
-      Arr.map((item) => {
-        realmAddData.data.push({ ...item.fields });
-      });
-    } else {
-      //请求发送错误
-      await $store.dispatch("refreshErroActions");
-      await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
+  if (data.code === 200) {
+    if (status === false) {
+      realmAddData.splice(0, realmAddData.length);
     }
-    //关闭加载loading
-    $store.commit("noticifyLoading", false);
-  };
+    realmAddData.data = [];
+    let Arr = [];
+    Arr = JSON.parse(data.data);
+    Arr.map((item) => {
+      realmAddData.data.push({ ...item.fields });
+    });
+  } else {
+    //请求发送错误
+    await $store.dispatch("refreshErroActions");
+    await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
+  }
+  //关闭加载loading
+  $store.commit("noticifyLoading", false);
+};
 // 域名管理数据
-const realmAddData = reactive({data:[]});
+const realmAddData = reactive({ data: [] });
 
 // 获取域名列表
 const getRealm = async () => {
   //开启加载loading
   await $store.dispatch("NoticifyActions", true);
-  realmAddData.data = []
+  realmAddData.data = [];
   let result = await fether(`/domain/?token=${Cookies.get("token")}`);
   if (result.code === 200) {
     let Arr = [];

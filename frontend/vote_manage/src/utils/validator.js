@@ -17,6 +17,12 @@ const Strategies = {
   comparePsd(value, errorMsg) {
     return value[0] !== value[1] ? errorMsg : undefined;
   },
+  maxLength(value, errorMsg, max) {
+    if (value.length > max) return errorMsg;
+  },
+  isNumber(value, errorMsg) {
+    if (value !== "1" && value !== "0") return errorMsg;
+  },
 };
 
 // 验证器
