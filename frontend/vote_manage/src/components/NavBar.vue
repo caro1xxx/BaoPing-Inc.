@@ -205,7 +205,18 @@ const userInfo = reactive({
 const goPage = (index) => {
   switch (index) {
     case 0:
-      $router.push("/");
+      $store.dispatch("SubNavBarActions", {
+        item: [
+          {
+            name: "执行中",
+            description: "显示执行中的任务",
+            path: "/progresstask",
+          },
+        ],
+        navName: "执行中",
+      });
+
+      $router.push("/progresstask");
       break;
     case 1:
       $store.dispatch("SubNavBarActions", {
@@ -255,6 +266,11 @@ const goPage = (index) => {
             name: "奖品申请",
             description: "获得荣誉者申请的奖品工单",
             path: "/message/prizeapplication",
+          },
+          {
+            name: "评论管理",
+            description: "审核评论已经操作评论",
+            path: "/message/comment",
           },
         ],
         navName: "消息管理",
