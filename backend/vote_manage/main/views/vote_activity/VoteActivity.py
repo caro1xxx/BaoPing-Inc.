@@ -66,7 +66,12 @@ class VoteActivity(APIView):
                 vote_id = generateCode6(),
                 create_time = data['create_time'],
                 expire_time = data['expire_time'],
-            ).save()
+                vote_enroll_begin_time = data['create_time'],
+                vote_enroll_end_time = data['create_time'],
+                auto_comment_begin_time = data['create_time'],
+                auto_comment_end_time = data['create_time'],
+                carousel_list = '[\"' + 'img/' + data['img'].name + '\"]'
+            )
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}

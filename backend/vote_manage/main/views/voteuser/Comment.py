@@ -13,14 +13,8 @@ class Comment(APIView):
     def get(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
-            voteTargetId = request.GET.get('vote_target_id', None)
-
             commentOp = CommentOp()
-            ok, msg = commentOp.checkDataOnQuery(voteTargetId)
-            if not ok:
-                return JsonResponse({'code': 400, 'msg': msg})
-            
-            data = commentOp.queryWithVoteActivity(voteTargetId)
+            data = commentOp.all()
             data, ret['page_count'] =  myPaginator(data, 20)
             ret['data'] = serializers.serialize('json', data)
 

@@ -79,7 +79,7 @@ class VoteActivity(models.Model):
     auto_comment_everyday_end_time = models.IntegerField(default=0)
     auto_comment_space_minute = models.IntegerField(default=0)
     auto_comment_everyday_count_strict = models.IntegerField(default=0)
-    template_id = models.IntegerField(default=0)
+    template_id = models.IntegerField(default=1)
     description = models.TextField(default='')
     enterprises = models.TextField(default='')
     prize = models.TextField(default='')
@@ -92,7 +92,7 @@ class VoteActivity(models.Model):
     video_adv = models.FileField(upload_to='video', blank=True, verbose_name='视频广告')
     target_video_adv = models.FileField(upload_to='vedio', blank=True, verbose_name='视频广告')
     bottom_support_text = models.TextField(default='')
-    carousel_list = models.TextField(default='')
+    carousel_list = models.TextField(default='[]')
     temp_file = models.FileField(upload_to='temp', blank=True, verbose_name='临时文件')
     bottom_copyright = models.TextField(default='')
     officialcount_qrcode = models.FileField(upload_to='qr', blank=True, verbose_name='公众号二维码')
@@ -118,6 +118,7 @@ class VoteTarget(models.Model):
         # default=File(open(str(settings.MEDIA_ROOT) + '/img/1.png')),
         default = 'img/1.png'
     )
+    status = models.IntegerField(default=0)
 
 
 class Feedback(models.Model):
@@ -155,6 +156,7 @@ class OfficialAccount(models.Model):
     wxpay_pos_id = models.TextField()
     wxpay_apiv2_secret_key = models.TextField()
     wxpay_apiv3_secret_key = models.TextField()
+    qr_img = models.FileField(upload_to='img/offcial_account_qr/', blank=True, verbose_name='公众号二维码')
 
 
 class Active(models.Model):
@@ -247,3 +249,11 @@ class AutoComment(models.Model):
     day_count_strict = models.IntegerField(default=0)
     update_time = models.IntegerField(default=0)
     day_vote_count = models.IntegerField(default=0)
+
+
+class Task(models.Model):
+    task_id = models.CharField(default='null', max_length=6, db_index=True)
+    name = models.TextField(default='')
+    status = models.TextField(default='')
+    msg = models.TextField(default='')
+    create_time = models.IntegerField(default=0)

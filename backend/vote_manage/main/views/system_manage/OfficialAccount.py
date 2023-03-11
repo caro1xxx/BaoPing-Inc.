@@ -23,9 +23,11 @@ class OfficialAccount(APIView):
                     wxpay_pos_id = "",
                     wxpay_apiv2_secret_key = "",
                     wxpay_apiv3_secret_key = "",
+                    qr_img = "",
                 ).save()
             accountObj = models.OfficialAccount.objects.get(pk=1)
-            ret['data'] = model_to_dict(accountObj)
+            # ret['data'] = model_to_dict(accountObj)
+            ret['data'] = serializers.serialize('json', [accountObj])
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
             ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}

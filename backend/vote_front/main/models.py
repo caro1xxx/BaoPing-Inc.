@@ -111,7 +111,11 @@ class VoteTarget(models.Model):
     detail = models.TextField(default='')
     name = models.CharField(max_length=64)
     count = models.IntegerField(default=0)
-    avator = models.FileField(upload_to='img', blank=True)
+    avator = models.FileField(upload_to='img', blank=True, null=True,
+        # default=File(open(str(settings.MEDIA_ROOT) + '/img/1.png')),
+        default = 'img/1.png'
+    )
+    status = models.IntegerField(default=0)
 
 
 class Feedback(models.Model):

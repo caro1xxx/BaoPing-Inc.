@@ -6,6 +6,7 @@ from vote_manage import settings
 from django.core.cache import cache
 from main.views.vote_target.VoteTargetOp import VoteTargetOp
 from openpyxl import load_workbook
+from main.views.task.TaskOp import TaskOp
 
 
 @shared_task
@@ -39,25 +40,51 @@ def sendEmail(email):
     return True, '发送验证码成功'
 
 @shared_task
-def addVoteTargets(filename):
-    path = str(settings.MEDIA_ROOT) + '/' + str(filename)
-    wb = load_workbook(path)
-    sheet = wb.worksheets[0]
+def addVoteTargets(filename, taskId):
+    message = 'success'
+    try:
+        path = str(settings.MEDIA_ROOT) + '/' + str(filename)
+        wb = load_workbook(path)
+        sheet = wb.worksheets[0]
 
-    data, isFirst = [], True
-    for row in sheet.rows:
-        if isFirst:
-            isFirst = False
-            continue
-        tmp = {}
-        tmp['vote_id'] = row[0].value 
-        tmp['name'] = row[1].value 
-        tmp['detail'] = row[2].value 
-        tmp['count'] = row[3].value 
-        data.append(tmp)
+        data, isFirst = [], True
+        for row in sheet.rows:
+            if isFirst:
+                isFirst = False
+                continue
+            tmp = {}
+            tmp['vote_id'] = row[0].value 
+            tmp['name'] = row[1].value 
+            tmp['detail'] = row[2].value 
+            tmp['count'] = row[3].value 
+            tmp['status'] = row[4].value 
+            data.append(tmp)
+        
+        voteTargetOp = VoteTargetOp()
+        voteTargetList = []
+        for voteTarget in data:
+            ok, msg = voteTargetOp.checkDataOnCreateMany(voteTarget['name'], voteTarget['detail'], voteTarget['vote_id'], voteTarget['count'], voteTarget['status'])
+            if ok:
+                voteTargetList.append(models.VoteTarget(
+                    name = voteTarget['name'],
+                    detail = voteTarget['detail'],
+                    vote_id_id = voteTarget['vote_id'],
+                    count = voteTarget['count'],
+                    status = voteTarget['status'],
+                ))
+                # voteTargetOp.create(voteTarget)
+            else:
+                message = msg
+        if message == 'success':
+            models.VoteTarget.objects.bulk_create(voteTargetList)
 
-    voteTargetOp = VoteTargetOp()
-    for voteTarget in data:
-        ok, msg = voteTargetOp.checkData(voteTarget['name'], voteTarget['detail'], voteTarget['vote_id'], voteTarget['count'])
-        if ok:
-            voteTargetOp.create(voteTarget)
+    except Exception as e:
+        message = str(e)
+
+    status = 1 if message == 'success' else 2
+    TaskOp().updateStatus(taskId, status, message)
+    # models.Task.objects.filter(task_id=taskId).update(
+    #     status = 1 if message == 'success' else 2,
+    #     msg = message
+    # )
+    
