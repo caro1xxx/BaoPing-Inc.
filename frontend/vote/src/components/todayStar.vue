@@ -1,18 +1,18 @@
 <template>
   <div class="star" @click="props.data()">
+    <img style="width: 70%; height: 40%" src="../assets/img/2.png" alt="" />
     <div class="star_body">
-      <img src="../assets/img/2.png" alt="" />
-      <div class="title">竞争依然激烈,就保持这个势头!</div>
-      <div class="content">
-        <div style="font-size: 20px; font-weight: bold; margin-right: 10px">
-          恭喜
+      <div class="star_body_text">
+        <div class="title">竞争依然激烈,就保持这个势头!</div>
+        <div class="gongxi">恭喜</div>
+        <div class="value">
+          {{ $store.state.settings[58].value }}
         </div>
-        <div style="font-size: 25px">{{ $store.state.settings[58].value }}</div>
-        <div style="font-size: 20px">
+        <div class="star_title">
           获得<span style="color: #f5c85f; font-weight: bold">今日之星</span>
         </div>
+        <div class="close">点击任意位置关闭弹窗</div>
       </div>
-      <div class="close">点击任意位置关闭弹窗</div>
     </div>
   </div>
 </template>
@@ -45,45 +45,56 @@ const props = defineProps({
   z-index: 10;
 }
 .star_body {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 11;
+  display: inline-flex;
+  vertical-align: top;
+  justify-content: center;
+  align-items: center;
+}
+.star_body_text {
   width: 70%;
-  position: relative;
+  height: 40%;
   display: inline-flex;
   vertical-align: top;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 .title {
   color: white;
   position: absolute;
-  top: 15px;
+  top: 4%;
   font-size: 15px;
 }
-.content {
-  margin-top: 50px;
-  position: absolute;
-  color: white;
-  text-align: center;
-  div {
-    line-height: 50px;
-  }
-}
-.support_do {
-  color: white;
-  position: absolute;
-  bottom: -80px;
-  height: 40px;
-  width: 70%;
-  line-height: 40px;
+.gongxi {
+  font-size: 20px;
   font-weight: bold;
-  font-size: 15px;
-  text-align: center;
-  background-color: rgb(139, 33, 31);
-  border-radius: 20px;
-  border: 2px solid rgb(231, 176, 100);
+  position: absolute;
+  top: 40%;
+  color: white;
+}
+.value {
+  font-weight: bold;
+  font-size: 25px;
+  position: absolute;
+  top: 56%;
+  color: white;
+}
+.star_title {
+  font-weight: bold;
+  font-size: 20px;
+  position: absolute;
+  top: 70%;
+  color: white;
 }
 .close {
   position: absolute;
-  bottom: -100px;
+  bottom: -10%;
   font-size: 10px;
   color: white;
 }

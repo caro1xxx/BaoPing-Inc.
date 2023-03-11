@@ -459,7 +459,7 @@ const voteSetting = reactive([
     value: "[]",
     type: "abc",
   },
-  { label: "今日之星选手id(openid)", key: 7, value: "", type: "text" },
+  { label: "今日之星选手id(选手id)", key: 7, value: "", type: "text" },
   { label: "每日今日之星更新时间", key: 5, value: [], type: "time" },
   { label: "每人单日投票上限", key: 2, value: "", type: "number" },
   { label: "用户每小时投票上限", key: 3, value: "", type: "number" },
@@ -810,7 +810,6 @@ onMounted(() => {
   z-index: 5;
 }
 .body_body {
-  height: calc(80vh - 40px);
   width: calc(30vw);
   background-color: white;
   border-radius: 3px;
