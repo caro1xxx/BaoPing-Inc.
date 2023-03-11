@@ -11,10 +11,7 @@
         >
           <el-table-column prop="avator" label="头像" width="180">
             <template #default="scope">
-              <img
-                :src="HOST + '/media/avator/' + scope.row.avator + '.png'"
-                alt=""
-              />
+              <img :src="scope.row.avator" alt="" />
             </template>
           </el-table-column>
           <el-table-column prop="create_time" label="反馈时间" width="180" />

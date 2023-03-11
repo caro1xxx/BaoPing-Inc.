@@ -103,7 +103,9 @@
         "
       >
         <button style="background-color: orange; color: #ffffff" @click="like">
-          投一票
+          {{ $store.state.settings[94].value }}一{{
+            $store.state.settings[95].value
+          }}
         </button>
       </div>
       <!-- 是否显示助力 -->

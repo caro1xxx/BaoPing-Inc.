@@ -105,14 +105,14 @@
               alt=""
             />访问数：
             <!-- 访问数量 -->
-            <span class="number">{{ $store.state.settings[42].value }}</span>
+            <span class="number">{{ $store.state.settings[55].value }}</span>
           </div>
           <div class="content_body_persennum_item">
             <img
               :style="{ width: '20px', height: '22px' }"
               src="../assets/images/4.png"
               alt=""
-            />报名数：<span class="number">45</span>
+            />报名数：<span class="number">{{ informationData.length }}</span>
           </div>
         </div>
         <!-- 活动到期时间倒计时 -->
@@ -857,10 +857,12 @@ onMounted(() => {
   height: 100%;
   display: flex;
   flex-direction: column;
+  user-select: none;
 }
 .content {
   flex: 1;
   overflow-y: scroll;
+  user-select: none;
 }
 .content::-webkit-scrollbar {
   display: none;
@@ -874,6 +876,7 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   position: relative;
+  user-select: none;
 }
 .content_top_center {
   width: 80%;
@@ -886,11 +889,13 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   color: #ffffff;
+  user-select: none;
 }
 .content_body_persennum {
   display: flex;
   justify-content: space-between;
   padding: 0px 25px;
+  user-select: none;
 }
 .content_body_persennum_item {
   width: 47%;
@@ -906,11 +911,13 @@ onMounted(() => {
     font-weight: 500;
     color: rgb(49, 60, 161);
   }
+  user-select: none;
 }
 .number {
   font-weight: bold;
   font-family: MicaoFanBlod;
   font-size: 20px !important;
+  user-select: none;
 }
 .content_body_search {
   display: flex;
@@ -921,6 +928,7 @@ onMounted(() => {
     width: 65%;
     padding: 10px;
   }
+  user-select: none;
 }
 .content_body_search_button {
   width: 95px;

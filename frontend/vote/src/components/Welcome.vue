@@ -23,7 +23,7 @@
           "
           class="suddenSupport"
         >
-          马上支持
+          马上{{ $store.state.settings[94].value }}
         </div>
         <div class="encourage">冠军宝座仍被觊觎,不可松懈,坚持住</div>
         <div class="hint">点击任意位置关闭弹窗</div>
@@ -201,7 +201,7 @@ const getKey = () => {
       font-size: 20px;
       color: #444444;
       position: absolute;
-      top: 82%;
+      top: 81.5%;
     }
     .encourage {
       position: absolute;

@@ -50,7 +50,7 @@
             }
           "
         >
-          确认支持他
+          确认{{ $store.state.settings[94].value }}他
         </div>
       </div>
     </div>
