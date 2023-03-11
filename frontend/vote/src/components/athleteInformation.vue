@@ -1,11 +1,14 @@
 <template>
+  <!-- 礼物 -->
+  <GifiVue :data="props.data" v-if="giftState.state" :method="giftState" />
   <!-- 选手页视频广告 -->
-  <div class="stateAdv" v-if="$store.state.settings[11].value">
+  <div class="stateAdv" @click="downStateAdv" v-if="$store.state.settings[15].value">
     <video
       style="background-color: #000"
       class="state_img"
       :src="HOST + '/media/' + $store.state.settings[87].value"
       controls="controls"
+      @click="(e)=> e.stopPropagation()"
     >
       您的浏览器不支持 video 标签。
     </video>
@@ -16,7 +19,7 @@
         <div class="body_content_brief_item">
           <img
             v-if="athleteInformation.avator"
-            :src="`${HOST2}/media/${athleteInformation.avator}`"
+            :src="HOST2+'/media/'+athleteInformation.avator"
             alt=""
           />
         </div>
@@ -27,7 +30,6 @@
           </div>
         </div>
       </div>
-      <div class="body_content_separate"></div>
       <div class="body_content_ranking">
         <div
           class="body_content_ranking_item"
@@ -102,7 +104,15 @@
       </div>
       <!-- 是否显示助力 -->
       <div class="footer_item1" v-if="$store.state.settings[68].value">
-        <button style="background-color: rgb(36, 105, 77); color: #ffffff">
+        <button
+          @click="
+            (e) => {
+              e.stopPropagation();
+              giftState.state = true;
+            }
+          "
+          style="background-color: rgb(36, 105, 77); color: #ffffff"
+        >
           助力
         </button>
       </div>
@@ -119,11 +129,20 @@ import { HOST, HOST2 } from "../ENV";
 import Mobile from "mobile-detect";
 import { isNetWork } from "../utils/network";
 import { parseStampTime } from "../utils/times";
+import GifiVue from "./Gifi.vue";
+import base64 from "base-64";
 const emit = defineEmits(["returnPage"]);
 
 const $route = useRoute();
 const athleteInformation = reactive({});
 const $store = useStore();
+
+const giftState = reactive({
+  close: () => {
+    giftState.state = false;
+  },
+  state: false,
+});
 
 const props = defineProps({
   data: {
@@ -140,18 +159,29 @@ let commtentData = ref("");
 // 获取选手详情
 const getAthleteInformation = async () => {
   let Arr = [];
+  let arr = []
   let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}`);
-  result.map((item) => {
-    Arr.push({ ...item.fields, pk: item.pk, model: item.model });
+  result.map((item, index) => {
+    Arr.push({ ...item.fields, pk: item.pk, model: item.model,});
   });
-  let arr = [];
-  arr = Arr.filter((item) => {
-    return item.pk === props.data;
+  // 数组排序
+  Arr.sort((a, b) => {
+  return b.count - a.count;
   });
-  athleteInformation.avator = arr[0].avator;
-  athleteInformation.name = arr[0].name;
-  athleteInformation.detail = arr[0].detail;
-  athleteInformation.count = arr[0].count;
+  Arr.map((item,index)=>{
+    arr.push({ ...item, pk: item.pk, model: item.model,rank:index+1})
+  })
+  Arr.forEach((item,index)=>{
+    if(item.pk === props.data){
+      athleteInformation.avator = arr[index].avator;
+      athleteInformation.name = arr[index].name;
+      athleteInformation.detail = arr[index].detail;
+      athleteInformation.count = arr[index].count;
+      athleteInformation.pk = arr[index].pk
+      athleteInformation.rank = arr[index].rank
+    }
+  })
+ 
 };
 getAthleteInformation();
 
@@ -161,34 +191,72 @@ const returnPage = (value) => {
   };
   emit("returnPage", params);
 };
+const returnPage1 = () => {
+  let params = {
+    status: false
+  };
+  emit("returnPage1", params);
+};
+const returnPage2 = () => {
+  let params = {
+    status: false,
+    data: athleteInformation
+  };
+  emit("returnPage2", params);
+};
+const returnPage3 = () => {
+  let params = {
+    status: false,
+    data: athleteInformation
+  };
+  emit("returnPage3", params);
+};
 
 // 点赞
 const like = async () => {
   // 判断是否在投票时间内
   let newTime = new Date();
   // 得到开始投票时间
-  let start_time = Math.floor(86400 / $store.state.settings[50].value / 24);
-  if (newTime.getHours() < start_time) {
+  let start_time =
+    $store.state.settings[50].value >
+    parseInt((newTime.getTime() / 1000) % 86400) * 3600;
+  if (start_time) {
     alert("投票未开始");
     // 得到结束投票时间
-  } else if (newTime.getTime() > $store.state.settings[51].value * 1000) {
+  } else if (
+    parseInt((newTime.getTime() / 1000) % 86400) >
+    $store.state.settings[51].value
+  ) {
     alert("投票已结束");
     // 在投票时间内
   } else {
-    let keys = await getKey();
-    let sercet = await encryption(keys);
-    const md = new Mobile(navigator.userAgent);
-    let result = await fether("/support/", "post", {
-      data: {
-        open_id: "wxtest6",
-        vote_target_id: props.data,
-        vote_id: $route.query.vote_id,
-        phone_model: md.mobile(),
-        system: md.os(),
-        network: isNetWork(),
-        key: sercet,
-      },
-    });
+    // 等待100毫秒后再执行避免页面未渲染完成拿不到数据
+    if ($store.state.settings[26].value) {
+      setTimeout(() => {
+        returnPage1()
+      },100)
+    } else if ($store.state.settings[20].value) {
+      setTimeout(() => {
+        returnPage2()
+      },100)
+    } else {
+      let keys = await getKey();
+      let sercet = await encryption(keys);
+      const md = new Mobile(navigator.userAgent);
+      let result = await fether("/support/", "post", {
+        data: {
+          open_id: "wxtest6",
+          vote_target_id: props.data,
+          vote_id: $route.query.vote_id,
+          phone_model: md.mobile(),
+          system: md.os(),
+          network: isNetWork(),
+          key: sercet,
+        },
+      });
+      if (!result) return;
+      returnPage3()
+    }
   }
 };
 
@@ -232,6 +300,10 @@ const check = async () => {
   getUserComment();
 };
 
+const downStateAdv = () => {
+  $store.state.settings[15].value = false
+}
+
 onMounted(() => {
   getUserComment();
 });
@@ -252,6 +324,7 @@ onMounted(() => {
   padding: 0px 0px 20px 0px;
   display: flex;
   justify-content: space-between;
+  border-bottom: 1px dashed rgb(138, 135, 135);
 }
 .body_content_brief_item {
   width: 45%;
@@ -267,12 +340,6 @@ onMounted(() => {
 .body_content_brief_name {
   height: 50px;
   margin-top: 10px;
-}
-.body_content_separate {
-  width: 80%;
-  height: 0px;
-  border: 1px dashed black;
-  margin: auto;
 }
 .body_content_ranking {
   display: grid;
@@ -295,7 +362,7 @@ onMounted(() => {
   font-size: 20px;
 }
 .body_content_detail {
-  margin-top: 20px;
+  margin: 20px 0px;
 }
 .footer {
   height: 55px;
@@ -335,8 +402,8 @@ button {
   justify-content: center;
   align-items: center;
   .state_img {
-    width: 90%;
-    height: 90%;
+    width: 80%;
+    height: 45%;
     border: 5px;
   }
 }

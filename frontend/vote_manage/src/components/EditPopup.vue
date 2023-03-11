@@ -8,6 +8,7 @@
         alt=""
       />
       <div class="popup_body_margin">
+        <label class="titles">姓名</label>
         <input
           type="text"
           placeholder="姓名"
@@ -15,6 +16,7 @@
           class="register_mask_body_inp"
           maxlength="8"
         />
+        <label class="titles">权限(0代表普通,1代表管理)</label>
         <input
           type="text"
           placeholder="权限"
@@ -22,6 +24,7 @@
           class="register_mask_body_inp"
           maxlength="8"
         />
+        <label class="titles">是否可用(输入开或关)</label>
         <input
           type="text"
           placeholder="状态"
@@ -49,10 +52,9 @@ const props = defineProps({
     username: String,
   },
 });
-
 const userEditInfo = reactive({
   name: props.data.name,
-  status: props.data.status,
+  status: props.data.status ? "开" : "关",
   pwd: props.data.pwd,
   auth: props.data.auth,
   username: props.data.username,
@@ -67,7 +69,10 @@ const checkForm = async () => {
   let validator = new Validator();
   validator.add(userEditInfo.name, "isNonEmpty", "输入账号");
   validator.add(userEditInfo.status, "isNonEmpty", "输入状态");
-  validator.add(userEditInfo.auth, "isNonEmpty", "输入姓名");
+  validator.add(userEditInfo.auth, "isNonEmpty", "请输入权限");
+  validator.add(userEditInfo.name, "maxLength", "姓名最大长度为4", 4);
+  validator.add(userEditInfo.name, "minLength", "姓名最小长度为2", 2);
+  validator.add(userEditInfo.auth, "isNumber", "输入错误");
   let result = validator.start();
   if (!result) {
     $store.dispatch("editUserActions", { ...userEditInfo });
@@ -76,17 +81,6 @@ const checkForm = async () => {
     $store.dispatch("GlobalMessageActions", result);
   }
 };
-
-// const saveEditUser = async () => {
-//   let result = await fether("/userinfo/", "put", {
-//     username: "",
-//     name: "",
-//     status: "",
-//     token: jsCookie.get("token"),
-//     auth: "",
-//     pwd: "",
-//   });
-// };
 </script>
 
 <style lang="scss" scoped>
@@ -110,6 +104,9 @@ const checkForm = async () => {
 }
 .popup_body_margin {
   margin: 20px;
+  .titles {
+    font-size: 15px;
+  }
 }
 .register_mask_body_inp {
   width: 260px;

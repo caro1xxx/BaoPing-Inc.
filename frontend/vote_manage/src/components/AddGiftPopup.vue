@@ -20,6 +20,7 @@
           v-model="item.value"
           :min="1"
         />
+        <el-switch v-model="item.value" v-else-if="item.type === 'switch'" />
       </div>
 
       <el-button style="color: #2460e5; width: 100%" @click="save"
@@ -51,23 +52,24 @@ const dataItem = reactive([
   { name: "礼物名称", value: "", type: "text", key: 0, state: false },
   { name: "礼物价值", value: "", type: "number", key: 1, state: false },
   { name: "价格", value: "", type: "number", key: 2, state: false },
-  { name: "开关", value: "", type: "text", key: 3, state: false },
+  { name: "开关", value: true, type: "switch", key: 3, state: false },
 ]);
 
 // 提交
 const save = async () => {
+  let data = {
+    name: dataItem[0].value,
+    value: dataItem[1].value,
+    price: dataItem[2].value,
+    status: dataItem[3].value ? 1 : 0,
+  };
   let result = await fether("/gift/", "post", {
     token: jsCookie.get("token"),
-    data: {
-      name: dataItem[0].value,
-      value: dataItem[1].value,
-      price: dataItem[2].value,
-      status: dataItem[3].value,
-    },
+    data: data,
   });
   if (result.code === 200) {
     await $store.dispatch("GlobalMessageActions", result.msg);
-    $store.commit("changeGiftAdd");
+    $store.commit("changeGiftAdd", data);
   } else {
     // 请求发送错误
     await $store.dispatch("refreshErroActions");

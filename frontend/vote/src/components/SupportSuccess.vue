@@ -2,16 +2,14 @@
   <div class="support" @click="props.data.close">
     <img class="support_img" src="../assets/img/5.png" alt="" />
     <div class="support_body">
-      <div style="text-align: center">
+      <div class="body">
         <div class="support_body_pk">{{ props.data.data.pk }}号</div>
-        <div>
-          <img
-            class="support_body_avator"
-            :src="HOST + '/media/' + props.data.data.avator"
-            alt=""
-          />
-        </div>
-        <div>
+        <img
+          class="support_body_avator"
+          :src="HOST2 + '/media/' + props.data.data.avator"
+          alt=""
+        />
+        <div class="username">
           {{ props.data.data.name }}
         </div>
         <div class="rank">
@@ -24,28 +22,22 @@
             <div class="dscription">排名</div>
           </div>
         </div>
-      </div>
-      <div class="bot">
-        <div>
-          <img
-            :src="HOST + '/media/' + $store.state.settings[92].value"
-            alt=""
-          />
-        </div>
-        <div></div>
+        <img
+          class="bot"
+          :src="HOST2 + '/media/' + $store.state.settings[92].value"
+          alt=""
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { HOST } from "@/ENV";
+import { HOST2 } from "@/ENV";
 
 const props = defineProps({
   data: Object,
 });
-
-console.log(props.data.data);
 </script>
 
 <style lang="scss" scoped>
@@ -63,7 +55,7 @@ console.log(props.data.data);
   z-index: 10;
 }
 .support_img {
-  width: 90%;
+  width: 80%;
   height: 60%;
 }
 .support_body {
@@ -79,6 +71,8 @@ console.log(props.data.data);
   z-index: 11;
 }
 .support_body_pk {
+  position: absolute;
+  top: 20%;
   background-color: green;
   font-size: 15px;
   font-weight: bold;
@@ -92,9 +86,12 @@ console.log(props.data.data);
 .support_body_avator {
   width: 200px;
   height: 100px;
-  margin: 20px 0px;
+  position: absolute;
+  top: 30%;
 }
 .rank {
+  position: absolute;
+  top: 60%;
   display: flex;
 
   div {
@@ -112,12 +109,22 @@ console.log(props.data.data);
 }
 .bot {
   position: absolute;
-  bottom: 100px;
-  right: 10%;
-  margin-top: 100px;
-  div {
-    width: 100px;
-    height: 100px;
-  }
+  bottom: 3%;
+  right: 5%;
+  width: 30%;
+  height: 20%;
+}
+.body {
+  width: 80%;
+  height: 60%;
+  position: relative;
+  display: inline-flex;
+  vertical-align: top;
+  justify-content: center;
+  align-items: center;
+}
+.username {
+  position: absolute;
+  top: 50%;
 }
 </style>

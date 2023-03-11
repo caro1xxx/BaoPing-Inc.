@@ -175,6 +175,11 @@
           </svg>
         </div>
       </div>
+      <div
+        v-for="item in completeItem"
+        class="home_body_for"
+        style="background-color: #f9f9f9; height: 150px; box-shadow: none"
+      ></div>
     </div>
   </div>
 </template>
@@ -191,6 +196,14 @@ import VueQrcode from "vue-qrcode";
 
 const $store = new useStore();
 const voteList = reactive([]);
+const completeItem = reactive([]);
+// 在大分辨率下手动增加item个数
+const addItemLength = () => {
+  if (voteList.length > 10) return;
+  for (let i = 0; i <= 15 - voteList.length; i++) {
+    completeItem.push(i);
+  }
+};
 
 // 获取活动列表
 const getVoteList = async () => {
@@ -213,6 +226,7 @@ const isAxiosStatus = async (data, status) => {
       voteList.push({ ...item, isQr: false });
     });
     localStorage.setItem("vote", JSON.stringify(voteList));
+    addItemLength();
   } else {
     // 请求发送错误
     await $store.dispatch("refreshErroActions");
@@ -282,14 +296,51 @@ getVoteList();
     top: 0px;
   }
 }
-.home_body {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 10px;
-  font-size: 12px;
-  height: calc(100vh - 150px);
-  overflow: scroll;
+
+@media screen and (max-width: 2400px) {
+  .home_body {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 10px;
+    font-size: 12px;
+    height: calc(100vh - 150px);
+    overflow: scroll;
+  }
 }
+
+@media screen and (max-width: 2000px) {
+  .home_body {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 10px;
+    font-size: 12px;
+    height: calc(100vh - 150px);
+    overflow: scroll;
+  }
+}
+
+@media screen and (max-width: 1440px) {
+  .home_body {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+    font-size: 12px;
+    height: calc(100vh - 150px);
+    overflow: scroll;
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .home_body {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    font-size: 12px;
+    height: calc(100vh - 150px);
+    overflow: scroll;
+  }
+}
+
 .home_body::-webkit-scrollbar {
   display: none;
   -ms-overflow-style: none; /* IE and Edge */
@@ -321,6 +372,9 @@ getVoteList();
   align-items: center;
   padding: 0px 10px;
   color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .home_body_item_body {
   height: calc(100% - 60px);
@@ -331,7 +385,7 @@ getVoteList();
 }
 .home_body_for {
   width: 80%;
-  height: 240px;
+  margin: 20px 0px;
   position: relative;
   background-color: white;
   box-shadow: 0 4px 4px 0 rgba(236, 236, 236, 0.2),

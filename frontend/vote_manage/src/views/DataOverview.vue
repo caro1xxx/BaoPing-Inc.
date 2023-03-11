@@ -61,6 +61,7 @@ const getDataOverView = async () => {
         income: item.fields.day_income,
         time: item.fields.day_time,
       });
+      console.log(item.fields.day_time);
     });
     OverviewData.today_income = JSONResult.today_income;
     OverviewData.yesterday_income = JSONResult.yesterday_income;
@@ -93,6 +94,7 @@ onMounted(() => {
   height: calc(100vh - 40px);
   font-size: 20px;
   padding: 20px;
+  user-select: none;
 }
 .home_title {
   font-size: 20px;

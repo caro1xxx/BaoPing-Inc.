@@ -279,6 +279,11 @@ const goPage = (index) => {
             description: "活动所展示售卖的礼物列表",
             path: "/vote/prize",
           },
+          {
+            name: "全局设置",
+            description: "全局设置下的功能将影响所有活动",
+            path: "/vote/settings",
+          },
         ],
         navName: "投票管理",
       });

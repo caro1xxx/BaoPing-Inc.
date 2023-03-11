@@ -90,7 +90,12 @@ const dispatchUpload = () => {
 // 上传改变
 const uploadChange = () => {
   let file = uploadRef.value[0].files[0];
-  if (file.type !== "image/png") {
+  console.log(file.type);
+  if (
+    file.type !== "image/png" &&
+    file.type !== "image/jpeg" &&
+    file.type !== "image/svg+xml"
+  ) {
     file = "";
     $store.dispatch("GlobalMessageActions", "请上传图片类型的文件");
     return;

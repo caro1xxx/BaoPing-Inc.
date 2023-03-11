@@ -1,13 +1,16 @@
 <template>
   <div class="feedback" @click="props.data.close">
-    <div class="body" @click="(e) => e.stopPropagation()">
-      <div class="content">
-        <label>活动ID</label>
-        <input type="text" :value="props.data.vote_id" disabled />
-        <label>反馈内容</label>
-        <textarea type="text" v-model="inputValue" rows="6"></textarea>
-        <div class="save_btn" @click="(e) => check(e)">提交</div>
+    <div class="body_wrap">
+      <div class="body" @click="(e) => e.stopPropagation()">
+        <div class="content">
+          <label>活动ID</label>
+          <input type="text" :value="props.data.vote_id" disabled />
+          <label>反馈内容</label>
+          <textarea type="text" v-model="inputValue" rows="6"></textarea>
+          <div class="save_btn" @click="(e) => check(e)">提交</div>
+        </div>
       </div>
+      <div style="color: #ffffff;margin-top: 10px;font-size: 10px;text-align: center;">点击其他位置关闭</div>
     </div>
   </div>
 </template>
@@ -49,19 +52,24 @@ const save = async () => {
   left: 0;
   bottom: 0;
   background-color: #00000074;
-  display: flex;
-  align-items: center;
+  display: inline-flex;
+  vertical-align: top;
   justify-content: center;
+  align-items: center;
   z-index: 6;
 }
-.body {
-  background-color: white;
+.body_wrap{
   width: 80%;
+}
+.body {
+  background-color: #f3f3f3;
   border-radius: 5px;
+  padding: 10px;
 }
 .content {
   display: block;
-  margin: 10px;
+  padding: 10px;
+  background-color: #ffffff;
   input {
     display: block;
     width: 96%;

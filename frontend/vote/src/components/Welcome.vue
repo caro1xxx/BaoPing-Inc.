@@ -3,50 +3,37 @@
     <img class="welcome_background" src="../assets/img/3.png" alt="" />
     <div class="welcome_body">
       <div class="body">
-        <div>
+        <div class="titles">
           您已经<span style="color: yellow">{{ props.data.value }}分钟</span
           >没有来了,上次支持过的选手现在是
         </div>
-        <div style="font-size: 30px">
+        <div class="di">
           第<span style="font-size: 50px; font-weight: bold">{{
             props.data.ranking
           }}</span
           >名
         </div>
-        <img
-          style="width: 100px; height: 100px; margin: 20px 0px"
-          :src="HOST2 + '/meida/' + props.data.img"
-          alt=""
-        />
-        <div style="font-weight: bold">{{ props.data.name }}</div>
+        <img class="avaotr" :src="HOST2 + '/media/' + props.data.img" alt="" />
+        <div class="username">{{ props.data.name }}</div>
         <div
           @click="
             (e) => {
               support(e);
             }
           "
-          style="
-            margin-top: 45px;
-            font-weight: bold;
-            font-size: 20px;
-            color: #444444;
-          "
+          class="suddenSupport"
         >
           马上支持
         </div>
-        <div style="margin-top: 40px; font-size: 10px">
-          冠军宝座仍被觊觎,不可松懈,坚持住
-        </div>
-        <div style="margin-top: 15px; font-size: 10px">
-          点击任意位置关闭弹窗
-        </div>
+        <div class="encourage">冠军宝座仍被觊觎,不可松懈,坚持住</div>
+        <div class="hint">点击任意位置关闭弹窗</div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import {HOST, HOST2 } from "@/ENV";
+import { HOST, HOST2 } from "@/ENV";
 import { fether } from "@/utils/fether";
 import { useStore } from "vuex";
 import base64 from "base-64";
@@ -56,7 +43,7 @@ import { useRoute } from "vue-router";
 import { defineEmits } from "vue";
 const $route = useRoute();
 const $store = useStore();
-const emit = defineEmits(["returnPage", 'returnPage1']);
+const emit = defineEmits(["returnPage", "returnPage1"]);
 // const emit1 = defineEmits([""]);
 const props = defineProps({
   data: Object,
@@ -70,12 +57,19 @@ const returnPage = () => {
 const returnPage1 = () => {
   let params = {
     status: false,
-    data: props.data
+    data: props.data,
   };
   emit("returnPage1", params);
 };
+const returnPage2 = () => {
+  let params = {
+    status: false,
+    data: props.data,
+  };
+  emit("returnPage2", params);
+};
 
-const support = async (e)  => {
+const support = async (e) => {
   e.stopPropagation();
   /**
    * 点击之后打开验证码弹窗
@@ -100,11 +94,11 @@ const support = async (e)  => {
     // 在投票时间内
   } else {
     if ($store.state.settings[26].value) {
-      returnPage()
-    } else if ($store.state.settings[67].value) {
-      returnPage1()
+      returnPage();
+    } else if ($store.state.settings[20].value) {
+      returnPage1();
     } else {
-    //   没有开启验证码弹窗时点击直接发送点赞请求
+      //   没有开启验证码弹窗时点击直接发送点赞请求
       let keys = await getKey();
       let sercet = await encryption(keys);
       const md = new Mobile(navigator.userAgent);
@@ -119,6 +113,8 @@ const support = async (e)  => {
           key: sercet,
         },
       });
+      if (!result) return;
+      returnPage2();
     }
   }
 };
@@ -169,10 +165,54 @@ const getKey = () => {
   align-items: center;
   z-index: 11;
   .body {
-    width: 50%;
-    height: 30%;
+    height: 60%;
+    width: 80%;
     color: white;
     text-align: center;
+    position: relative;
+    display: inline-flex;
+    vertical-align: top;
+    justify-content: center;
+    align-items: center;
+
+    .titles {
+      position: absolute;
+      top: 25%;
+      width: 60%;
+    }
+    .di {
+      font-size: 30px;
+      position: absolute;
+      top: 35%;
+    }
+    .avaotr {
+      width: 100px;
+      height: 100px;
+      position: absolute;
+      top: 48%;
+    }
+    .username {
+      font-weight: bold;
+      position: absolute;
+      top: 70%;
+    }
+    .suddenSupport {
+      font-weight: bold;
+      font-size: 20px;
+      color: #444444;
+      position: absolute;
+      top: 82%;
+    }
+    .encourage {
+      position: absolute;
+      font-size: 10px;
+      top: 94%;
+    }
+    .hint {
+      position: absolute;
+      font-size: 10px;
+      top: 100%;
+    }
   }
 }
 </style>
