@@ -20,6 +20,7 @@ const goPage = (path) => {
 
 <style lang="scss" scoped>
 .body {
+  user-select: none;
   width: 200px;
   height: calc(100vh);
   background-color: white;

@@ -38,7 +38,11 @@
         <el-table-column prop="price" label="价格" />
         <el-table-column prop="status" label="开关">
           <template #default="scope">
-            <div>{{ scope.row.status === 1 ? "开" : "关" }}</div>
+            <el-switch
+              :value="scope.row.status === 1 ? true : false"
+              @change="changeGiftState(scope.row.name)"
+            />
+            <!-- <div>{{ scope.row.status === 1 ? "开" : "关" }}</div> -->
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -53,10 +57,11 @@
 
 <script setup>
 import Search from "@/components/Search.vue";
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
 import { useStore } from "vuex";
 import { fether } from "@/utils/fether";
 import Cookies from "js-cookie";
+import jsCookie from "js-cookie";
 const $store = new useStore();
 // 投票记录数据
 const voteNotesData = reactive([]);
@@ -99,6 +104,31 @@ const deleteGift = async (target) => {
     await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
   }
 };
+
+// 改变礼物状态
+const changeGiftState = async (name) => {
+  for (let i = 0; i < voteNotesData.length; i++) {
+    if (voteNotesData[i].name === name) {
+      voteNotesData[i].status = voteNotesData[i].status ? 0 : 1;
+      let result = await fether("/gift/", "put", {
+        data: { ...voteNotesData[i] },
+        token: jsCookie.get("token"),
+      });
+      await $store.dispatch("GlobalMessageActions", result.msg);
+      break;
+    }
+  }
+};
+
+watch(
+  () => $store.state.giftAdd.value,
+  (newVal) => {
+    voteNotesData.push({
+      ...$store.state.giftAdd.value,
+      status: parseInt($store.state.giftAdd.value.status),
+    });
+  }
+);
 </script>
 
 <style lang="scss" scoped>

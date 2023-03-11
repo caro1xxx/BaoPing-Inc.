@@ -194,7 +194,7 @@ const saveUserEdit = async (target) => {
       data: {
         name: target.name,
         auth: target.auth,
-        status: target.status,
+        status: target.status === "开" ? 1 : 0,
         username: target.username,
       },
       token: Cookies.get("token"),
@@ -209,7 +209,9 @@ const saveUserEdit = async (target) => {
         tableData[i].pwd = target.pwd;
         tableData[i].name = target.name;
         tableData[i].auth = target.auth;
-        tableData[i].status = target.status;
+        tableData[i].status = target.status === "开" ? 1 : 0;
+        $store.state.editPopProps.name = "";
+        break;
       }
     }
   }
@@ -227,6 +229,7 @@ const onClickMove = async (index, type) => {
 watch(
   () => $store.state.isUserEditSave,
   (newVal) => {
+    console.log($store.state.editPopProps);
     saveUserEdit($store.state.editPopProps);
   }
 );

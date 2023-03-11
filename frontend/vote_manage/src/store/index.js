@@ -204,8 +204,11 @@ export default createStore({
       state.voteManageAddUser.vote_id = payload;
     },
     // 改变礼物新增框
-    changeGiftAdd(state) {
+    changeGiftAdd(state, payload) {
       state.giftAdd.state = !state.giftAdd.state;
+      if (payload) {
+        state.giftAdd.value = payload;
+      }
     },
   },
   actions: {

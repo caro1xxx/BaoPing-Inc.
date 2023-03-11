@@ -23,7 +23,7 @@ watch(
   () => props.chartData,
   (newVal) => {
     props.chartData.forEach((item) => {
-      isBroken.push(parseStampTime(item.time));
+      isBroken.push(parseStampTime(item.time).replace("0:0", ""));
       isBrokenValue.push(item.income);
     });
     const chartDom = document.getElementById("siderbar_statistical_chart");
