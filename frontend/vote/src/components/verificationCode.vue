@@ -1,34 +1,34 @@
 <template>
     <div class="body" @click="props.method()">
-        <div class="body_content">
-            <div class="body_content_top">
-                <div class="body_content_top_time">{{ `${nowTime.year}.${nowTime.month}.${nowTime.day} ${nowTime.houers}:${nowTime.minute}:${nowTime.sercet}` }}</div>
-                <div class="body_content_top_box">
-                    <div class="body_content_top_item">
-                        <img :src="`${HOST2}/media/${props.data.avator}`" alt="">
-                    </div>
-                    <div class="body_content_top_item1">
-                        <div class="body_content_top_number">{{ props.data.pk }}号</div>
-                        <div class="body_content_top_name">{{ props.data.name }}</div>
-                    </div>
-                </div>
+      <img src="../assets/img/4.png" style="width: 80%;height: 40%;" alt="">
+      <div class="body_content">
+        <div class="body_content_top">
+          <div class="times">{{ `${nowTime.year}.${nowTime.month}.${nowTime.day} ${nowTime.houers}:${nowTime.minute}:${nowTime.sercet}` }}</div>
+          <div class="body_content_top_box">
+            <div class="body_content_top_item">
+                <img :src="`${HOST2}/media/${props.data.avator}`" alt="">
             </div>
-            <div class="body_botton">
-                <span class="login">验证：</span>
-                <input
-                    style="width: 100px"
-                    type="text"
-                    placeholder="请输入验证码"
-                    class="input-val"
-                    v-model="yanzhen"
-                    @change="enterCode"
-                    @click="(e) => {sureInput(e)}"
-                />
-                <canvas id="canvas" style="width: 133px;height: 33px;" @click="(e) => {handleCanvas(e)}"> </canvas>
+            <div class="body_content_top_item1">
+                <div class="body_content_top_number">{{ props.data.pk }}号</div>
+                <div class="body_content_top_name">{{ props.data.name }}</div>
             </div>
-            <div style="margin-top: 15px;text-align: center;">点击其他位置关闭</div>
-            <div class="sureBotton" @click="(e)=>{close(e)}">确认支持他</div>
+          </div>
+          <div class="body_botton">
+            <div class="login">验证：</div>
+            <input
+                type="text"
+                placeholder="请输入验证码"
+                class="input-val"
+                v-model="yanzhen"
+                @change="enterCode"
+                @click="(e) => {sureInput(e)}"
+            />
+            <canvas id="canvas" style="height: 33px;" @click="(e) => {handleCanvas(e)}"> </canvas>
+          </div>
+          <div class="sureBotton" @click="(e)=>{close(e)}">确认支持他</div>
         </div>
+        </div>
+        <div class="body_label">点击其他位置关闭</div>
     </div>
 </template>
 
@@ -100,7 +100,7 @@ const draw = async (show_num) => {
       show_num[i] = txt;// 依次把取得的内容放到数组里面
       let x = 10 + i * 20; //文字在canvas上的x坐标
       let y = 20 + Math.random() * 8; //文字在canvas上的y坐标
-      context.font = "bold 23px 微软雅黑";
+      context.font = "bold 20px 微软雅黑";
       context.translate(x, y);
       context.rotate(deg);
       context.fillStyle = randomColor();
@@ -221,7 +221,6 @@ const close = async (e)=>{
             },
         });
         if (!result) return
-        console.log(1);
         props.method(props.data)
     } else {
         alert('验证码错误，请重新输入')
@@ -237,31 +236,42 @@ const close = async (e)=>{
   left: 0;
   bottom: 0;
   background-color: #00000074;
-  display: flex;
-  align-items: center;
+  display: inline-flex;
+  vertical-align: top;
   justify-content: center;
+  align-items: center;
   z-index: 6;
 }
 .body_content {
-  width: 80%;
-  height: 40%;
-  background-image: url('../assets/img/4.png');
-  background-size: 100% 100%;
-  padding: 10px;
-  position: relative;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: inline-flex;
+  vertical-align: top;
+  justify-content: center;
+  align-items: center;
+  z-index: 7;
 }
 .body_content_top{
-    margin-top: 15%;
-    text-align: center;
+  width: 80%;
+  height: 40%;
+  position: relative;
+  display: inline-flex;
+  vertical-align: top;
+  justify-content: center;
 }
 .body_content_top_box{
-    height: 80px;
-    display: flex;
-    margin-top: 20px;
+  position: absolute;
+  top:20%;
+  left: 5%;
+  height: 30%;
+  display: flex;
 }
 .body_content_top_item{
-    width: 45%;
-    height: 80px;
+  width: 100px;
+  height: 80px;
 }
 .body_content_top_item1{
     margin-left: 10px;
@@ -279,32 +289,51 @@ const close = async (e)=>{
     text-align: left;
 }
 .body_botton{
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+  width: 100%;
+  position: absolute;
+  top: 52%;
+  display: flex;
+  justify-content: center;
+  input{
+    width: 35%;
+    height: 15px;
+    font-size: 12px;
+  }
 }
 #canvas {
-  margin-right: 1%;
-  display: block;
+  // width: 78px;
+  width: 30%;
   border: 1px solid #ccc;
   border-radius: 5px;
   cursor: pointer;
 }
-
+.login{
+  height: 35px;
+  line-height: 35px;
+  font-size: 12px;
+}
 .input-val {
   width: 50%;
   background: #ffffff;
   border-radius: 5px;
+  height: 13px;
   border: none;
-  padding: 10px;
+  padding: 10px 5px;
   border: 1px solid rgba(0, 0, 0, 0.2);
 }
 .sureBotton{
-    position: absolute;
-    bottom: 35px;
-    left: 35%;
-    font-size: 20px;
-    font-weight: bold;
+  position: absolute;
+  top: 82%;
+  font-size: 20px;
+  font-weight: bold;
+}
+.body_label{
+  margin-top: 10px;
+  font-size: 10px;
+  color: #ffffff;
+}
+.times{
+  position: absolute;
+  top:12%;
 }
 </style>

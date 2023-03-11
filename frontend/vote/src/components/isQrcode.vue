@@ -9,6 +9,7 @@
         alt=""
       />
     </div>
+    <div style="color: #ffffff;margin-top: 10px;font-size: 10px;text-align: center;">点击其他位置关闭</div>
   </div>
 </template>
 
@@ -31,14 +32,14 @@ const props = defineProps({
   left: 0;
   bottom: 0;
   background-color: #00000074;
-  display: flex;
-  align-items: center;
+  display: inline-flex;
+  vertical-align: top;
   justify-content: center;
+  align-items: center;
   z-index: 6;
 }
 .body_content {
   width: 80%;
-  height: 40%;
   background-color: #f3f3f3;
   border-radius: 10px;
 }
@@ -48,7 +49,7 @@ const props = defineProps({
   font-weight: 500;
   text-align: center;
   line-height: 40px;
-  margin-top: 20px;
+  margin: 20px 0px;
 }
 .downImg {
   position: absolute;

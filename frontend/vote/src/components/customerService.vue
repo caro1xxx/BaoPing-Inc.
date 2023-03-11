@@ -8,6 +8,7 @@
                 <div class="body_content_config_botton">{{ customerData.data }}</div>
             </div>
         </div>
+        <div style="color: #ffffff;margin-top: 10px;font-size: 10px;text-align: center;">点击其他位置关闭</div>
     </div>
 </template>
 
@@ -41,9 +42,10 @@ customerData.data = result.value.value
   left: 0;
   bottom: 0;
   background-color: #00000074;
-  display: flex;
-  align-items: center;
+  display: inline-flex;
+  vertical-align: top;
   justify-content: center;
+  align-items: center;
   z-index: 6;
 }
 .body_content{

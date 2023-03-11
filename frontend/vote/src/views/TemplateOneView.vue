@@ -174,8 +174,8 @@
                       : `content_body_information_name`
                   "
                 >
-                  {{ item.name }}
-                </div>
+              </div>
+              <div class="content_body_information_titlename">{{ item.name }}</div>
               </div>
               <div class="content_body_information_content">
                 <div class="content_body_information_left">
@@ -285,70 +285,77 @@
     <!-- 报名弹窗 -->
     <div class="enroll_prop" v-if="enrollStatus.isEnrollProp" @click="doenProp">
       <!-- 可以报名时 -->
-      <div class="enroll_prop_form" @click="(e) => e.stopPropagation()">
-        <div class="enroll_prop_form_wrrap">
-          <h3>报名信息</h3>
-          <div class="enroll_prop_form_item">
-            <label>头像</label>
-            <div style="display: flex">
-              <input
-                type="file"
-                id="fileImage"
-                ref="uploadImg"
-                style="display: none"
-                name="fileImage"
-                @change="showImg"
-              />
-              <div @click="dispatchUpload" class="uploadReplace">
-                <div>+</div>
+      <div class="enroll_prop_body">
+        <div class="enroll_prop_form" @click="(e) => e.stopPropagation()">
+          <div class="enroll_prop_form_wrrap">
+            <h3>报名信息</h3>
+            <div class="enroll_prop_form_item">
+              <label>头像</label>
+              <div style="display: flex">
+                <input
+                  type="file"
+                  id="fileImage"
+                  ref="uploadImg"
+                  style="display: none"
+                  name="fileImage"
+                  @change="showImg"
+                />
+                <div @click="dispatchUpload" class="uploadReplace">
+                  <div>+</div>
+                </div>
+                <img
+                  id="headerImg"
+                  style="width: 104px; height: 104px"
+                  v-if="headerImg"
+                  :src="headerImg"
+                  alt=""
+                />
               </div>
-              <img
-                id="headerImg"
-                style="width: 104px; height: 104px"
-                v-if="headerImg"
-                :src="headerImg"
-                alt=""
-              />
+            </div>
+            <div class="enroll_prop_form_item">
+              <label>个人描述</label>
+              <textarea
+                name="textarea"
+                @change="getDescribe"
+                cols="50"
+                rows="5"
+              ></textarea>
+            </div>
+            <div class="enroll_prop_form_item">
+              <label>选手名称</label>
+              <input type="text" @change="athleteName" />
+            </div>
+            <div
+              class="enroll_prop_form_item"
+              v-if="$store.state.settings[7].value"
+            >
+              <label>手机号</label>
+              <input type="text" @change="getPhone" />
             </div>
           </div>
-          <div class="enroll_prop_form_item">
-            <label>个人描述</label>
-            <textarea
-              name="textarea"
-              @change="getDescribe"
-              cols="50"
-              rows="5"
-            ></textarea>
-          </div>
-          <div class="enroll_prop_form_item">
-            <label>选手名称</label>
-            <input type="text" @change="athleteName" />
-          </div>
-          <div
-            class="enroll_prop_form_item"
-            v-if="$store.state.settings[7].value"
-          >
-            <label>手机号</label>
-            <input type="text" @change="getPhone" />
+          <div class="enroll_prop_form_button">
+            <button style="color: black" @click="doenProp">取消</button>
+            <button style="background-color: #409eff" @click="submit">
+              确定
+            </button>
           </div>
         </div>
-        <div class="enroll_prop_form_button">
-          <button style="color: black" @click="doenProp">取消</button>
-          <button style="background-color: #409eff" @click="submit">
-            确定
-          </button>
-        </div>
+        <div style="color: #ffffff;margin-top: 10px;font-size: 10px;text-align: center;">点击其他位置关闭</div>
       </div>
+
     </div>
     <div
       v-if="enrollStatus.isActiveRules"
       @click="doenProp1"
       class="enroll_prop"
     >
-      <div class="enroll_prop_form" @click="(e) => e.stopPropagation()">
-        <div class="enroll_prop_form_wrrap" style="border-radius: 10px">
-          <div v-html="activeRules"></div>
+      <div class="enroll_prop_body">
+        <div class="enroll_prop_form" @click="(e) => e.stopPropagation()">
+          <div class="enroll_prop_form_wrrap" style="border-radius: 10px">
+            <div v-html="activeRules"></div>
+          </div>
         </div>
+        <div style="color: #ffffff;margin-top: 10px;font-size: 10px;text-align: center;">点击其他位置关闭</div>
       </div>
     </div>
   </div>
@@ -937,28 +944,37 @@ button {
   padding: 20px;
 }
 .content_body_information_title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   height: 35px;
-  margin-top: 10px;
+  position: relative;
   .content_body_information_name {
     width: 60%;
-    padding-left: 5%;
-    font-size: 20px;
-    font-family: BlackSimplyBlod;
+    height: 100%;
+    position: absolute;
+    top: 3%;
+    left: 15%;
   }
   .content_body_information_name1 {
     width: 60%;
-    padding-left: 5%;
-    font-size: 20px;
-    font-family: BlackSimplyBlod;
+    height: 100%;
+
     //颜色渐变
     background-image: linear-gradient(
       to right,
-      rgb(241, 211, 111),
-      rgb(218, 243, 78)
+      rgba(255, 255, 255, 0.295),
+      rgba(255, 255, 255, 0.281)
     );
+    backdrop-filter: blur(10px);
+    position: absolute;
+    top: 3%;
+    left: 15%;
+  }
+  .content_body_information_titlename{
+    position: absolute;
+    top: 7.5px;
+    left: 20%;
+    z-index: 5;
+    font-size: 20px;
+    font-family: BlackSimplyBlod;
   }
 }
 .content_body_information_content {
@@ -1001,7 +1017,7 @@ button {
       text-align: center;
       color: #ffffff;
       line-height: 40px;
-      background-color: rgb(85, 85, 235);
+      background-color: rgb(143, 85, 235);
     }
   }
 }
@@ -1042,22 +1058,23 @@ button {
   left: 0;
   bottom: 0;
   background-color: #00000074;
-  display: flex;
-  align-items: center;
+  display: inline-flex;
+  vertical-align: top;
   justify-content: center;
+  align-items: center;
   z-index: 5;
 }
+.enroll_prop_body{
+  width: 80%;
+}
 .enroll_prop_form_wrrap {
-  height: 100%;
   background-color: #ffffff;
   border-radius: 10px 10px 0px 0px;
-  padding: 10px;
 }
 .enroll_prop_form {
-  width: 80%;
-  background-color: #f3f3f3;
-  padding: 10px;
   border-radius: 10px;
+  padding: 10px;
+  background-color: #f3f3f3;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1200,22 +1217,29 @@ button {
 .expire_time_label {
   width: 25%;
   height: 20px;
-  line-height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: 0px 5px;
-  text-align: center;
   color: #f3f3f3;
+  line-height: 20px;
   font-size: 12px;
 }
 .expire_time_number {
   flex: 1;
   display: flex;
+  justify-content: center;
+  align-items: center;
   color: #ffffff;
   font-size: 14px;
   div {
-    padding: 0px 10px;
+    display: flex;
+    align-items: center;
+    padding: 3px 10px 0px;
     background-color: yellow;
     border-radius: 5px;
     margin: 0px 5px;
+    width: 20px;
     color: black;
   }
 }
