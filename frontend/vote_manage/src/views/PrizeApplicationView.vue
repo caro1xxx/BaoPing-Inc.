@@ -14,10 +14,14 @@
         <el-table-column prop="phone_number" label="手机号" />
         <el-table-column prop="create_time" label="申请时间">
           <template #default="scope">
-            <span>{{ getTime(scope.row.create_time) }}</span>
+            <div>{{ getTime(scope.row.create_time) }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" />
+        <el-table-column prop="status" label="状态">
+          <template #default="scope">
+            <div>{{ scope.row.status ? '开' : '关' }}</div>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
             <span
@@ -143,13 +147,9 @@ const getTime = (value) => {
 };
 
 watch(
-  () => $store.state.prizeData,
+  () => $store.state.filterData,
   (newVal) => {
-    (prizeData[newVal.index].wx_username = newVal.wx_username),
-      (prizeData[newVal.index].name = newVal.name),
-      (prizeData[newVal.index].phone_number = newVal.phone_number),
-      (prizeData[newVal.index].create_time = newVal.create_time),
-      (prizeData[newVal.index].status = newVal.status);
+    isAxiosStatus(newVal, false)
   },
   {
     deep: true,

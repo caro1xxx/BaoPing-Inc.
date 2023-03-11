@@ -5,7 +5,7 @@
             <div class="body_content_body">
                 <div class="body_content_item">
                     <label>openid(用户名)</label>
-                    <el-input v-model="prizeData.open_id" placeholder="请输入" />
+                    <el-input v-model="prizeData.open_id" disabled placeholder="请输入" />
                 </div>
                 <div class="body_content_item">
                     <label>姓名</label>
@@ -61,8 +61,10 @@ const prizeData = reactive({
     name: $store.state.prizeData.name,
     status: $store.state.prizeData.status,
     phone_number: $store.state.prizeData.phone_number,
-    create_time: $store.state.prizeData.create_time,
+    // 乘以1000是为了回显数据正确
+    create_time: $store.state.prizeData.create_time * 1000,
     index: $store.state.prizeData.index,
+    open_id: $store.state.prizeData.open_id,
     pk: $store.state.prizeData.pk
 })
 
@@ -70,11 +72,11 @@ const prizeData = reactive({
 const statusData = reactive([
     {
         value: 0,
-        label: '0'
+        label: '关'
     },
     {
         value: 1,
-        label: '1'
+        label: '开'
     }
 ])
 

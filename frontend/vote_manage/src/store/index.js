@@ -60,6 +60,7 @@ export default createStore({
       create_time: "",
       status: undefined,
       index: undefined,
+      open_id: "",
       pk: undefined,
     },
     // 活动管理页面 相关联的投票用户列表状态
@@ -177,6 +178,7 @@ export default createStore({
         state.prizeData.create_time = payload.create_time;
         state.prizeData.index = payload.index;
         state.prizeData.pk = payload.pk;
+        state.prizeData.open_id = payload.open_id;
       }
     },
     changeVoteUserRecord(state, payload) {
@@ -209,6 +211,9 @@ export default createStore({
       if (payload) {
         state.giftAdd.value = payload;
       }
+    },
+    changeVoteManageUser(state) {
+      state.voteManagerUserRecord = !state.voteManagerUserRecord;
     },
   },
   actions: {

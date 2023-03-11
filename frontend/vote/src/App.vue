@@ -42,15 +42,16 @@ const getInitSetting = async () => {
       value: voteSetting[0].fields[i],
     });
   }
-  await $store.dispatch("changeSettingsActions", map1);
   // 如果开启浏览器访问,那么检测环境
-  if ($store.state.settings[69].value && !isEnv()) {
+  if (!map1[69].value && !isEnv()) {
     return;
+  } else {
+    await $store.dispatch("changeSettingsActions", map1);
+    getStarShowDate();
+    if ($store.state.settings[77].value === 1)
+      $router.push(`/one?vote_id=${$route.query.vote_id}`);
+    else $router.push(`/two?vote_id=${$route.query.vote_id}`);
   }
-  getStarShowDate();
-  if ($store.state.settings[77].value === 1)
-    $router.push(`/one?vote_id=${$route.query.vote_id}`);
-  else $router.push(`/two?vote_id=${$route.query.vote_id}`);
 };
 
 // 判断当前环境

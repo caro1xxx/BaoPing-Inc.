@@ -2,13 +2,17 @@
   <!-- 礼物 -->
   <GifiVue :data="props.data" v-if="giftState.state" :method="giftState" />
   <!-- 选手页视频广告 -->
-  <div class="stateAdv" @click="downStateAdv" v-if="$store.state.settings[15].value">
+  <div
+    class="stateAdv"
+    @click="downStateAdv"
+    v-if="$store.state.settings[15].value"
+  >
     <video
       style="background-color: #000"
       class="state_img"
-      :src="HOST + '/media/' + $store.state.settings[87].value"
+      :src="HOST2 + '/media/' + $store.state.settings[87].value"
       controls="controls"
-      @click="(e)=> e.stopPropagation()"
+      @click="(e) => e.stopPropagation()"
     >
       您的浏览器不支持 video 标签。
     </video>
@@ -19,7 +23,7 @@
         <div class="body_content_brief_item">
           <img
             v-if="athleteInformation.avator"
-            :src="HOST2+'/media/'+athleteInformation.avator"
+            :src="HOST2 + '/media/' + athleteInformation.avator"
             alt=""
           />
         </div>
@@ -53,7 +57,7 @@
           class="body_content_ranking_item"
           style="font-size: 30px; color: #33cc66"
         >
-          {{ props.data }}
+          {{ athleteInformation.rank }}
         </div>
       </div>
       <div class="body_content_sign">
@@ -99,7 +103,9 @@
         "
       >
         <button style="background-color: orange; color: #ffffff" @click="like">
-          投一票
+          {{ $store.state.settings[94].value }}一{{
+            $store.state.settings[95].value
+          }}
         </button>
       </div>
       <!-- 是否显示助力 -->
@@ -159,29 +165,28 @@ let commtentData = ref("");
 // 获取选手详情
 const getAthleteInformation = async () => {
   let Arr = [];
-  let arr = []
+  let arr = [];
   let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}`);
   result.map((item, index) => {
-    Arr.push({ ...item.fields, pk: item.pk, model: item.model,});
+    Arr.push({ ...item.fields, pk: item.pk, model: item.model });
   });
   // 数组排序
   Arr.sort((a, b) => {
-  return b.count - a.count;
+    return b.count - a.count;
   });
-  Arr.map((item,index)=>{
-    arr.push({ ...item, pk: item.pk, model: item.model,rank:index+1})
-  })
-  Arr.forEach((item,index)=>{
-    if(item.pk === props.data){
+  Arr.map((item, index) => {
+    arr.push({ ...item, pk: item.pk, model: item.model, rank: index + 1 });
+  });
+  Arr.forEach((item, index) => {
+    if (item.pk === props.data) {
       athleteInformation.avator = arr[index].avator;
       athleteInformation.name = arr[index].name;
       athleteInformation.detail = arr[index].detail;
       athleteInformation.count = arr[index].count;
-      athleteInformation.pk = arr[index].pk
-      athleteInformation.rank = arr[index].rank
+      athleteInformation.pk = arr[index].pk;
+      athleteInformation.rank = arr[index].rank;
     }
-  })
- 
+  });
 };
 getAthleteInformation();
 
@@ -193,21 +198,21 @@ const returnPage = (value) => {
 };
 const returnPage1 = () => {
   let params = {
-    status: false
+    status: false,
   };
   emit("returnPage1", params);
 };
 const returnPage2 = () => {
   let params = {
     status: false,
-    data: athleteInformation
+    data: athleteInformation,
   };
   emit("returnPage2", params);
 };
 const returnPage3 = () => {
   let params = {
     status: false,
-    data: athleteInformation
+    data: athleteInformation,
   };
   emit("returnPage3", params);
 };
@@ -233,19 +238,19 @@ const like = async () => {
     // 等待100毫秒后再执行避免页面未渲染完成拿不到数据
     if ($store.state.settings[26].value) {
       setTimeout(() => {
-        returnPage1()
-      },100)
-    } else if ($store.state.settings[20].value) {
+        returnPage1();
+      }, 100);
+    } else if ($store.state.settings[67].value) {
       setTimeout(() => {
-        returnPage2()
-      },100)
+        returnPage2();
+      }, 100);
     } else {
       let keys = await getKey();
       let sercet = await encryption(keys);
       const md = new Mobile(navigator.userAgent);
       let result = await fether("/support/", "post", {
         data: {
-          open_id: "wxtest6",
+          open_id: "heart",
           vote_target_id: props.data,
           vote_id: $route.query.vote_id,
           phone_model: md.mobile(),
@@ -255,7 +260,7 @@ const like = async () => {
         },
       });
       if (!result) return;
-      returnPage3()
+      returnPage3();
     }
   }
 };
@@ -292,7 +297,7 @@ const check = async () => {
   let result = await fether("/comment/", "post", {
     data: {
       vote_target_id: props.data,
-      vote_user_open_id: "wxtest6",
+      vote_user_open_id: "heart",
       content: commtentData.value,
     },
   });
@@ -301,8 +306,8 @@ const check = async () => {
 };
 
 const downStateAdv = () => {
-  $store.state.settings[15].value = false
-}
+  $store.state.settings[15].value = false;
+};
 
 onMounted(() => {
   getUserComment();
@@ -365,6 +370,7 @@ onMounted(() => {
   margin: 20px 0px;
 }
 .footer {
+  padding: 0px 5px;
   height: 55px;
   display: grid;
   grid-template-columns: auto auto auto auto;

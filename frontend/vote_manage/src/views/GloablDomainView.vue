@@ -31,12 +31,16 @@
         <el-table-column prop="domain_name" label="域名" />
         <el-table-column prop="expire_time" label="有效期">
           <template #default="scope">
-            <span v-if="scope.row.expire_time">{{
+            <div v-if="scope.row.expire_time">{{
               getTime(scope.row.expire_time)
-            }}</span>
+            }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" />
+        <el-table-column prop="status" label="状态">
+          <template #default="scope">
+            <div>{{ scope.row.status ? '开' : '关' }}</div>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
             <span
@@ -64,10 +68,13 @@ import { useStore } from "vuex";
 import Cookies from "js-cookie";
 const $store = new useStore();
 
+// 域名管理数据
+const realmAddData = reactive({ data: [] });
+
 const isAxiosStatus = async (data, status) => {
   if (data.code === 200) {
     if (status === false) {
-      realmAddData.splice(0, realmAddData.length);
+      realmAddData.data.splice(0, realmAddData.length);
     }
     realmAddData.data = [];
     let Arr = [];
@@ -83,8 +90,7 @@ const isAxiosStatus = async (data, status) => {
   //关闭加载loading
   $store.commit("noticifyLoading", false);
 };
-// 域名管理数据
-const realmAddData = reactive({ data: [] });
+
 
 // 获取域名列表
 const getRealm = async () => {
@@ -184,6 +190,7 @@ const openDialog = () => {
 watch(
   () => $store.state.filterData,
   (newVal) => {
+    console.log(111111);
     isAxiosStatus(newVal, false);
   }
 );

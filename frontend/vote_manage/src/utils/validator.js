@@ -21,7 +21,7 @@ const Strategies = {
     if (value.length > max) return errorMsg;
   },
   isNumber(value, errorMsg) {
-    if (value !== "1" && value !== "0") return errorMsg;
+    if (value !== 1 && value !== 0) return errorMsg;
   },
 };
 
