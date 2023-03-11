@@ -105,14 +105,14 @@
               alt=""
             />访问数：
             <!-- 访问数量 -->
-            <span>{{ $store.state.settings[42].value }}</span>
+            <span class="number">{{ $store.state.settings[42].value }}</span>
           </div>
           <div class="content_body_persennum_item">
             <img
               :style="{ width: '20px', height: '22px' }"
               src="../assets/images/4.png"
               alt=""
-            />报名数：<span>45</span>
+            />报名数：<span class="number">45</span>
           </div>
         </div>
         <!-- 活动到期时间倒计时 -->
@@ -169,13 +169,18 @@
               <div class="content_body_information_title">
                 <div
                   :class="
-                    index + 1 < 4
+                    index + 1 === 1
                       ? `content_body_information_name1`
+                      : index + 1 === 2
+                      ? `content_body_information_name2`
+                      : index + 1 === 3
+                      ? `content_body_information_name3`
                       : `content_body_information_name`
                   "
-                >
-              </div>
-              <div class="content_body_information_titlename">{{ item.name }}</div>
+                ></div>
+                <div class="content_body_information_titlename">
+                  {{ item.name }}
+                </div>
               </div>
               <div class="content_body_information_content">
                 <div class="content_body_information_left">
@@ -340,9 +345,17 @@
             </button>
           </div>
         </div>
-        <div style="color: #ffffff;margin-top: 10px;font-size: 10px;text-align: center;">点击其他位置关闭</div>
+        <div
+          style="
+            color: #ffffff;
+            margin-top: 10px;
+            font-size: 10px;
+            text-align: center;
+          "
+        >
+          点击其他位置关闭
+        </div>
       </div>
-
     </div>
     <div
       v-if="enrollStatus.isActiveRules"
@@ -355,7 +368,16 @@
             <div v-html="activeRules"></div>
           </div>
         </div>
-        <div style="color: #ffffff;margin-top: 10px;font-size: 10px;text-align: center;">点击其他位置关闭</div>
+        <div
+          style="
+            color: #ffffff;
+            margin-top: 10px;
+            font-size: 10px;
+            text-align: center;
+          "
+        >
+          点击其他位置关闭
+        </div>
       </div>
     </div>
   </div>
@@ -532,7 +554,7 @@ const getChild2 = (value) => {
 };
 const getChild3 = (value) => {
   enrollStatus.isVerificationCode = false;
-  successData.state = true
+  successData.state = true;
   successData.data = value.data;
 };
 const downVerificationCode = () => {
@@ -811,6 +833,14 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+@font-face {
+  font-family: FangZhenBlod;
+  src: url("../assets/font/方正正粗黑简体.TTF");
+}
+@font-face {
+  font-family: MicaoFanBlod;
+  src: url("../assets/font/微软繁粗圆.TTF");
+}
 .body {
   width: 100%;
   height: 100%;
@@ -865,6 +895,11 @@ onMounted(() => {
     font-weight: 500;
     color: rgb(49, 60, 161);
   }
+}
+.number {
+  font-weight: bold;
+  font-family: MicaoFanBlod;
+  font-size: 20px !important;
 }
 .content_body_search {
   display: flex;
@@ -954,27 +989,63 @@ button {
     left: 15%;
   }
   .content_body_information_name1 {
-    width: 60%;
     height: 100%;
 
     //颜色渐变
     background-image: linear-gradient(
       to right,
-      rgba(255, 255, 255, 0.295),
-      rgba(255, 255, 255, 0.281)
+      rgba(239, 208, 162, 0.328),
+      rgba(255, 255, 255, 0)
     );
     backdrop-filter: blur(10px);
+    margin-top: 5px;
+    height: 28px;
+    width: 80%;
     position: absolute;
-    top: 3%;
+    top: 5%;
     left: 15%;
   }
-  .content_body_information_titlename{
+  .content_body_information_name2 {
+    height: 100%;
+
+    //颜色渐变
+    background-image: linear-gradient(
+      to right,
+      rgba(193, 196, 234, 0.328),
+      rgba(255, 255, 255, 0)
+    );
+    backdrop-filter: blur(10px);
+    margin-top: 5px;
+    height: 28px;
+    width: 80%;
+    position: absolute;
+    top: 5%;
+    left: 15%;
+  }
+  .content_body_information_name3 {
+    height: 100%;
+
+    //颜色渐变
+    background-image: linear-gradient(
+      to right,
+      rgba(236, 183, 163, 0.328),
+      rgba(255, 255, 255, 0)
+    );
+    backdrop-filter: blur(10px);
+    margin-top: 5px;
+    height: 28px;
+    width: 80%;
+    position: absolute;
+    top: 5%;
+    left: 15%;
+  }
+  .content_body_information_titlename {
     position: absolute;
     top: 7.5px;
     left: 20%;
     z-index: 5;
     font-size: 20px;
-    font-family: BlackSimplyBlod;
+    font-family: MicaoFanBlod;
   }
 }
 .content_body_information_content {
@@ -1018,6 +1089,7 @@ button {
       color: #ffffff;
       line-height: 40px;
       background-color: rgb(143, 85, 235);
+      font-family: BlackSimplyBlod;
     }
   }
 }
@@ -1064,7 +1136,7 @@ button {
   align-items: center;
   z-index: 5;
 }
-.enroll_prop_body{
+.enroll_prop_body {
   width: 80%;
 }
 .enroll_prop_form_wrrap {
@@ -1244,7 +1316,7 @@ button {
   }
 }
 * {
-  font-family: BlackSimply;
+  font-family: MicaoFanBlod;
 }
 @font-face {
   font-family: BlackSimply;
