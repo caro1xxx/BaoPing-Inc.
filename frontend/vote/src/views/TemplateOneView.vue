@@ -605,8 +605,16 @@ const showImg = () => {
     return;
   }
   const reads = new FileReader();
+  const fileData1 = new FormData()
+  fileData1.append('file', file)
+  fetch(`${HOST2}/uploadfile/`, { method: "post", body: fileData1 })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.code === 200) {
+        fileData.append('avator', data.data.filename)
+      }
+  });
   reads.readAsDataURL(file);
-  fileData.append("avator", file);
   reads.onload = function (e) {
     headerImg.value = e.target.result;
     enrollData.imgUrl = e.target.result;
@@ -643,6 +651,8 @@ const submit = async () => {
     .then((data) => {
       if (data.code === 200) {
         enrollStatus.isEnrollProp = false;
+        //刷新列表数据
+        getInformation();
       }
     });
 };
