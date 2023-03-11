@@ -259,7 +259,9 @@
                 :id="'upload' + item.key"
                 type="file"
                 class="filebtn"
-                @change="uploadChange(item.mini, 'img', item.key, item.name)"
+                @change="
+                  uploadChange(item.mini, item.mini, item.key, item.name)
+                "
               />
               <div style="width: 104px">+</div>
             </div>
@@ -496,7 +498,7 @@ const editValue = reactive({
 
 // 自动化
 const autoMation = reactive([
-  { label: "自动评论选手id(openid)", key: 1, value: "", type: "text" },
+  { label: "自动评论选手id(选手id)", key: 1, value: "", type: "text" },
   { label: "自动评论起始日期", key: 2, value: [], type: "date" },
   { label: "每日评论起始时间", key: 2, value: [], type: "time" },
   { label: "每*分钟1条评论", key: 2, value: "", type: "number" },
@@ -766,7 +768,7 @@ const uploadChange = (type, typeStr, index, name) => {
 const uploaderFIles = async (type, key, files) => {
   let form = new FormData();
   form.append("file", files);
-  form.append("category", type);
+  form.append("category", type.split("/")[0] === "image" ? "img" : "video");
   fetch(`${HOST}/uploadfile/`, { method: "post", body: form })
     .then((res) => res.json())
     .then((data) => {

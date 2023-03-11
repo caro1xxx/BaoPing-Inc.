@@ -14,7 +14,7 @@
           <template #default="scope">
             <img
               style="width: 30px; height: 30px"
-              :src="HOST + '/media/' + scope.row.avator"
+              :src="scope.row.avator"
               alt=""
             />
           </template>

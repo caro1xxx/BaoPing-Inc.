@@ -39,7 +39,7 @@
         <el-table-column prop="status" label="开关">
           <template #default="scope">
             <el-switch
-              :value="scope.row.status === 1 ? true : false"
+              :model-value="scope.row.status === 1 ? true : false"
               @change="changeGiftState(scope.row.name)"
             />
             <!-- <div>{{ scope.row.status === 1 ? "开" : "关" }}</div> -->

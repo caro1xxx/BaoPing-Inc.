@@ -10,7 +10,7 @@
     <video
       style="background-color: #000"
       class="state_img"
-      :src="HOST + '/media/' + $store.state.settings[87].value"
+      :src="HOST2 + '/media/' + $store.state.settings[87].value"
       controls="controls"
       @click="(e) => e.stopPropagation()"
     >
@@ -238,7 +238,7 @@ const like = async () => {
       setTimeout(() => {
         returnPage1();
       }, 100);
-    } else if ($store.state.settings[20].value) {
+    } else if ($store.state.settings[67].value) {
       setTimeout(() => {
         returnPage2();
       }, 100);
@@ -248,7 +248,7 @@ const like = async () => {
       const md = new Mobile(navigator.userAgent);
       let result = await fether("/support/", "post", {
         data: {
-          open_id: "wxtest6",
+          open_id: "heart",
           vote_target_id: props.data,
           vote_id: $route.query.vote_id,
           phone_model: md.mobile(),
@@ -295,7 +295,7 @@ const check = async () => {
   let result = await fether("/comment/", "post", {
     data: {
       vote_target_id: props.data,
-      vote_user_open_id: "wxtest6",
+      vote_user_open_id: "heart",
       content: commtentData.value,
     },
   });

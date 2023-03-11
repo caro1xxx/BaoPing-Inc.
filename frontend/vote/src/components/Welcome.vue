@@ -124,7 +124,7 @@ const encryption = async (key) => {
 
 // 请求key
 const getKey = () => {
-  return fetch(`${HOST}/keys/?open_id=00001`)
+  return fetch(`${HOST}/keys/?open_id=heart`)
     .then((res) => res.json())
     .then((data) => {
       if (data.code === 200) {
