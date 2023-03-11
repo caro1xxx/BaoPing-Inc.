@@ -822,7 +822,7 @@ const getUserRecentVote = async () => {
 const openFeedback = () => {
   feedbackState.state = true;
   feedbackState.data.vote_id = $route.query.vote_id;
-  feedbackState.data.vote_user_openid = "wxtest6";
+  feedbackState.data.vote_user_openid = "heart";
 };
 onMounted(() => {
   getExpireTime();
