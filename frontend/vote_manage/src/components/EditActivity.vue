@@ -111,11 +111,8 @@
           <el-date-picker
             v-else-if="item.type === 'date'"
             v-model="item.value"
-            style="width: 95%"
-            type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            type="date"
+            placeholder="选择日期"
           />
           <el-time-picker
             v-else-if="item.type === 'time'"
@@ -391,7 +388,7 @@ const getStorage = () => {
       );
       voteSetting[3].value = obj.allowed_alone_everyday_vote_count;
       voteSetting[4].value = obj.allowed_alone_everyhour_vote_count;
-      voteSetting[5].value = obj.open_today_star_with;
+      voteSetting[5].value = obj.open_today_star_with * 1000;
       voteSetting[6].value = obj.visible_no1_with === 1 ? true : false;
       voteSetting[7].value = obj.enable_vote_to_me === 1 ? true : false;
       voteSetting[8].value = obj.enable_comment === 1 ? true : false;
@@ -466,7 +463,7 @@ const voteSetting = reactive([
   { label: "每日今日之星更新时间", key: 5, value: [], type: "time" },
   { label: "每人单日投票上限", key: 2, value: "", type: "number" },
   { label: "用户每小时投票上限", key: 3, value: "", type: "number" },
-  { label: "第*天开启今日之星", key: 4, value: "", type: "number" },
+  { label: "开启今日之星日期", key: 4, value: "", type: "date" },
   { label: "第*天显示第一名", key: 6, value: "", type: "number" },
   { label: "给自己投票", key: 8, value: "", type: "radio" },
   { label: "留言", key: 9, value: "", type: "radio" },
@@ -650,7 +647,7 @@ const saveEditData = async () => {
           today_star_update_end_time: timeToStamp(voteSetting[2].value[1]),
           allowed_alone_everyday_vote_count: voteSetting[3].value,
           allowed_alone_everyhour_vote_count: voteSetting[4].value,
-          open_today_star_with: voteSetting[5].value,
+          open_today_star_with: new Date(voteSetting[5].value).getTime() / 1000,
           visible_no1_with: voteSetting[6].value ? 1 : 0,
           enable_vote_to_me: voteSetting[7].value ? 1 : 0,
           enable_comment: voteSetting[8].value ? 1 : 0,

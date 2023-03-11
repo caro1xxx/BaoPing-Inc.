@@ -372,6 +372,9 @@ getVoteList();
   align-items: center;
   padding: 0px 10px;
   color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .home_body_item_body {
   height: calc(100% - 60px);
