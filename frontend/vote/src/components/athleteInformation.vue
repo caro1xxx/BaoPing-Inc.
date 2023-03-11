@@ -204,6 +204,13 @@ const returnPage2 = () => {
   };
   emit("returnPage2", params);
 };
+const returnPage3 = () => {
+  let params = {
+    status: false,
+    data: athleteInformation
+  };
+  emit("returnPage3", params);
+};
 
 // 点赞
 const like = async () => {
@@ -223,10 +230,15 @@ const like = async () => {
     alert("投票已结束");
     // 在投票时间内
   } else {
+    // 等待100毫秒后再执行避免页面未渲染完成拿不到数据
     if ($store.state.settings[26].value) {
-      returnPage1()
+      setTimeout(() => {
+        returnPage1()
+      },100)
     } else if ($store.state.settings[20].value) {
-      returnPage2()
+      setTimeout(() => {
+        returnPage2()
+      },100)
     } else {
       let keys = await getKey();
       let sercet = await encryption(keys);
@@ -242,6 +254,8 @@ const like = async () => {
           key: sercet,
         },
       });
+      if (!result) return;
+      returnPage3()
     }
   }
 };
