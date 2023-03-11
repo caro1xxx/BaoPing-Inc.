@@ -57,7 +57,7 @@
           class="body_content_ranking_item"
           style="font-size: 30px; color: #33cc66"
         >
-          {{ props.data }}
+          {{ athleteInformation.rank }}
         </div>
       </div>
       <div class="body_content_sign">

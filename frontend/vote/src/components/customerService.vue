@@ -5,7 +5,7 @@
                 <div class="body_content_config_top">
                     <div></div>
                 </div>
-                <div class="body_content_config_botton">{{ customerData.data }}</div>
+                <div  v-html="customerData.data" class="body_content_config_botton"></div>
             </div>
         </div>
         <div style="color: #ffffff;margin-top: 10px;font-size: 10px;text-align: center;">点击其他位置关闭</div>
