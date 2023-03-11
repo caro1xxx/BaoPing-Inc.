@@ -673,11 +673,7 @@ const like = async (target, index) => {
     alert("投票已结束");
     // 在投票时间内
   } else {
-    // 开启二维码弹幕
-    if ($store.state.settings[26].value) {
-      enrollStatus.isOpenQscode = true;
-      // 开启验证码弹窗
-    } else if ($store.state.settings[20].value) {
+    if ($store.state.settings[67].value) {
       enrollStatus.isVerificationCode = true;
       verificationCodeData.pk = target.pk;
       verificationCodeData.name = target.name;
@@ -691,7 +687,7 @@ const like = async (target, index) => {
       const md = new Mobile(navigator.userAgent);
       let result = await fether("/support/", "post", {
         data: {
-          open_id: "wxtest6",
+          open_id: "heart",
           vote_target_id: target.pk,
           vote_id: $route.query.vote_id,
           phone_model: md.mobile(),
@@ -700,6 +696,11 @@ const like = async (target, index) => {
           key: sercet,
         },
       });
+      // 开启二维码弹幕
+      if ($store.state.settings[26].value) {
+        enrollStatus.isOpenQscode = true;
+        // 开启验证码弹窗
+      }
       // 点赞成功刷新显示数量
       if (!result) return;
       for (let i = 0; i < informationData.length; i++) {
@@ -717,7 +718,7 @@ const encryption = async (key) => {
 };
 // 请求key
 const getKey = () => {
-  return fetch(`${HOST}/keys/?open_id=00001`)
+  return fetch(`${HOST}/keys/?open_id=heart`)
     .then((res) => res.json())
     .then((data) => {
       if (data.code === 200) {
@@ -741,7 +742,7 @@ const isSupportCarouselAndStart = () => {
   setInterval(() => {
     box.setAttribute(
       "style",
-      `background-image: url(${HOST + "/media/" + JSONImgUrl[flag]});`
+      `background-image: url(${HOST2 + "/media/" + JSONImgUrl[flag]});`
     );
     flag = flag + 1 > 2 ? 0 : flag + 1;
   }, 4000);
@@ -797,7 +798,7 @@ const getExpireTime = async () => {
 };
 // 获取该投票用户最近一次投票时间
 const getUserRecentVote = async () => {
-  let result = await fether(`/recentvoterecord/?open_id=wxtest6`);
+  let result = await fether(`/recentvoterecord/?open_id=heart`);
   if (result.length === 0) {
     welcomeState.state = false;
     return;
