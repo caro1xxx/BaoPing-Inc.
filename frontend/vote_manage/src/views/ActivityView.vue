@@ -175,6 +175,11 @@
           </svg>
         </div>
       </div>
+      <div
+        v-for="item in completeItem"
+        class="home_body_for"
+        style="background-color: #f9f9f9; height: 150px; box-shadow: none"
+      ></div>
     </div>
   </div>
 </template>
@@ -191,6 +196,14 @@ import VueQrcode from "vue-qrcode";
 
 const $store = new useStore();
 const voteList = reactive([]);
+const completeItem = reactive([]);
+// 在大分辨率下手动增加item个数
+const addItemLength = () => {
+  if (voteList.length > 10) return;
+  for (let i = 0; i <= 15 - voteList.length; i++) {
+    completeItem.push(i);
+  }
+};
 
 // 获取活动列表
 const getVoteList = async () => {
@@ -212,8 +225,8 @@ const isAxiosStatus = async (data, status) => {
     JSONResult.forEach((item) => {
       voteList.push({ ...item, isQr: false });
     });
-    console.log(voteList);
     localStorage.setItem("vote", JSON.stringify(voteList));
+    addItemLength();
   } else {
     // 请求发送错误
     await $store.dispatch("refreshErroActions");
