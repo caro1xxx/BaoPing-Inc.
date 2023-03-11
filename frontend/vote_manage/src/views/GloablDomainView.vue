@@ -64,10 +64,13 @@ import { useStore } from "vuex";
 import Cookies from "js-cookie";
 const $store = new useStore();
 
+// 域名管理数据
+const realmAddData = reactive({ data: [] });
+
 const isAxiosStatus = async (data, status) => {
   if (data.code === 200) {
     if (status === false) {
-      realmAddData.splice(0, realmAddData.length);
+      realmAddData.data.splice(0, realmAddData.length);
     }
     realmAddData.data = [];
     let Arr = [];
@@ -83,8 +86,7 @@ const isAxiosStatus = async (data, status) => {
   //关闭加载loading
   $store.commit("noticifyLoading", false);
 };
-// 域名管理数据
-const realmAddData = reactive({ data: [] });
+
 
 // 获取域名列表
 const getRealm = async () => {
@@ -184,6 +186,7 @@ const openDialog = () => {
 watch(
   () => $store.state.filterData,
   (newVal) => {
+    console.log(111111);
     isAxiosStatus(newVal, false);
   }
 );

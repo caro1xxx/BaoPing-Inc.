@@ -46,8 +46,8 @@ const state = reactive({
   bottom: 0px;
   z-index: 6;
   display: flex;
-  align-items: end;
-  justify-content: end;
+  align-items: flex-end;
+  justify-content: flex-end;
 }
 .close {
   position: absolute;

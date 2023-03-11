@@ -27,61 +27,70 @@ const contentBox = reactive({
 
 const query = async (e) => {
   if (e.code === "Enter") {
-    contentBox.searchValue = e.target.value
+    if (e.target.value === '') {
+      contentBox.searchValue = ''
+    } else {
+      contentBox.searchValue = e.target.value
+    }
     switch ($router.currentRoute.value.fullPath) {
       case "/system/systemuser":
-        if (e.target.value.length > 5) { // 用户名
-          contentBox.searchKey = 'username'
-        } else { //姓名
-          contentBox.searchKey = 'name'
-        }
         if (contentBox.searchValue) {
+          if (e.target.value.length > 4) { // 用户名
+            contentBox.searchKey = 'username'
+          } else if (2 <= e.target.value.length <= 4) { //姓名
+            contentBox.searchKey = 'name'
+          }
           contentBox.axiosUrl = `/userinfo/?username=${jsCookie.get('username')}&token=${jsCookie.get('token')}&search_key=${contentBox.searchKey}&search_value=${contentBox.searchValue}`
         } else {
           contentBox.axiosUrl = `/userinfo/?username=${jsCookie.get('username')}&token=${jsCookie.get('token')}`
         }
         break;
       case "/system/gloabldomain": //域名
-          contentBox.searchKey = 'domain_name'
-          if (contentBox.searchValue) {
-            contentBox.axiosUrl = `/domain/?token=${jsCookie.get('token')}&search_key=${contentBox.searchKey}&search_value=${contentBox.searchValue}`
-          } else {
+        if (contentBox.searchValue) {
+            let reg = /[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/;
+            if (reg.test(contentBox.searchValue)) {
+              console.log(1);
+              contentBox.searchKey = 'domain_name'
+              contentBox.axiosUrl = `/domain/?token=${jsCookie.get('token')}&search_key=${contentBox.searchKey}&search_value=${contentBox.searchValue}`
+            } else {
+              console.log(2);
+              $store.dispatch("GlobalMessageActions", '域名格式不正确');
+            }
+        } else {
             contentBox.axiosUrl = `/domain/?token=${jsCookie.get('token')}`
           }
         break;
       case "/message/prizeapplication":
-        if (e.target.value.length > 8) { // 手机号
+        if (e.target.value.length) { // 手机号
           contentBox.searchKey = 'phone_number'
-          if (contentBox.searchValue) {
-            contentBox.axiosUrl = `/applyprize/?token=${jsCookie.get('token')}&search_key=${contentBox.searchKey}&search_value=${contentBox.searchValue}`
-          } else {
-            contentBox.axiosUrl = `/applyprize/?token=${jsCookie.get('token')}`
-          }
+          contentBox.axiosUrl = `/applyprize/?token=${jsCookie.get('token')}&search_key=${contentBox.searchKey}&search_value=${contentBox.searchValue}`
+        } else {
+          contentBox.axiosUrl = `/applyprize/?token=${jsCookie.get('token')}`
         }
         break;
       case "/vote/activity":
-        if (e.target.value.length === 6) { // 活动参数
-          contentBox.searchKey = 'vote_id'
-        } else { ///创建者
-          contentBox.searchKey = 'create_user__name'
-        }
         if (contentBox.searchValue) {
+          if (e.target.value.length === 6) { // 活动参数
+            contentBox.searchKey = 'vote_id'
+          } else { ///创建者
+            contentBox.searchKey = 'create_user__name'
+          }
           contentBox.axiosUrl = `/voteactivity/?token=${jsCookie.get('token')}&search_key=${contentBox.searchKey}&search_value=${contentBox.searchValue}`
         } else {
           contentBox.axiosUrl = `/voteactivity/?token=${jsCookie.get('token')}`
         }
         break;
       case "/order/paymentrecord":  //支付订单号
-          contentBox.searchKey = 'payment_order_id'
-          if (contentBox.searchValue) {
+      if (contentBox.searchValue) {
+            contentBox.searchKey = 'payment_order_id'
             contentBox.axiosUrl = `/paymentrecord/?token=${jsCookie.get('token')}&search_key=${contentBox.searchKey}&search_value=${contentBox.searchValue}`
           } else {
             contentBox.axiosUrl = `/paymentrecord/?token=${jsCookie.get('token')}`
           }
         break;
       case "/parent/voteparent": // open_id
-          contentBox.searchKey = 'open_id'
-          if (contentBox.searchValue) {
+      if (contentBox.searchValue) {
+            contentBox.searchKey = 'open_id'
             contentBox.axiosUrl = `/voteuser/?token=${jsCookie.get('token')}&search_key=${contentBox.searchKey}&search_value=${contentBox.searchValue}`
           } else {
             contentBox.axiosUrl = `/voteuser/?token=${jsCookie.get('token')}`
