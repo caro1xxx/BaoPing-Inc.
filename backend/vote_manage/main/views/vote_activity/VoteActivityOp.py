@@ -51,10 +51,6 @@ class VoteActivityOp:
         ok, msg = self.checkVoteIdIsExist(data.get('vote_id', None))
         if not ok:
             return False, msg
-        if data.get('today_start_voteuser_open_id', None) not in ['', None]:
-            ok, msg = self.checkVoteuserIsExist(data.get('today_start_voteuser_open_id', None))
-            if not ok:
-                return ok, msg
         validate = Validate()
         validate.addCheck('checkIsNotEmpty', data.get('today_star_update_begin_time', None), '今日之星开始时间不能为空')
         # validate.addCheck('checkIsNumber', data.get('today_star_update_begin_time', None), '今日之星开始时间错误')
@@ -82,7 +78,8 @@ class VoteActivityOp:
         return ok, msg
         if not ok:
             return ok, msg
-        ok, msg = self.checkVoteuserIsExist(data.get('auto_comment_voteuser_open_id', None))
+        # print('ttt', data.get('today_start_voteuser_open_id', None))
+        ok, msg = self.checkVoteTargetIsExist(data.get('today_start_voteuser_open_id', None))
         return ok, msg
     
     def checkAutoCommentData(self, data):

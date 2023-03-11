@@ -22,7 +22,7 @@ class VoteActivity(APIView):
 
             # data, ret['page_count'] = myPaginator(obj, 10, request.GET.get('page_num', 1))
             # ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
-            ret['data'], ret['page_count'] = Common().getData(request, 'VoteActivity')
+            ret['data'], ret['page_count'] = Common().getData(request, 'VoteActivity', desc_order=True)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}

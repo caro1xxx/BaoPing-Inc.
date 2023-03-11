@@ -25,7 +25,9 @@ class Common:
         else:
             table = getattr(models, tableName, None)
             data =[{},] if table is None else table.objects.all()
-
+        
+        # print(kwargs.get('desc_order', False))
+        data = data.order_by('-pk') if kwargs.get('desc_order', False) else data.order_by('pk')
         maxSize = kwargs.get('maxsize', 10) 
         data, pageCount = myPaginator(data, maxSize, pageNum)
         data = serializers.serialize('json', data, use_natural_foreign_keys=True)

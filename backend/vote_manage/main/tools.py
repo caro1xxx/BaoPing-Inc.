@@ -161,7 +161,7 @@ def myPaginator(data, maxSize, pageNum=1):
     if type(list()) == type(data):
         paginator = Paginator(data, maxSize)
     else:
-        paginator = Paginator(data.order_by('pk'), maxSize)
+        paginator = Paginator(data, maxSize)
     pageNum = int(pageNum)
     pageCount = paginator.num_pages
     if pageNum > pageCount:
