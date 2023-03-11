@@ -74,6 +74,13 @@ const returnPage1 = () => {
   };
   emit("returnPage1", params);
 };
+const returnPage2 = () => {
+  let params = {
+    status: false,
+    data: props.data
+  };
+  emit("returnPage2", params);
+};
 
 const support = async (e)  => {
   e.stopPropagation();
@@ -119,6 +126,8 @@ const support = async (e)  => {
           key: sercet,
         },
       });
+      if (!result) return;
+      returnPage2()
     }
   }
 };

@@ -9,6 +9,7 @@
     :data="welcomeState"
     @returnPage="getData"
     @returnPage1="getData1"
+    @returnPage2="getData2"
     v-if="welcomeState.state"
   />
   <athleteInformation
@@ -16,6 +17,7 @@
     @returnPage="getChild"
     @returnPage1="getChild1"
     @returnPage2="getChild2"
+    @returnPage3="getChild3"
     :data="informationKey"
   />
   <customerService
@@ -417,6 +419,7 @@ const enrollStatus = reactive({
     },
   },
 });
+console.log(enrollStatus);
 // 是否显示欢迎回来页面
 const welcomeState = reactive({
   state: false,
@@ -520,6 +523,11 @@ const getChild2 = (value) => {
   verificationCodeData.rank = value.data.rank;
   verificationCodeData.count = value.data.count;
 };
+const getChild3 = (value) => {
+  enrollStatus.isVerificationCode = false;
+  successData.state = true
+  successData.data = value.data;
+};
 const downVerificationCode = () => {
   enrollStatus.isVerificationCode = false;
 };
@@ -533,6 +541,11 @@ const getData1 = (value) => {
   verificationCodeData.pk = value.data.pk;
   verificationCodeData.name = value.data.name;
   verificationCodeData.avator = value.data.img;
+};
+const getData2 = (value) => {
+  enrollStatus.isVerificationCode = true;
+  welcomeState.state = false;
+  successData.data = value.data;
 };
 const downStateAdv = () => {
   $store.state.settings[11].value = false;
