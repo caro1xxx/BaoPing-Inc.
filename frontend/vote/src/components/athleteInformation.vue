@@ -255,7 +255,7 @@ const check = async () => {
     data: {
       vote_target_id: props.data,
       vote_user_open_id: "heart",
-      content: commtentData.value,
+      content: commtentData._value.value,
     },
   });
   if (!result) {
@@ -264,10 +264,11 @@ const check = async () => {
   }
   getUserComment();
   $store.commit("chengePublicData", "评论成功");
-  // 当评论成功时清空评论
-  let input = document.getElementsByTagName("input");
-  input[0].value = "";
-  commtentData.value = "";
+  setTimeout(() => {
+    // 当评论成功时清空评论
+    let input = document.getElementsByTagName("input");
+    input[0].value = "";
+  },1000)
 };
 
 const downStateAdv = () => {
