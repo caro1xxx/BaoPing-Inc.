@@ -23,8 +23,8 @@ class VoteTarget(APIView):
                 return JsonResponse({'code': 400, 'msg': 'not found'})
 
             data = voteTargetObj
-            data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
-            ret['data'] = serializers.serialize('json', voteTargetObj)
+            data, ret['page_count'] = myPaginator(data, 5, request.GET.get('page_num', 1))
+            ret['data'] = serializers.serialize('json', data)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
@@ -53,5 +53,5 @@ class VoteTarget(APIView):
             
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)

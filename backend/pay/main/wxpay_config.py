@@ -1,0 +1,4 @@
+WXPAY_MCHID = '1604021966'
+WXPAY_APPID = 'wx0656a23d2fe51585'
+WXPAY_NOTIFY_URL = 'https://www.weixin.qq.com/wxpay/pay.php'
+WXPAY_APP_KEY = 'd62f7bdd97274df436f010320b82f9a0'

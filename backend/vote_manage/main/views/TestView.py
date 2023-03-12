@@ -15,7 +15,6 @@ from vote_manage import settings
 from openpyxl import load_workbook
 from main.views.vote_target.VoteTargetOp import VoteTargetOp
 from main.views.Common import Common
-from main.views.wxpay.wxpay import *
 
 
 class TestView(APIView):
@@ -23,7 +22,6 @@ class TestView(APIView):
         ret = {}
         try:
             # wxpay = Wxpay()
-            test()  
             pass
             
         except Exception as e:

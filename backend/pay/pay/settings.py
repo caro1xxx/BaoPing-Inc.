@@ -25,7 +25,10 @@ SECRET_KEY = 'django-insecure-k+cm7pv&df)6pup)x)1sq-^8zwg4+88bcandf4(avu1fggyp3m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    '172.17.0.1',
+    '172.17.0.2',
+]
 
 
 # Application definition
@@ -51,7 +54,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'main.middlewares.CheckTokenMiddleware.CheckTokenMiddleware',
 ]
 
 ROOT_URLCONF = 'pay.urls'
@@ -80,8 +82,12 @@ WSGI_APPLICATION = 'pay.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'vote',
+        'USER': 'vote',
+        'PASSWORD': 'adminadmin',
+        'HOST':'172.17.0.1',
+        'PORT':'3306',
     }
 }
 
