@@ -30,6 +30,15 @@
           </template>
         </el-table-column>
         <el-table-column prop="name" label="礼物名称" />
+        <el-table-column prop="img" label="图片"
+          ><template #default="scope">
+            <img
+              width="30"
+              height="30"
+              :src="HOST + '/media/' + scope.row.img"
+              alt=""
+            /> </template
+        ></el-table-column>
         <el-table-column prop="value" label="价值/赞">
           <template #default="scope">
             <div>{{ scope.row.value }}个赞</div>
@@ -62,6 +71,7 @@ import { useStore } from "vuex";
 import { fether } from "@/utils/fether";
 import Cookies from "js-cookie";
 import jsCookie from "js-cookie";
+import { HOST } from "@/ENV";
 const $store = new useStore();
 // 投票记录数据
 const voteNotesData = reactive([]);
