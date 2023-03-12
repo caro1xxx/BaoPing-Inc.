@@ -62,7 +62,7 @@
         您的浏览器不支持 video 标签。
       </video>
     </div>
-    <div class="content">
+    <div class="content" @scroll="scrollEvent($event)">
       <div class="content_top" id="Carousel">
         <div class="content_top_center">
           <!-- 最强企业评选 -->
@@ -420,6 +420,10 @@ const enrollData = reactive({
   athletename: "",
   file: fileData,
 });
+  // 触发到底部次数
+  let buttonNum = 1
+  // 选手列表最大页码
+  let athletePageNum = 0
 // 状态
 const enrollStatus = reactive({
   isEnrollProp: false,
@@ -584,16 +588,48 @@ const downStateAdv = () => {
 };
 //获取选手列表
 const getInformation = async () => {
-  let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}`);
-  result.map((item) => {
-    informationData.push({ ...item.fields, pk: item.pk, model: item.model });
-  });
-  // 数组排序
-  informationData.sort((a, b) => {
-    return b.count - a.count;
-  });
+  fetch(`${HOST}/votetarget/?vote_id=${$route.query.vote_id}`, { method: "get" })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.code === 200) {
+        athletePageNum = data.page_count
+        JSON.parse(data.data).map((item) => {
+          informationData.push({ ...item.fields, pk: item.pk, model: item.model });
+        });
+        // 数组排序
+        informationData.sort((a, b) => {
+          return b.count - a.count;
+        });
+        console.log(informationData);
+      }
+    });
 };
 getInformation();
+
+// 监听滚动
+const scrollEvent = async (e) => {
+  // 距离顶部的位置
+  // console.log(e.currentTarget.scrollTop);
+  // 可视区域高度
+  // console.log(e.currentTarget.clientHeight);
+  // 滚动条高度
+  // console.log(e.currentTarget.scrollHeight);
+  // 快要滚动到底部时发送请求
+  if (Math.ceil(e.currentTarget.scrollTop + e.currentTarget.clientHeight) >= e.currentTarget.scrollHeight) {   //容差：20px
+    buttonNum+=1;
+    if (buttonNum <= athletePageNum) {  
+      let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}&page_num=${buttonNum}`);
+      result.map((item) => {
+        informationData.push({ ...item.fields, pk: item.pk, model: item.model });
+      });
+      informationData.sort((a, b) => {
+        return b.count - a.count;
+      });
+    }
+
+  }
+}
+
 // 点击按钮分发到file click事件
 const dispatchUpload = () => {
   let box = document.getElementById("fileImage");
@@ -654,7 +690,7 @@ const submit = async () => {
       if (data.code === 200) {
         enrollStatus.isEnrollProp = false;
         //刷新列表数据
-        getInformation();
+        // getInformation();
       }
     });
 };
