@@ -449,7 +449,7 @@ const enrollStatus = reactive({
     },
   },
 });
-console.log(enrollStatus);
+
 // 是否显示欢迎回来页面
 const welcomeState = reactive({
   state: false,
@@ -691,6 +691,7 @@ const like = async (target, index) => {
       verificationCodeData.name = target.name;
       verificationCodeData.avator = target.avator;
       verificationCodeData.count = target.count;
+      verificationCodeData.index = index;
       verificationCodeData.rank = index + 1;
     } else {
       // 没有开启验证码弹窗时点击直接发送点赞请求
@@ -708,13 +709,16 @@ const like = async (target, index) => {
           key: sercet,
         },
       });
+      if (!result) {
+        $store.commit('chengePublicData', '点赞失败')
+        return;
+      };
       // 开启二维码弹幕
       if ($store.state.settings[26].value) {
         enrollStatus.isOpenQscode = true;
         // 开启验证码弹窗
       }
       // 点赞成功刷新显示数量
-      if (!result) return;
       for (let i = 0; i < informationData.length; i++) {
         if (informationData[i].pk === target.pk) {
           informationData[i].count += 1;
