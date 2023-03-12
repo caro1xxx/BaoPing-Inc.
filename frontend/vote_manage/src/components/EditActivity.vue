@@ -115,13 +115,10 @@
             placeholder="选择日期"
           />
           <el-time-picker
+            style="width: 95%"
             v-else-if="item.type === 'time'"
             v-model="item.value"
-            style="width: 95%"
-            is-range
-            range-separator="至"
-            start-placeholder="开始时间"
-            end-placeholder="结束时间"
+            placeholder="Arbitrary time"
           />
           <el-switch v-else-if="item.type === 'radio'" v-model="item.value" />
           <div v-else-if="item.type === 'limit'" style="margin: 5px 0px">
@@ -275,15 +272,37 @@
             >
               <div v-if="item.label !== '轮播图'" class="file_style">
                 {{ item.value.value }}
+                <svg
+                  @click="deleteImg(item.key, index, '_')"
+                  t="1678436892792"
+                  class="icon"
+                  viewBox="0 0 1024 1024"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  p-id="1472"
+                  width="15"
+                  height="15"
+                >
+                  <path
+                    d="M512 960c-247.039484 0-448-200.960516-448-448S264.960516 64 512 64 960 264.960516 960 512 759.039484 960 512 960zM512 128.287273c-211.584464 0-383.712727 172.128262-383.712727 383.712727 0 211.551781 172.128262 383.712727 383.712727 383.712727 211.551781 0 383.712727-172.159226 383.712727-383.712727C895.712727 300.415536 723.551781 128.287273 512 128.287273z"
+                    fill="#d81e06"
+                    p-id="1473"
+                  ></path>
+                  <path
+                    d="M557.05545 513.376159l138.367639-136.864185c12.576374-12.416396 12.672705-32.671738 0.25631-45.248112s-32.704421-12.672705-45.248112-0.25631l-138.560301 137.024163-136.447897-136.864185c-12.512727-12.512727-32.735385-12.576374-45.248112-0.063647-12.512727 12.480043-12.54369 32.735385-0.063647 45.248112l136.255235 136.671523-137.376804 135.904314c-12.576374 12.447359-12.672705 32.671738-0.25631 45.248112 6.271845 6.335493 14.496116 9.504099 22.751351 9.504099 8.12794 0 16.25588-3.103239 22.496761-9.247789l137.567746-136.064292 138.687596 139.136568c6.240882 6.271845 14.432469 9.407768 22.65674 9.407768 8.191587 0 16.352211-3.135923 22.591372-9.34412 12.512727-12.480043 12.54369-32.704421 0.063647-45.248112L557.05545 513.376159z"
+                    fill="#d81e06"
+                    p-id="1474"
+                  ></path>
+                </svg>
               </div>
-              <div v-else>
+              <div v-else class="carooul">
                 <div
                   v-for="(childItem, index) in item.value.value"
                   class="file_style"
                 >
                   {{ childItem }}
                   <svg
-                    @click="deleteImg(item.key, index)"
+                    @click="deleteImg(item.key, index, '轮播图')"
                     t="1678436892792"
                     class="icon"
                     viewBox="0 0 1024 1024"
@@ -382,12 +401,7 @@ const getStorage = () => {
       voteSetting[1].value = obj.today_start_voteuser
         ? obj.today_start_voteuser
         : "空";
-      voteSetting[2].value[0] = stampToUTCtime(
-        obj.today_star_update_begin_time
-      );
-      voteSetting[2].value[1] = stampToUTCtime(
-        obj.today_star_update_begin_time
-      );
+      voteSetting[2].value = stampToUTCtime(obj.today_star_update_begin_time);
       voteSetting[3].value = obj.allowed_alone_everyday_vote_count;
       voteSetting[4].value = obj.allowed_alone_everyhour_vote_count;
       voteSetting[5].value = obj.open_today_star_with * 1000;
@@ -462,7 +476,7 @@ const voteSetting = reactive([
     type: "abc",
   },
   { label: "今日之星选手id(选手id)", key: 7, value: "", type: "text" },
-  { label: "每日今日之星更新时间", key: 5, value: [], type: "time" },
+  { label: "每日今日之星更新时间", key: 5, value: "", type: "time" },
   { label: "每人单日投票上限", key: 2, value: "", type: "number" },
   { label: "用户每小时投票上限", key: 3, value: "", type: "number" },
   { label: "开启今日之星日期", key: 4, value: "", type: "date" },
@@ -645,8 +659,8 @@ const saveEditData = async () => {
           vote_count_restrict: voteSetting[0].value,
           today_start_voteuser_open_id:
             voteSetting[1].value === "空" ? "" : voteSetting[1].value,
-          today_star_update_begin_time: timeToStamp(voteSetting[2].value[0]),
-          today_star_update_end_time: timeToStamp(voteSetting[2].value[1]),
+          today_star_update_begin_time: timeToStamp(voteSetting[2].value),
+          today_star_update_end_time: 123123213,
           allowed_alone_everyday_vote_count: voteSetting[3].value,
           allowed_alone_everyhour_vote_count: voteSetting[4].value,
           open_today_star_with: new Date(voteSetting[5].value).getTime() / 1000,
@@ -783,11 +797,15 @@ const uploaderFIles = async (type, key, files) => {
     });
 };
 
-// 删除轮播图图片
-const deleteImg = (key, no) => {
+// 删除图片
+const deleteImg = (key, no, type) => {
   others.forEach((item, index) => {
     if (item.key === key) {
-      others[index].value.value.splice(no, 1);
+      if (type === "轮播图") {
+        others[index].value.value.splice(no, 1);
+      } else {
+        others[index].value.value = "";
+      }
     }
   });
 };
@@ -914,5 +932,9 @@ onMounted(() => {
     right: 5px;
     top: 2px;
   }
+}
+.carooul {
+  height: 100px;
+  overflow: scroll;
 }
 </style>

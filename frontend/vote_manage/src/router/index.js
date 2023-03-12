@@ -14,13 +14,20 @@ import PaymentRecordView from "../views/PaymentRecordView.vue";
 import VoteParentView from "../views/VoteParentView.vue";
 import PrizeView from "../views/PrizeView.vue";
 import GlobalSettingsView from "../views/GlobalSettingsView.vue";
-
+import CommentView from "../views/CommentView.vue";
+import ProgressTaskView from "../views/ProgressTaskView.vue";
 const routes = [
   // 登录注册
   {
     path: "/auth",
     name: "auth",
     component: AuthView,
+  },
+  // 任务
+  {
+    path: "/progresstask",
+    name: "ProgressTaskView",
+    component: ProgressTaskView,
   },
   // 数据概括
   {
@@ -57,6 +64,12 @@ const routes = [
     path: "/message/prizeapplication",
     name: "prizeapplication",
     component: PrizeApplicationView,
+  },
+  // 评论
+  {
+    path: "/message/comment",
+    name: "CommentView",
+    component: CommentView,
   },
   // 投票活动
   {

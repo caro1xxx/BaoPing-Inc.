@@ -52,7 +52,7 @@ class VoteTarget(APIView):
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
 
         return JsonResponse(ret)
     
@@ -63,6 +63,7 @@ class VoteTarget(APIView):
             name = json.loads(request.body).get('name', None)
             detail = json.loads(request.body).get('detail', None)
             count = json.loads(request.body).get('count', None)
+            status = json.loads(request.body).get('status', None)
 
             ok, msg = VoteTargetOp().checkDataOnUpdate(name, detail, count, pk)
             if not ok:
@@ -75,6 +76,7 @@ class VoteTarget(APIView):
             voteTargetObj.name = name
             voteTargetObj.detail = detail
             voteTargetObj.count = count
+            voteTargetObj.status = status
             voteTargetObj.save()
         
         except Exception as e:

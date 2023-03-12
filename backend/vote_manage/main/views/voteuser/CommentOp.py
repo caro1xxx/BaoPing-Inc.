@@ -26,7 +26,7 @@ class CommentOp:
             vote_user_id = data['vote_user_open_id'],
             content = data['content'],
             create_time = getNowTimeStamp(),
-            status = 0
+            status = data.get('status', 0)
         )
 
     def checkDataOnUpdate(self, data):
@@ -58,6 +58,9 @@ class CommentOp:
     
     def queryWithVoteActivity(self, voteTargetId):
         return models.CommentRecord.objects.filter(vote_target_id=voteTargetId).exclude(status=0).order_by('create_time')
+    
+    def all(self):
+        return models.CommentRecord.objects.all().order_by('-create_time')
 
     def checkDataOnDelete(self, pk):
         data = {'pk': pk}

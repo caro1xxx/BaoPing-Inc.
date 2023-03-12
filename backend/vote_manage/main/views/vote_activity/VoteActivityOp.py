@@ -2,9 +2,10 @@ from rest_framework.views import APIView
 from django.core import serializers
 from django.http import JsonResponse
 from main import models
-from main.tools import generateCode6
+from main.tools import generateCode6, getNowTimeStamp
 import json
 from main.tools import Validate
+from vote_manage import settings
 
 
 class VoteActivityOp:
@@ -17,6 +18,11 @@ class VoteActivityOp:
         if models.VoteUser.objects.filter(open_id=voteuserOpen_id).first() is None:
             return False, '该用户不存在'
         return True, '用户名重复'
+
+    def checkVoteTargetIsExist(self, voteTargetId):
+        if models.VoteTarget.objects.filter(pk=voteTargetId).first() is None:
+            return False, '该选手不存在'
+        return True, '选手重复'
 
     def checkActivityData(self, data):
         ok, msg = self.checkVoteIdIsExist(data.get('vote_id', None))
@@ -45,10 +51,6 @@ class VoteActivityOp:
         ok, msg = self.checkVoteIdIsExist(data.get('vote_id', None))
         if not ok:
             return False, msg
-        if data.get('today_start_voteuser_open_id', None) not in ['', None]:
-            ok, msg = self.checkVoteuserIsExist(data.get('today_start_voteuser_open_id', None))
-            if not ok:
-                return ok, msg
         validate = Validate()
         validate.addCheck('checkIsNotEmpty', data.get('today_star_update_begin_time', None), '今日之星开始时间不能为空')
         # validate.addCheck('checkIsNumber', data.get('today_star_update_begin_time', None), '今日之星开始时间错误')
@@ -76,7 +78,8 @@ class VoteActivityOp:
         return ok, msg
         if not ok:
             return ok, msg
-        ok, msg = self.checkVoteuserIsExist(data.get('auto_comment_voteuser_open_id', None))
+        # print('ttt', data.get('today_start_voteuser_open_id', None))
+        ok, msg = self.checkVoteTargetIsExist(data.get('today_start_voteuser_open_id', None))
         return ok, msg
     
     def checkAutoCommentData(self, data):
@@ -103,7 +106,7 @@ class VoteActivityOp:
         ok, msg = validate.startCheck()
         if not ok:
             return ok, msg
-        ok, msg = self.checkVoteuserIsExist(data.get('auto_comment_voteuser_open_id', None))
+        ok, msg = self.checkVoteTargetIsExist(data.get('auto_comment_voteuser_open_id', None))
         return ok, msg
     
     def checkTemplateData(self, data):
@@ -167,6 +170,21 @@ class VoteActivityOp:
             voteActivityObj.auto_comment_space_minute = data.get('auto_comment_space_minute', None)
             voteActivityObj.auto_comment_everyday_count_strict = data.get('auto_comment_everyday_count_strict', None)
             voteActivityObj.save()
+            models.AutoComment.objects.filter(vote_id=data['vote_id']).delete()
+            models.AutoComment.objects.create(
+                vote_id = data['vote_id'],
+                vote_target_id = data['auto_comment_voteuser_open_id'],
+                begin_time = data['auto_comment_begin_time'],
+                end_time = data['auto_comment_end_time'],
+                day_begin_time = data['auto_comment_everyday_begin_time'],
+                day_end_time = data['auto_comment_everyday_end_time'],
+                space = data['auto_comment_space_minute'],
+                day_count_strict = data['auto_comment_everyday_count_strict'],
+                update_time = getNowTimeStamp(),
+                day_vote_count = 0
+            )
+        else:
+            models.AutoComment.objects.filter(vote_id=data['vote_id']).delete()
 
     def updateTemplateData(self, data):
         voteActivityObj = models.VoteActivity.objects.filter(vote_id=data.get('vote_id', None)).first()
@@ -181,19 +199,18 @@ class VoteActivityOp:
     def updateOtherData(self, data):
         voteActivityObj = models.VoteActivity.objects.filter(vote_id=data.get('vote_id', None)).first()
         voteActivityObj.top_roll_text = data['top_roll_text']
-        voteActivityObj.start_adv_img = data['start_adv_img']
         voteActivityObj.bottom_text = data['bottom_text']
+        voteActivityObj.bottom_support_text = data['bottom_support_text']
+        voteActivityObj.bottom_copyright = data['bottom_copyright']
+        voteActivityObj.vote_button_name = data['vote_button_name']
+        voteActivityObj.vote_unit_name = data['vote_unit_name']
+        voteActivityObj.popup = data['popup']
+        voteActivityObj.track_report = data['track_report']
         voteActivityObj.video_adv = data['video_adv']
-        # voteActivityObj.target_video_adv = data['target_video_adv']
-        # voteActivityObj.bottom_support_text = data['bottom_support_text']
-        # voteActivityObj.carousel_list = data['carousel_list']
-        # voteActivityObj.temp_file = data['temp_file']
-        # voteActivityObj.bottom_copyright = data['bottom_copyright']
-        # voteActivityObj.officialcount_qrcode = data['officialcount_qrcode']
-        # voteActivityObj.bottom_copyright = data['bottom_copyright']
-        # voteActivityObj.popup = data['popup']
-        # voteActivityObj.vote_button_name = data['vote_button_name']
-        # voteActivityObj.vote_unit_name = data['vote_unit_name']
+        voteActivityObj.target_video_adv = data['target_video_adv']
+        voteActivityObj.officialcount_qrcode = data['officialcount_qrcode']
+        voteActivityObj.carousel_list = data['carousel_list']
+        voteActivityObj.start_adv_img = data['start_adv_img']
         voteActivityObj.save()
 
     def queryAllVoteuser(self, vote_id):
@@ -203,3 +220,26 @@ class VoteActivityOp:
     def queryAllPayment(self, vote_id):
         paymentRecordObj = models.PaymentRecord.objects.filter(vote_activity_id=vote_id)
         return paymentRecordObj
+
+    # def addCarousel(self, data):
+    #     voteActivityObj = models.VoteActivity.objects.filter(vote_id=data.get('vote_id', None)).first()
+    #     carouselList = json.loads(voteActivityObj.carousel_list)
+    #     img = data['img']
+    #     carouselList.append(settings.MEDIA_ROOT + '/temp/' + img.name)
+    #     carouselList = json.dumps(carouselList)
+
+    #     voteActivityObj.carousel_list = carouselList
+    #     voteActivityObj.save()
+
+    # def deleteCarousel(self, data):
+    #     voteActivityObj = models.VoteActivity.objects.filter(vote_id=data.get('vote_id', None)).first()
+    #     carouselList = json.loads(voteActivityObj.carousel_list)
+    #     img = data['img']
+    #     imgIdx = data['img_idx']
+
+    #     carouselList.pop(imgIdx)
+    #     carouselList = json.dumps(carouselList)
+
+    #     voteActivityObj.carousel_list = carouselList
+    #     voteActivityObj.save()
+    

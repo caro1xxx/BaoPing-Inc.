@@ -11,7 +11,7 @@ class Settings(APIView):
     def get(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
-            ret['data'], ret['page_count'] = Common().getData(request, 'Settings', maxsize=40)
+            ret['data'], ret['page_count'] = Common().getData(request, 'Settings', maxsize=100)
             del ret['page_count']
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}

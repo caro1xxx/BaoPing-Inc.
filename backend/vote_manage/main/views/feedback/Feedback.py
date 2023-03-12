@@ -28,7 +28,7 @@ class Feedback(APIView):
             #     tmp['content'] = feedback.content
             #     tmp['create_time'] = feedback.create_time
             #     data.append(tmp)
-            data = feedbackObj
+            data = feedbackObj.order_by('-pk')
             data, ret['page_count'] = myPaginator(data, 10, request.GET.get('page_num', 1))
             ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
 

@@ -22,7 +22,7 @@ class VoteActivity(APIView):
 
             # data, ret['page_count'] = myPaginator(obj, 10, request.GET.get('page_num', 1))
             # ret['data'] = serializers.serialize('json', data, use_natural_foreign_keys=True)
-            ret['data'], ret['page_count'] = Common().getData(request, 'VoteActivity')
+            ret['data'], ret['page_count'] = Common().getData(request, 'VoteActivity', desc_order=True)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
@@ -66,7 +66,12 @@ class VoteActivity(APIView):
                 vote_id = generateCode6(),
                 create_time = data['create_time'],
                 expire_time = data['expire_time'],
-            ).save()
+                vote_enroll_begin_time = data['create_time'],
+                vote_enroll_end_time = data['create_time'],
+                auto_comment_begin_time = data['create_time'],
+                auto_comment_end_time = data['create_time'],
+                carousel_list = '[\"' + 'img/' + data['img'].name + '\"]'
+            )
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
@@ -77,7 +82,6 @@ class VoteActivity(APIView):
         ret = {'code': 200, 'msg': '修改成功'}
         try:
             data = json.loads(request.body).get('data', None)
-            print(data)
 
             if data is None:
                 return JsonResponse({'code': 400, 'msg': '数据错误'})
@@ -109,6 +113,13 @@ class VoteActivity(APIView):
                 if not ok:
                     return JsonResponse({'code': 400, 'msg': msg})
                 voteActivityOp.updateTemplateData(data)
+            
+            elif content == 'other':
+                ok, msg = voteActivityOp.checkOtherData(data)
+                if not ok:
+                    return JsonResponse({'code': 400, 'msg': msg})
+                voteActivityOp.updateOtherData(data)
+
             else:
                 return JsonResponse({'code': 400, 'msg': '参数错误'})
             

@@ -1,6 +1,8 @@
 from main import models
 from main.tools import myPaginator
 from django.core import serializers
+from vote_manage import settings
+import os
 
 
 class Common:
@@ -23,8 +25,25 @@ class Common:
         else:
             table = getattr(models, tableName, None)
             data =[{},] if table is None else table.objects.all()
-
+        
+        # print(kwargs.get('desc_order', False))
+        data = data.order_by('-pk') if kwargs.get('desc_order', False) else data.order_by('pk')
         maxSize = kwargs.get('maxsize', 10) 
         data, pageCount = myPaginator(data, maxSize, pageNum)
         data = serializers.serialize('json', data, use_natural_foreign_keys=True)
         return data, pageCount
+
+    def uploadFile(self, request):
+        # file = request.FILES.get('file', None)
+        # fileObj = models.TempFile.objects.create(file=file)
+        # return str(fileObj.file)
+
+        file = request.FILES.get('file')
+        category = request.POST.get('category', 'img') + '/'
+        category = category.replace('.', '')
+        f = open(os.path.join(settings.MEDIA_ROOT, category + file.name), 'wb')
+    
+        for chunk in file.chunks():
+            f.write(chunk)
+        f.close()
+        return category + file.name

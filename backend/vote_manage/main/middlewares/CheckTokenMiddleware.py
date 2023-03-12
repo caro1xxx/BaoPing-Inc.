@@ -13,8 +13,7 @@ class CheckTokenMiddleware(MiddlewareMixin):
             # print('checktokenmiddleware test')
             m = str(request.method)
             pathInfo = request.path_info.replace('/', '')
-
-            if pathInfo in ['login', 'register', 'forgetpasswordsendemail', 'sendemailcode', 'statics', 'staticshistory'] or str(pathInfo).find('media') != -1:
+            if pathInfo in ['login', 'register', 'forgetpasswordsendemail', 'sendemailcode', 'statics', 'staticshistory', 'uploadfile'] or str(pathInfo).find('media') != -1:
                 return None
             if m == 'GET':
                 if pathInfo in ['settings', 'alonevoteactivity', 'votetarget']:
@@ -25,7 +24,7 @@ class CheckTokenMiddleware(MiddlewareMixin):
                 if pathInfo in ['setnewpassword']:
                     return None
 
-                if request.FILES != None:
+                if request.FILES:
                     token = request.POST.get('token', None)
                 else:
                     token = json.loads(request.body).get("token", None)

@@ -17,7 +17,7 @@ class Statics(APIView):
                 staticsObj = staticsOp.initStatics()
                 ret['data'] = serializers.serialize('json', [staticsObj]) 
             else:
-                # staticsObj = staticsOp.updateStatics()
+                staticsObj = staticsOp.updateStatics()
                 ret['data'] = serializers.serialize('json', [staticsObj]) 
             # print(ret['data'])
             return JsonResponse(ret)          

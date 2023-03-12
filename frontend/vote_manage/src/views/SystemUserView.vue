@@ -153,6 +153,10 @@ const isAxiosStatus = async (data, status) => {
 
 // 删除用户
 const deleteUser = async (target) => {
+  if (target === $store.state.userInfo.username) {
+    await $store.dispatch("GlobalMessageActions", "禁止删除自己");
+    return;
+  }
   // 开启加载loading
   await $store.dispatch("NoticifyActions", true);
   let result = await fether(

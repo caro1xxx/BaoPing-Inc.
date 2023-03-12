@@ -11,7 +11,7 @@ class Settings(APIView):
     def get(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
-            ret['data'], ret['page_count'] = Common().getData(request, 'Settings', maxsize=40)
+            ret['data'], ret['page_count'] = Common().getData(request, 'Settings', maxsize=100)
             del ret['page_count']
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
@@ -21,8 +21,9 @@ class Settings(APIView):
     def put(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': '修改成功'}
         try:
-            pk = json.loads(request.body).get('pk', None)
-            value = json.loads(request.body).get('value', 0)
+            data = json.loads(request.body).get('data', None)
+            pk = data.get('pk', None)
+            value = data.get('value', 0)
 
             if pk is None:
                 return JsonResponse({'code': 400, 'msg': '参数错误'})

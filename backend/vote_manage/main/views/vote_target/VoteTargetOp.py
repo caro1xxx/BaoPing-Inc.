@@ -19,6 +19,22 @@ class VoteTargetOp:
         if not ok:
             return ok, msg
         return True, 'ok'
+
+    def checkDataOnCreateMany(self, name, detail, voteId, count, status):
+        validate = Validate()
+        validate.addCheck('checkIsNotEmpty', name, '名称不能为空')
+        validate.addCheck('checkIsNotEmpty', detail, '详情不能为空')
+        validate.addCheck('checkIsNotEmpty', voteId, '投票ID不能为空')
+        validate.addCheck('checkIsNotEmpty', count, '投票ID不能为空')
+        validate.addCheck('checkIsNotEmpty', status, '状态不能为空')
+        validate.addCheck('checkIsNumber', status, '状态错误')
+        ok, msg = validate.startCheck()
+        if not ok:
+            return ok, msg
+        ok, msg = VoteActivityOp().checkVoteIdIsExist(voteId)
+        if not ok:
+            return ok, msg
+        return True, 'ok'
     
     def checkDataOnUpdate(self, name, detail, count, pk):
         validate = Validate()
@@ -42,7 +58,8 @@ class VoteTargetOp:
             vote_id_id = data['vote_id'],
             name = data['name'],
             detail = data['detail'],
-            count = data['count']
+            count = data['count'],
+            status = data['status']
         )
 
     # def addMany(self, file):

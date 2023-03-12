@@ -25,7 +25,7 @@ class SupportOp:
         location = getLocationFromIp(data['ip'])
         voteActivity = models.VoteActivity.objects.filter(vote_id=data['vote_id']).first()
         settingsRegion = voteActivity.allowed_vote_region
-        if settingsRegion not in ['全国', location['city']]:
+        if settingsRegion not in ['全国', location['city']] and location['city'] != 'other':
             return False, '暂不支持您所在地区投票'
         
         blankListOp = BlankListOp()
