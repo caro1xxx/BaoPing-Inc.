@@ -4,6 +4,7 @@ export default createStore({
   // 全局设置
   state: {
     settings: {},
+    currentClickAlht:0,
   },
   getters: {
   },
@@ -11,6 +12,10 @@ export default createStore({
     changeSettings(state, payload) {
       state.settings = payload;
     },
+    changeCurrentClick(state,payload){
+      if(!payload)return;
+      state.currentClickAlht = payload
+    }
   },
   actions: {
     changeSettingsActions(context, payload) {

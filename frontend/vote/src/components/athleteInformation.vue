@@ -185,6 +185,7 @@ const getAthleteInformation = async () => {
       athleteInformation.count = arr[index].count;
       athleteInformation.pk = arr[index].pk;
       athleteInformation.rank = arr[index].rank;
+      listIndex = index
     }
   });
 };
@@ -206,6 +207,7 @@ const returnPage2 = () => {
   let params = {
     status: false,
     data: athleteInformation,
+    index: listIndex
   };
   emit("returnPage2", params);
 };
@@ -213,6 +215,7 @@ const returnPage3 = () => {
   let params = {
     status: false,
     data: athleteInformation,
+    index: listIndex
   };
   emit("returnPage3", params);
 };
@@ -303,6 +306,9 @@ const check = async () => {
   });
   if (!result) return;
   getUserComment();
+    // 当评论成功时清空评论
+    let input = document.getElementsByTagName('input')
+  input[0].value = ''
 };
 
 const downStateAdv = () => {

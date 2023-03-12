@@ -429,8 +429,9 @@ const enrollStatus = reactive({
   isOpenQscode: false,
   isVerificationCode: false,
   closeVerificationCode: (value) => {
-    if (value) {
-      console.log(value, "1");
+    // 为列表刷新支持数
+    if (value && value.index !== undefined) {
+      informationData[value.index].count += 1
       successData.state = true;
       successData.data = value;
       successData.data.rank = value.rank;
@@ -556,6 +557,7 @@ const getChild3 = (value) => {
   enrollStatus.isVerificationCode = false;
   successData.state = true;
   successData.data = value.data;
+  informationData[value.index].count += 1
 };
 const downVerificationCode = () => {
   enrollStatus.isVerificationCode = false;
@@ -605,6 +607,7 @@ const showImg = () => {
     return;
   }
   const reads = new FileReader();
+  reads.readAsDataURL(file);
   const fileData1 = new FormData()
   fileData1.append('file', file)
   fetch(`${HOST2}/uploadfile/`, { method: "post", body: fileData1 })
@@ -613,8 +616,7 @@ const showImg = () => {
       if (data.code === 200) {
         fileData.append('avator', data.data.filename)
       }
-  });
-  reads.readAsDataURL(file);
+    });
   reads.onload = function (e) {
     headerImg.value = e.target.result;
     enrollData.imgUrl = e.target.result;
@@ -741,6 +743,12 @@ const athleteConfig = (e, value) => {
     enrollStatus.isAthleteConfig = true;
     // $store.commit('changeAthlete', true)
     informationKey = value;
+    for(let i=0;i<informationData.length;i++){
+      if(informationData[i].pk === value){
+        $store.commit('changeCurrentClick',informationData[i].count)
+        break;
+      } 
+    }
   }
 };
 // 支持轮播图

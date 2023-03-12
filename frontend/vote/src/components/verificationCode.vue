@@ -66,6 +66,8 @@ import Mobile from "mobile-detect";
 import { useRoute } from "vue-router";
 import { isNetWork } from "../utils/network";
 import base64 from "base-64";
+import { useStore } from "vuex";
+const $store = new useStore();
 const $route = useRoute();
 let yanzhen = "";
 //  保存正确验证码
@@ -238,6 +240,7 @@ const close = async (e) => {
       },
     });
     if (!result) return;
+    $store.commit('changeCurrentClick',props.data.count)
     props.method(props.data);
   } else {
     alert("验证码错误，请重新输入");
