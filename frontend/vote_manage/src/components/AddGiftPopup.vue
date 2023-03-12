@@ -20,7 +20,25 @@
           v-model="item.value"
           :min="1"
         />
+
         <el-switch v-model="item.value" v-else-if="item.type === 'switch'" />
+        <div v-else style="display: flex">
+          <div @click="dipatchEvent" class="uploadReplace">
+            <div>+</div>
+            <input
+              @change="uploadFile"
+              type="file"
+              id="upload"
+              style="display: none"
+            />
+          </div>
+          <img
+            v-show="imgRef"
+            class="detailImg"
+            :src="HOST + '/media/' + imgRef"
+            alt=""
+          />
+        </div>
       </div>
 
       <el-button style="color: #2460e5; width: 100%" @click="save"
@@ -53,7 +71,9 @@ const dataItem = reactive([
   { name: "礼物价值", value: "", type: "number", key: 1, state: false },
   { name: "价格", value: "", type: "number", key: 2, state: false },
   { name: "开关", value: true, type: "switch", key: 3, state: false },
+  { name: "礼物图片", value: true, type: "file", key: 3, state: false },
 ]);
+const imgRef = ref("");
 
 // 提交
 const save = async () => {
@@ -62,6 +82,7 @@ const save = async () => {
     value: dataItem[1].value,
     price: dataItem[2].value,
     status: dataItem[3].value ? 1 : 0,
+    img: imgRef.value,
   };
   let result = await fether("/gift/", "post", {
     token: jsCookie.get("token"),
@@ -75,6 +96,27 @@ const save = async () => {
     await $store.dispatch("refreshErroActions");
     await $store.dispatch("GlobalMessageActions", "操作失败,请刷新");
   }
+};
+
+// 分发事件
+const dipatchEvent = () => {
+  let box = document.getElementById("upload");
+  box.click();
+};
+
+// 上传文件
+const uploadFile = async () => {
+  let form = new FormData();
+  form.append("file", document.getElementById("upload").files[0]);
+  form.append("cotegory", "img");
+  form.append("token", jsCookie.get("token"));
+  fetch(`${HOST}/uploadfile/`, { method: "post", body: form })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.code === 200) {
+        imgRef.value = data.data.filename;
+      }
+    });
 };
 </script>
 
@@ -130,9 +172,6 @@ const save = async () => {
     width: 99%;
     height: 25px;
   }
-}
-.upload {
-  display: none;
 }
 .uploadReplace {
   height: 100px;

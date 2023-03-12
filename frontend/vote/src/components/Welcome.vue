@@ -93,9 +93,7 @@ const support = async (e) => {
     alert("投票已结束");
     // 在投票时间内
   } else {
-    if ($store.state.settings[26].value) {
-      returnPage();
-    } else if ($store.state.settings[20].value) {
+    if ($store.state.settings[67].value) {
       returnPage1();
     } else {
       //   没有开启验证码弹窗时点击直接发送点赞请求
@@ -113,7 +111,14 @@ const support = async (e) => {
           key: sercet,
         },
       });
-      if (!result) return;
+      if (!result) {
+        $store.commit('chengePublicData', '点赞失败')
+        props.data.close();
+        return;
+      };
+      if ($store.state.settings[26].value) {
+        returnPage();
+      }
       returnPage2();
     }
   }

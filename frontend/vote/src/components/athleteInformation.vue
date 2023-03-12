@@ -11,116 +11,56 @@
       style="background-color: #000"
       class="state_img"
       :src="HOST2 + '/media/' + $store.state.settings[87].value"
-      controls="controls"
       @click="(e) => e.stopPropagation()"
+      autoplay
     >
       您的浏览器不支持 video 标签。
     </video>
   </div>
   <div class="body">
+    <div class="body_top">
+      <img :src="HOST2 + '/media/' + athleteInformation.avator" alt="" />
+    </div>
+    <div class="body_top_mask">
+      <div>
+        <div class="name">{{ athleteInformation.name }}</div>
+        <div class="num">编号:{{ props.data }}</div>
+      </div>
+    </div>
     <div class="body_content">
-      <div class="body_content_brief">
-        <div class="body_content_brief_item">
-          <img
-            v-if="athleteInformation.avator"
-            :src="HOST2 + '/media/' + athleteInformation.avator"
-            alt=""
-          />
+      <div class="body_content_wrap">
+        <div class="top">
+          <div>当前票数: {{ athleteInformation.count }}</div>
+          <div>当前排名: {{ athleteInformation.rank }}</div>
         </div>
-        <div class="body_content_brief_item">
-          <div class="body_content_brief_number">编号：{{ props.data }}</div>
-          <div class="body_content_brief_name">
-            {{ athleteInformation.name }}
-          </div>
+        <div class="introduce">
+          <div class="title">选手介绍</div>
+          <div class="content" id="detail">{{ athleteInformation.detail }}</div>
+          <div class="more">查看更多</div>
         </div>
-      </div>
-      <div class="body_content_ranking">
-        <div
-          class="body_content_ranking_item"
-          style="font-size: 20px; font-weight: bold"
-        >
-          当前票数
+        <div class="comment">
+          <input type="text" ref="commtentData" v-model="commtentData.value" placeholder="请发表评论">
+          <button @click="check">评论</button>
         </div>
-        <div
-          class="body_content_ranking_item"
-          style="font-size: 20px; font-weight: bold"
-        >
-          当前排名
-        </div>
-        <div
-          class="body_content_ranking_item"
-          style="font-size: 30px; color: #33cc66"
-        >
-          {{ athleteInformation.count }}
-        </div>
-        <div
-          class="body_content_ranking_item"
-          style="font-size: 30px; color: #33cc66"
-        >
-          {{ athleteInformation.rank }}
-        </div>
-      </div>
-      <div class="body_content_sign">
-        <img
-          style="width: 30px; height: 30px; margin-right: 10px"
-          src=""
-          alt=""
-        />
-        <span>你的付出我们有目共睹</span>
-      </div>
-      <div class="body_content_detail">{{ athleteInformation.detail }}</div>
-      <!-- 评论 -->
-      <div v-if="$store.state.settings[66].value">
-        <div class="conment_body">
-          <input v-model="commtentData" type="text" class="comment_input" />
-          <div @click="check">评论</div>
-        </div>
-        <div style="font-size: 10px">提交评论后需审核后才能显示</div>
-        <div v-for="item in comments" class="comment_item">
-          <div class="comment_item_user">{{ item.vote_user }}</div>
-          <div class="comment_item_content">
-            <div class="comment_item_content_body">{{ item.content }}</div>
-            <div class="comment_item_content_time">
-              {{ parseStampTime(item.create_time) }}
+        <div class="footer" v-if="$store.state.settings[66].value">
+          <div class="title">互动</div>
+          <div class="content">
+            <div v-for="item in comments.data" class="item">
+              <div class="user">{{ item.vote_user }}</div>
+              <div class="comment_content">{{ item.content }}</div>
+              <div class="time">
+                {{ parseStampTime(item.create_time) }}
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="footer">
-      <div class="footer_item1">
-        <button
-          style="background-color: #ffffff; color: rgb(36, 105, 77)"
-          @click="returnPage(false)"
-        >
-          首页
-        </button>
-      </div>
-      <!-- 如果不显示助力那么将投一票宽度变大-->
-      <div
-        :class="
-          $store.state.settings[68].value ? 'footer_item2' : 'footer_item3'
-        "
-      >
-        <button style="background-color: orange; color: #ffffff" @click="like">
-          {{ $store.state.settings[94].value }}一{{
-            $store.state.settings[95].value
-          }}
-        </button>
-      </div>
-      <!-- 是否显示助力 -->
-      <div class="footer_item1" v-if="$store.state.settings[68].value">
-        <button
-          @click="
-            (e) => {
-              e.stopPropagation();
-              giftState.state = true;
-            }
-          "
-          style="background-color: rgb(36, 105, 77); color: #ffffff"
-        >
-          助力
-        </button>
+    <div class="btn">
+      <div class="btn_wrap">
+        <div class="home" @click="returnPage(false)">返回</div>
+        <div class="like" @click="like">点赞</div>
+        <div class="pay" @click="Assistance">助力</div>
       </div>
     </div>
   </div>
@@ -128,7 +68,7 @@
 
 <script setup>
 import { fether } from "@/utils/fether";
-import { reactive, defineEmits, onMounted, ref } from "vue";
+import { reactive, defineEmits, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { HOST, HOST2 } from "../ENV";
@@ -142,6 +82,7 @@ const emit = defineEmits(["returnPage"]);
 const $route = useRoute();
 const athleteInformation = reactive({});
 const $store = useStore();
+const videoRef = ref("");
 
 const giftState = reactive({
   close: () => {
@@ -156,8 +97,11 @@ const props = defineProps({
   },
 });
 
+// 保存数据所在列表索引
+let listIndex = 0;
+
 // 选手评论
-const comments = reactive([]);
+const comments = reactive({ data: [] });
 
 // 评论输入数据
 let commtentData = ref("");
@@ -185,6 +129,7 @@ const getAthleteInformation = async () => {
       athleteInformation.count = arr[index].count;
       athleteInformation.pk = arr[index].pk;
       athleteInformation.rank = arr[index].rank;
+      listIndex = index;
     }
   });
 };
@@ -206,6 +151,7 @@ const returnPage2 = () => {
   let params = {
     status: false,
     data: athleteInformation,
+    index: listIndex,
   };
   emit("returnPage2", params);
 };
@@ -213,6 +159,7 @@ const returnPage3 = () => {
   let params = {
     status: false,
     data: athleteInformation,
+    index: listIndex,
   };
   emit("returnPage3", params);
 };
@@ -236,12 +183,10 @@ const like = async () => {
     // 在投票时间内
   } else {
     // 等待100毫秒后再执行避免页面未渲染完成拿不到数据
-    if ($store.state.settings[26].value) {
+    if ($store.state.settings[67].value) {
       setTimeout(() => {
-        returnPage1();
-      }, 100);
-    } else if ($store.state.settings[67].value) {
-      setTimeout(() => {
+        // 刷新支持数
+        // athleteInformation.count += 1
         returnPage2();
       }, 100);
     } else {
@@ -259,7 +204,17 @@ const like = async () => {
           key: sercet,
         },
       });
-      if (!result) return;
+      if (!result) {
+        $store.commit("chengePublicData", "点赞失败");
+        return;
+      }
+      if ($store.state.settings[26].value) {
+        setTimeout(() => {
+          returnPage1();
+        }, 100);
+      }
+      // 刷新支持数
+      athleteInformation.count += 1;
       returnPage3();
     }
   }
@@ -285,9 +240,11 @@ const getKey = () => {
 const getUserComment = async () => {
   if ($store.state.settings[66].value === 0) return;
   let result = await fether(`/comment/?vote_target_id=${props.data}`);
+  console.log(result);
   if (!result) return;
+  comments.data = [];
   result.forEach((item) => {
-    comments.push({ ...item.fields });
+    comments.data.push({ ...item.fields });
   });
 };
 
@@ -298,11 +255,20 @@ const check = async () => {
     data: {
       vote_target_id: props.data,
       vote_user_open_id: "heart",
-      content: commtentData.value,
+      content: commtentData._value.value,
     },
   });
-  if (!result) return;
+  if (!result) {
+    $store.commit("chengePublicData", "评论失败");
+    return;
+  }
   getUserComment();
+  $store.commit("chengePublicData", "评论成功");
+  setTimeout(() => {
+    // 当评论成功时清空评论
+    let input = document.getElementsByTagName("input");
+    input[0].value = "";
+  },1000)
 };
 
 const downStateAdv = () => {
@@ -312,70 +278,22 @@ const downStateAdv = () => {
 onMounted(() => {
   getUserComment();
 });
+
+const Assistance = () => {
+  giftState.state = true
+}
+
+watch(
+  () => $store.state.currentClickAlht,
+  (newVal) => {
+    athleteInformation.count = $store.state.currentClickAlht;
+  }
+);
 </script>
 
 <style lang="scss" scoped>
 .body {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-.body_content {
-  flex: 1;
-  overflow-y: scroll;
-  padding: 20px;
-}
-.body_content_brief {
-  padding: 0px 0px 20px 0px;
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px dashed rgb(138, 135, 135);
-}
-.body_content_brief_item {
-  width: 45%;
-  height: 100px;
-}
-.body_content_brief_number {
-  height: 40px;
-  line-height: 40px;
-  font-size: 25px;
-  font-weight: bold;
-  background-color: rgb(183, 247, 225);
-}
-.body_content_brief_name {
-  height: 50px;
-  margin-top: 10px;
-}
-.body_content_ranking {
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-gap: 10px;
-  padding: 10px;
-}
-.body_content_ranking_item {
-  text-align: center;
-  padding: 10px 0;
-}
-.body_content_sign {
-  height: 60px;
-  border-radius: 5px 5px 15px 15px;
-  background-color: rgb(36, 105, 77);
-  display: flex;
-  align-items: center;
-  padding-left: 15px;
-  color: #fff;
-  font-size: 20px;
-}
-.body_content_detail {
-  margin: 20px 0px;
-}
-.footer {
-  padding: 0px 5px;
-  height: 55px;
-  display: grid;
-  grid-template-columns: auto auto auto auto;
-  grid-gap: 10px;
-  font-size: 20px;
 }
 button {
   font-size: 17px;
@@ -386,14 +304,6 @@ button {
   height: 50px;
   border-radius: 10px;
   font-weight: bold;
-}
-.footer_item2 {
-  grid-column-start: 2;
-  grid-column-end: 4;
-}
-.footer_item3 {
-  grid-column-start: 2;
-  grid-column-end: 6;
 }
 .stateAdv {
   position: absolute;
@@ -408,47 +318,200 @@ button {
   justify-content: center;
   align-items: center;
   .state_img {
-    width: 80%;
-    height: 45%;
+    width: 70%;
+    height: 30%;
     border: 5px;
-  }
-}
-.comment_input {
-  border: 0.5px solid #cecece;
-  padding: 10px 10px;
-  width: 63%;
-  border-radius: 5px;
-}
-.conment_body {
-  display: flex;
-  div {
-    width: 25%;
-    margin-left: 5%;
-    background-color: green;
     border-radius: 5px;
-    text-align: center;
-    line-height: 35px;
-    color: white;
   }
 }
-.comment_item {
-  margin-top: 20px;
-  border-bottom: 0.5px solid #cecece88;
-  .comment_item_user {
-    font-size: 20px;
+.body_top {
+  position: absolute;
+  z-index: 2;
+  height: 35%;
+  width: 100%;
+  background-color: black;
+}
+.body_top_mask {
+  position: absolute;
+  z-index: 3;
+  height: 35%;
+  width: 100%;
+  background-color: rgba(99, 99, 99, 0.529);
+  display: inline-flex;
+  vertical-align: top;
+  justify-content: center;
+  align-items: center;
+  .name {
+    font-size: 30px;
     font-weight: bold;
+    color: white;
+    padding: 0px 10px;
   }
-  .comment_item_content {
+  .num {
+    font-size: 15px;
+    border-radius: 15px;
+    background-color: white;
+    padding: 5px 10px;
+    margin-top: 10px;
+    text-align: center;
+  }
+}
+.body_content {
+  position: absolute;
+  top: 30%;
+  width: 100%;
+  height: calc(70vh);
+  z-index: 4;
+  background-color: white;
+  border-radius: 40px 40px 0px 0px;
+}
+.body_content_wrap {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
+  padding: 30px 10px;
+  margin: 10px;
+  height: calc(60vh);
+  overflow: scroll;
+  .top {
     display: flex;
-    padding: 20px 0px;
-    .comment_item_content_body {
-      width: 60%;
+    font-size: 15px;
+    color: black;
+    div {
+      width: 50%;
     }
-    .comment_item_content_time {
-      width: 40%;
+  }
+  .introduce {
+    margin-top: 20px;
+    .title {
+      font-size: 15px;
+      font-weight: bold;
+    }
+    .content {
+      margin-top: 10px;
       font-size: 10px;
-      color: #c3c3c3;
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      line-height: 20px;
+      overflow-y: hidden;
+    }
+    .more {
       text-align: end;
+      font-size: 10px;
+      font-weight: bold;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+  .comment{
+    display: flex;
+    margin-top: 20px;
+    justify-content: space-around;
+    align-items: center;
+    input{
+      width: 70%;
+      height: 30px;
+      border: 1px solid rgb(99, 96, 96);
+      padding-left: 10px;
+    }
+    button{
+      width: 70px;
+      height: 40px;
+      background-color: green;
+      color: #fff;
+      font-size: 15px;
+      border-radius: 10px;
+      text-align: center;
+      line-height: 30px;
+    }
+  }
+  .footer {
+    margin: 20px 0px;
+    .title {
+      font-size: 15px;
+      font-weight: bold;
+    }
+    .item {
+      margin: 10px 0px;
+      border-bottom: 0.5px solid #dddddd96;
+    }
+    .comment_content {
+      margin-top: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-left: 20px;
+    }
+    .time {
+      text-align: end;
+      color: #cecece;
+      font-size: 10px;
+      margin-bottom: 10px;
+    }
+  }
+}
+.body_content_wrap::-webkit-scrollbar {
+  display: none;
+}
+.btn {
+  position: fixed;
+  background-color: white;
+  width: calc(100vw);
+  padding: 5px;
+  z-index: 5;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  .btn_wrap {
+    display: flex;
+    border-radius: 30px;
+    text-align: center;
+    line-height: 50px;
+    font-size: 15px;
+    div {
+      margin: 5px;
+    }
+    .home {
+      height: 50px;
+      width: 15%;
+      line-height: 70px;
+      font-weight: bold;
+      display: inline-flex;
+      vertical-align: top;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 8px 0 rgba(157, 157, 157, 0.2),
+        0 6px 20px 0 rgba(154, 154, 154, 0.19);
+      border-radius: 5px;
+    }
+    .like {
+      height: 50px;
+      width: 50%;
+      line-height: 70px;
+      display: inline-flex;
+      vertical-align: top;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 8px 0 rgba(157, 157, 157, 0.2),
+        0 6px 20px 0 rgba(154, 154, 154, 0.19);
+      border-radius: 5px;
+      background-color: #f78126;
+      color: white;
+    }
+    .pay {
+      height: 50px;
+      width: 25%;
+      line-height: 70px;
+      display: inline-flex;
+      vertical-align: top;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      background-color: green;
+      border-radius: 5px;
     }
   }
 }

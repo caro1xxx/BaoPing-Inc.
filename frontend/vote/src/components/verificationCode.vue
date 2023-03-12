@@ -66,6 +66,8 @@ import Mobile from "mobile-detect";
 import { useRoute } from "vue-router";
 import { isNetWork } from "../utils/network";
 import base64 from "base-64";
+import { useStore } from "vuex";
+const $store = new useStore();
 const $route = useRoute();
 let yanzhen = "";
 //  保存正确验证码
@@ -207,7 +209,7 @@ const getNowTime = async () => {
     nowTime.houers = zrron(houers);
     nowTime.minute = zrron(minute);
     nowTime.sercet = zrron(sercet);
-  }, 1000);
+  }, 10);
 };
 getNowTime();
 // 补零
@@ -237,7 +239,13 @@ const close = async (e) => {
         key: sercet,
       },
     });
-    if (!result) return;
+    if (!result) {
+      $store.commit('chengePublicData', '点赞失败')
+      props.method();
+      return;
+    };
+    props.data.count = props.data.count + 1;
+    $store.commit('changeCurrentClick',props.data.count)
     props.method(props.data);
   } else {
     alert("验证码错误，请重新输入");
