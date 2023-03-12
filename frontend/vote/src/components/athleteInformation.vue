@@ -38,6 +38,10 @@
           <div class="content" id="detail">{{ athleteInformation.detail }}</div>
           <div class="more">查看更多</div>
         </div>
+        <div class="comment">
+          <input type="text" ref="commtentData" v-model="commtentData.value" placeholder="请发表评论">
+          <button @click="check">评论</button>
+        </div>
         <div class="footer" v-if="$store.state.settings[66].value">
           <div class="title">互动</div>
           <div class="content">
@@ -54,9 +58,9 @@
     </div>
     <div class="btn">
       <div class="btn_wrap">
-        <div class="home">返回</div>
-        <div class="like">点赞</div>
-        <div class="pay">助力</div>
+        <div class="home" @click="returnPage(false)">返回</div>
+        <div class="like" @click="like">点赞</div>
+        <div class="pay" @click="Assistance">助力</div>
       </div>
     </div>
   </div>
@@ -274,6 +278,10 @@ onMounted(() => {
   getUserComment();
 });
 
+const Assistance = () => {
+  giftState.state = true
+}
+
 watch(
   () => $store.state.currentClickAlht,
   (newVal) => {
@@ -394,6 +402,28 @@ button {
       font-weight: bold;
       text-decoration: underline;
       cursor: pointer;
+    }
+  }
+  .comment{
+    display: flex;
+    margin-top: 20px;
+    justify-content: space-around;
+    align-items: center;
+    input{
+      width: 70%;
+      height: 30px;
+      border: 1px solid rgb(99, 96, 96);
+      padding-left: 10px;
+    }
+    button{
+      width: 70px;
+      height: 40px;
+      background-color: green;
+      color: #fff;
+      font-size: 15px;
+      border-radius: 10px;
+      text-align: center;
+      line-height: 30px;
     }
   }
   .footer {
