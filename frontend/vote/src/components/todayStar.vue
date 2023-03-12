@@ -6,7 +6,7 @@
         <div class="title">竞争依然激烈,就保持这个势头!</div>
         <div class="gongxi">恭喜</div>
         <div class="value">
-          {{ $store.state.settings[58].value }}
+          {{ athleteName.name }}
         </div>
         <div class="star_title">
           获得<span style="color: #f5c85f; font-weight: bold">今日之星</span>
@@ -19,6 +19,10 @@
 
 <script setup>
 import { useStore } from "vuex";
+import { fether } from "@/utils/fether";
+import { useRoute } from "vue-router";
+import { reactive } from "vue";
+const $route = useRoute();
 const $store = useStore();
 
 const props = defineProps({
@@ -26,6 +30,27 @@ const props = defineProps({
     close: () => {},
   },
 });
+
+// 存储今日之星名字
+const athleteName = reactive({
+  name: ''
+})
+
+// 列表数据
+const informationData =  reactive([])
+
+// 获取选手列表并筛选出与今日之星pk值相同的选手名字
+const getList = async () => {
+  let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}`);
+  result.map((item) => {
+    informationData.push({ ...item.fields, pk: item.pk, model: item.model });
+  });
+  let Name = informationData.filter(item => {
+    return item.pk === Number($store.state.settings[58].value)
+  })
+  athleteName.name = Name[0].name
+}
+getList()
 </script>
 
 <style lang="scss" scoped>

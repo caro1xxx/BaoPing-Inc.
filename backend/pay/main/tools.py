@@ -8,7 +8,6 @@ from Crypto.Cipher import AES
 from django.core.paginator import Paginator
 from datetime import datetime, timedelta
 import geoip2.database
-from vote_front import settings
 
 # 验证类，通过addCheck()增加验证规则，start()进行统一验证
 # 验证类的check开头的方法，如果验证通过为True，否则为False

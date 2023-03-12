@@ -56,13 +56,13 @@
         style="background-color: #000"
         class="state_img"
         :src="HOST2 + '/media/' + $store.state.settings[86].value"
-        controls="controls"
+        autoplay
         @click="(e) => e.stopPropagation()"
       >
         您的浏览器不支持 video 标签。
       </video>
     </div>
-    <div class="content">
+    <div class="content" @scroll="scrollEvent($event)">
       <div class="content_top" id="Carousel">
         <div class="content_top_center">
           <!-- 最强企业评选 -->
@@ -420,6 +420,10 @@ const enrollData = reactive({
   athletename: "",
   file: fileData,
 });
+  // 触发到底部次数
+  let buttonNum = 1
+  // 选手列表最大页码
+  let athletePageNum = 0
 // 状态
 const enrollStatus = reactive({
   isEnrollProp: false,
@@ -429,8 +433,9 @@ const enrollStatus = reactive({
   isOpenQscode: false,
   isVerificationCode: false,
   closeVerificationCode: (value) => {
-    if (value) {
-      console.log(value, "1");
+    // 为列表刷新支持数
+    if (value && value.index !== undefined) {
+      informationData[value.index].count += 1;
       successData.state = true;
       successData.data = value;
       successData.data.rank = value.rank;
@@ -448,7 +453,7 @@ const enrollStatus = reactive({
     },
   },
 });
-console.log(enrollStatus);
+
 // 是否显示欢迎回来页面
 const welcomeState = reactive({
   state: false,
@@ -556,6 +561,7 @@ const getChild3 = (value) => {
   enrollStatus.isVerificationCode = false;
   successData.state = true;
   successData.data = value.data;
+  informationData[value.index].count += 1;
 };
 const downVerificationCode = () => {
   enrollStatus.isVerificationCode = false;
@@ -582,16 +588,48 @@ const downStateAdv = () => {
 };
 //获取选手列表
 const getInformation = async () => {
-  let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}`);
-  result.map((item) => {
-    informationData.push({ ...item.fields, pk: item.pk, model: item.model });
-  });
-  // 数组排序
-  informationData.sort((a, b) => {
-    return b.count - a.count;
-  });
+  fetch(`${HOST}/votetarget/?vote_id=${$route.query.vote_id}`, { method: "get" })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.code === 200) {
+        athletePageNum = data.page_count
+        JSON.parse(data.data).map((item) => {
+          informationData.push({ ...item.fields, pk: item.pk, model: item.model });
+        });
+        // 数组排序
+        informationData.sort((a, b) => {
+          return b.count - a.count;
+        });
+        console.log(informationData);
+      }
+    });
 };
 getInformation();
+
+// 监听滚动
+const scrollEvent = async (e) => {
+  // 距离顶部的位置
+  // console.log(e.currentTarget.scrollTop);
+  // 可视区域高度
+  // console.log(e.currentTarget.clientHeight);
+  // 滚动条高度
+  // console.log(e.currentTarget.scrollHeight);
+  // 快要滚动到底部时发送请求
+  if (Math.ceil(e.currentTarget.scrollTop + e.currentTarget.clientHeight) >= e.currentTarget.scrollHeight) {   //容差：20px
+    buttonNum+=1;
+    if (buttonNum <= athletePageNum) {  
+      let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}&page_num=${buttonNum}`);
+      result.map((item) => {
+        informationData.push({ ...item.fields, pk: item.pk, model: item.model });
+      });
+      informationData.sort((a, b) => {
+        return b.count - a.count;
+      });
+    }
+
+  }
+}
+
 // 点击按钮分发到file click事件
 const dispatchUpload = () => {
   let box = document.getElementById("fileImage");
@@ -606,7 +644,15 @@ const showImg = () => {
   }
   const reads = new FileReader();
   reads.readAsDataURL(file);
-  fileData.append("avator", file);
+  const fileData1 = new FormData();
+  fileData1.append("file", file);
+  fetch(`${HOST2}/uploadfile/`, { method: "post", body: fileData1 })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.code === 200) {
+        fileData.append("avator", data.data.filename);
+      }
+    });
   reads.onload = function (e) {
     headerImg.value = e.target.result;
     enrollData.imgUrl = e.target.result;
@@ -643,6 +689,8 @@ const submit = async () => {
     .then((data) => {
       if (data.code === 200) {
         enrollStatus.isEnrollProp = false;
+        //刷新列表数据
+        // getInformation();
       }
     });
 };
@@ -679,6 +727,7 @@ const like = async (target, index) => {
       verificationCodeData.name = target.name;
       verificationCodeData.avator = target.avator;
       verificationCodeData.count = target.count;
+      verificationCodeData.index = index;
       verificationCodeData.rank = index + 1;
     } else {
       // 没有开启验证码弹窗时点击直接发送点赞请求
@@ -696,13 +745,16 @@ const like = async (target, index) => {
           key: sercet,
         },
       });
+      if (!result) {
+        $store.commit('chengePublicData', '点赞失败')
+        return;
+      };
       // 开启二维码弹幕
       if ($store.state.settings[26].value) {
         enrollStatus.isOpenQscode = true;
         // 开启验证码弹窗
       }
       // 点赞成功刷新显示数量
-      if (!result) return;
       for (let i = 0; i < informationData.length; i++) {
         if (informationData[i].pk === target.pk) {
           informationData[i].count += 1;
@@ -731,6 +783,12 @@ const athleteConfig = (e, value) => {
     enrollStatus.isAthleteConfig = true;
     // $store.commit('changeAthlete', true)
     informationKey = value;
+    for (let i = 0; i < informationData.length; i++) {
+      if (informationData[i].pk === value) {
+        $store.commit("changeCurrentClick", informationData[i].count);
+        break;
+      }
+    }
   }
 };
 // 支持轮播图
@@ -834,14 +892,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@font-face {
-  font-family: FangZhenBlod;
-  src: url("../assets/font/方正正粗黑简体.TTF");
-}
-@font-face {
-  font-family: MicaoFanBlod;
-  src: url("../assets/font/微软繁粗圆.TTF");
-}
 .body {
   width: 100%;
   height: 100%;
@@ -905,7 +955,6 @@ onMounted(() => {
 }
 .number {
   font-weight: bold;
-  font-family: MicaoFanBlod;
   font-size: 20px !important;
   user-select: none;
 }
@@ -1054,7 +1103,6 @@ button {
     left: 20%;
     z-index: 5;
     font-size: 20px;
-    font-family: MicaoFanBlod;
   }
 }
 .content_body_information_content {
@@ -1098,7 +1146,6 @@ button {
       color: #ffffff;
       line-height: 40px;
       background-color: rgb(143, 85, 235);
-      font-family: BlackSimplyBlod;
     }
   }
 }
@@ -1262,9 +1309,10 @@ button {
   justify-content: center;
   align-items: center;
   .state_img {
-    width: 80%;
-    height: 45%;
+    width: 70%;
+    height: 30%;
     border: 5px;
+    border-radius: 5px;
   }
 }
 // 底部技术信息支持
@@ -1323,16 +1371,5 @@ button {
     width: 20px;
     color: black;
   }
-}
-* {
-  font-family: MicaoFanBlod;
-}
-@font-face {
-  font-family: BlackSimply;
-  src: url("../assets/font/方正正黑简体.TTF");
-}
-@font-face {
-  font-family: BlackSimplyBlod;
-  src: url("../assets/font/方正正粗黑简体.TTF");
 }
 </style>

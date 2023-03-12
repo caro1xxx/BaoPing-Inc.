@@ -118,11 +118,6 @@ class VoteTarget(models.Model):
     status = models.IntegerField(default=0)
     def natural_key(self):
         return {'name': self.name, 'vote_id': self.vote_id, 'avator': self.avator}
-    # vote_voteusers = models.ManyToManyField(
-    #     VoteUser,
-    #     through='VoteRecord',
-    #     through_fields=('vote_target', 'voteuser')
-    # )
 
 
 class Feedback(models.Model):
