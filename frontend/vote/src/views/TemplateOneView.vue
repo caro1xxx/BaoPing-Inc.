@@ -56,7 +56,7 @@
         style="background-color: #000"
         class="state_img"
         :src="HOST2 + '/media/' + $store.state.settings[86].value"
-        controls="controls"
+        autoplay
         @click="(e) => e.stopPropagation()"
       >
         您的浏览器不支持 video 标签。
@@ -431,7 +431,7 @@ const enrollStatus = reactive({
   closeVerificationCode: (value) => {
     // 为列表刷新支持数
     if (value && value.index !== undefined) {
-      informationData[value.index].count += 1
+      informationData[value.index].count += 1;
       successData.state = true;
       successData.data = value;
       successData.data.rank = value.rank;
@@ -557,7 +557,7 @@ const getChild3 = (value) => {
   enrollStatus.isVerificationCode = false;
   successData.state = true;
   successData.data = value.data;
-  informationData[value.index].count += 1
+  informationData[value.index].count += 1;
 };
 const downVerificationCode = () => {
   enrollStatus.isVerificationCode = false;
@@ -608,13 +608,13 @@ const showImg = () => {
   }
   const reads = new FileReader();
   reads.readAsDataURL(file);
-  const fileData1 = new FormData()
-  fileData1.append('file', file)
+  const fileData1 = new FormData();
+  fileData1.append("file", file);
   fetch(`${HOST2}/uploadfile/`, { method: "post", body: fileData1 })
     .then((res) => res.json())
     .then((data) => {
       if (data.code === 200) {
-        fileData.append('avator', data.data.filename)
+        fileData.append("avator", data.data.filename);
       }
     });
   reads.onload = function (e) {
@@ -743,11 +743,11 @@ const athleteConfig = (e, value) => {
     enrollStatus.isAthleteConfig = true;
     // $store.commit('changeAthlete', true)
     informationKey = value;
-    for(let i=0;i<informationData.length;i++){
-      if(informationData[i].pk === value){
-        $store.commit('changeCurrentClick',informationData[i].count)
+    for (let i = 0; i < informationData.length; i++) {
+      if (informationData[i].pk === value) {
+        $store.commit("changeCurrentClick", informationData[i].count);
         break;
-      } 
+      }
     }
   }
 };
@@ -852,14 +852,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@font-face {
-  font-family: FangZhenBlod;
-  src: url("../assets/font/方正正粗黑简体.TTF");
-}
-@font-face {
-  font-family: MicaoFanBlod;
-  src: url("../assets/font/微软繁粗圆.TTF");
-}
 .body {
   width: 100%;
   height: 100%;
@@ -923,7 +915,6 @@ onMounted(() => {
 }
 .number {
   font-weight: bold;
-  font-family: MicaoFanBlod;
   font-size: 20px !important;
   user-select: none;
 }
@@ -1072,7 +1063,6 @@ button {
     left: 20%;
     z-index: 5;
     font-size: 20px;
-    font-family: MicaoFanBlod;
   }
 }
 .content_body_information_content {
@@ -1116,7 +1106,6 @@ button {
       color: #ffffff;
       line-height: 40px;
       background-color: rgb(143, 85, 235);
-      font-family: BlackSimplyBlod;
     }
   }
 }
@@ -1280,9 +1269,10 @@ button {
   justify-content: center;
   align-items: center;
   .state_img {
-    width: 80%;
-    height: 45%;
+    width: 70%;
+    height: 30%;
     border: 5px;
+    border-radius: 5px;
   }
 }
 // 底部技术信息支持
@@ -1341,16 +1331,5 @@ button {
     width: 20px;
     color: black;
   }
-}
-* {
-  font-family: MicaoFanBlod;
-}
-@font-face {
-  font-family: BlackSimply;
-  src: url("../assets/font/方正正黑简体.TTF");
-}
-@font-face {
-  font-family: BlackSimplyBlod;
-  src: url("../assets/font/方正正粗黑简体.TTF");
 }
 </style>
