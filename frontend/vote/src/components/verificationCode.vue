@@ -240,6 +240,7 @@ const close = async (e) => {
       },
     });
     if (!result) return;
+    props.data.count = props.data.count + 1;
     $store.commit('changeCurrentClick',props.data.count)
     props.method(props.data);
   } else {

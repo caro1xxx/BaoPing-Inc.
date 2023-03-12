@@ -103,9 +103,7 @@
         "
       >
         <button style="background-color: orange; color: #ffffff" @click="like">
-          {{ $store.state.settings[94].value }}一{{
-            $store.state.settings[95].value
-          }}
+          投一票
         </button>
       </div>
       <!-- 是否显示助力 -->
@@ -128,7 +126,7 @@
 
 <script setup>
 import { fether } from "@/utils/fether";
-import { reactive, defineEmits, onMounted, ref } from "vue";
+import { reactive, defineEmits, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { HOST, HOST2 } from "../ENV";
@@ -155,6 +153,9 @@ const props = defineProps({
     informationKey: Number,
   },
 });
+
+// 保存数据所在列表索引
+let listIndex = 0
 
 // 选手评论
 const comments = reactive([]);
@@ -239,12 +240,10 @@ const like = async () => {
     // 在投票时间内
   } else {
     // 等待100毫秒后再执行避免页面未渲染完成拿不到数据
-    if ($store.state.settings[26].value) {
+    if ($store.state.settings[67].value) {
       setTimeout(() => {
-        returnPage1();
-      }, 100);
-    } else if ($store.state.settings[67].value) {
-      setTimeout(() => {
+        // 刷新支持数
+        // athleteInformation.count += 1
         returnPage2();
       }, 100);
     } else {
@@ -262,7 +261,14 @@ const like = async () => {
           key: sercet,
         },
       });
+      if ($store.state.settings[26].value) {
+        setTimeout(() => {
+          returnPage1();
+        }, 100);
+      }
       if (!result) return;
+      // 刷新支持数
+      athleteInformation.count += 1
       returnPage3();
     }
   }
@@ -306,8 +312,8 @@ const check = async () => {
   });
   if (!result) return;
   getUserComment();
-    // 当评论成功时清空评论
-    let input = document.getElementsByTagName('input')
+  // 当评论成功时清空评论
+  let input = document.getElementsByTagName('input')
   input[0].value = ''
 };
 
@@ -318,6 +324,14 @@ const downStateAdv = () => {
 onMounted(() => {
   getUserComment();
 });
+
+watch(
+  () => $store.state.currentClickAlht,
+  (newVal) => {
+    athleteInformation.count = $store.state.currentClickAlht;
+  }
+);
+
 </script>
 
 <style lang="scss" scoped>
