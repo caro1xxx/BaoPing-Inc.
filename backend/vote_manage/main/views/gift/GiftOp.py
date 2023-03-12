@@ -45,6 +45,7 @@ class GiftOp:
             value = data['value'],
             price = data['price'],
             status = data['status'],
+            img = data['img'],
         ).save()
 
 
