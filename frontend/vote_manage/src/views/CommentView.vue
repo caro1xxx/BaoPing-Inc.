@@ -6,16 +6,20 @@
       <el-table :data="tableData" class="table_style">
         <el-table-column prop="vote_target" label="评论目标" width="180" />
         <el-table-column prop="vote_user" label="评论用户" width="180" />
-        <el-table-column prop="content" label="内容" />
-        <el-table-column prop="status" label="审核状态"
+        <el-table-column prop="content" label="内容"
+          ><template #default="scope"
+            ><div class="content">{{ scope.row.content }}</div></template
+          ></el-table-column
+        >
+        <el-table-column prop="status" label="审核状态" width="100"
           ><template #default="scope"
             ><el-switch
               @change="changeCommentStatus(scope.row.pk)"
               :model-value="scope.row.status === 1 ? true : false"
           /></template>
         </el-table-column>
-        <el-table-column prop="create_time" label="评论时间" />
-        <el-table-column prop="操作" label="操作">
+        <el-table-column prop="create_time" label="评论时间" width="100" />
+        <el-table-column prop="操作" label="操作" width="100">
           <template #default="scope"
             ><div
               style="color: red; cursor: pointer"
@@ -45,6 +49,7 @@ const getComment = async () => {
   if (result.code == 200) {
     let JSONResult = JSON.parse(result.data);
     JSONResult.forEach((item) => {
+      console.log(item.fields);
       tableData.push({ ...item.fields, pk: item.pk });
     });
   } else {
@@ -105,5 +110,9 @@ getComment();
 }
 .table_style::-webkit-scrollbar {
   display: none;
+}
+.content {
+  max-height: 60px;
+  overflow: scroll;
 }
 </style>
