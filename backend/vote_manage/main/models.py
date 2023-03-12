@@ -119,6 +119,8 @@ class VoteTarget(models.Model):
         default = 'img/1.png'
     )
     status = models.IntegerField(default=0)
+    def natural_key(self):
+        return {'name': self.name, 'vote_id': self.vote_id, 'avator': self.avator}
 
 
 class Feedback(models.Model):
@@ -187,6 +189,8 @@ class PaymentRecord(models.Model):
     prize_type = models.TextField(default='')
     payment_order_id = models.TextField(default='')
     payment_status = models.IntegerField(default=0)
+    # wxpay_transaction_id = models.TextField(default='')
+    # wxpay_prepay_id = models.TextField(default='')
 
 
 class Statics(models.Model):
@@ -218,8 +222,8 @@ class Gift(models.Model):
     value = models.IntegerField(default=0)
     price = models.IntegerField(default=0)
     status = models.IntegerField(default=0)
-    img = models.FileField(upload_to='img/gift', blank=True, verbose_name='礼物图标')
-
+    img = models.FileField(upload_to='img/gift', blank=True, verbose_name='礼物图标', default='img/gift/rose.png')
+    
 
 class CommentRecord(models.Model):
     vote_target = models.ForeignKey(VoteTarget, to_field='id', on_delete=models.CASCADE)
