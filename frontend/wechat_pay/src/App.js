@@ -20,6 +20,18 @@ function App() {
     window.location.href = url;
   };
 
+  const resCode = () => {
+    fetch(
+      `http://pay.yilsfeng.cn/api/userinfo/?code=${
+        window.location.href.split("=")[1]
+      }`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
+  };
+
   // // openid
   // const getOpen = () => {
   //   console.log(window.location.href.split("=")[1]);
@@ -48,6 +60,9 @@ function App() {
       <div>{baseInfo.msg}</div>
       <div>
         <button onClick={getCode}>获取code</button>
+      </div>
+      <div>
+        <button onClick={resCode}>返回code</button>
       </div>
       {/* <button>支付</button> */}
     </div>
