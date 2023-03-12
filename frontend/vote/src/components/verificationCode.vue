@@ -209,7 +209,7 @@ const getNowTime = async () => {
     nowTime.houers = zrron(houers);
     nowTime.minute = zrron(minute);
     nowTime.sercet = zrron(sercet);
-  }, 1000);
+  }, 10);
 };
 getNowTime();
 // 补零
@@ -239,7 +239,11 @@ const close = async (e) => {
         key: sercet,
       },
     });
-    if (!result) return;
+    if (!result) {
+      $store.commit('chengePublicData', '点赞失败')
+      props.method();
+      return;
+    };
     props.data.count = props.data.count + 1;
     $store.commit('changeCurrentClick',props.data.count)
     props.method(props.data);

@@ -200,12 +200,15 @@ const like = async () => {
           key: sercet,
         },
       });
+      if (!result) {
+        $store.commit("chengePublicData", "点赞失败");
+        return;
+      }
       if ($store.state.settings[26].value) {
         setTimeout(() => {
           returnPage1();
         }, 100);
       }
-      if (!result) return;
       // 刷新支持数
       athleteInformation.count += 1;
       returnPage3();
@@ -251,11 +254,16 @@ const check = async () => {
       content: commtentData.value,
     },
   });
-  if (!result) return;
+  if (!result) {
+    $store.commit("chengePublicData", "评论失败");
+    return;
+  }
   getUserComment();
+  $store.commit("chengePublicData", "评论成功");
   // 当评论成功时清空评论
   let input = document.getElementsByTagName("input");
   input[0].value = "";
+  commtentData.value = "";
 };
 
 const downStateAdv = () => {

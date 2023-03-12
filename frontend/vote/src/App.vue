@@ -1,5 +1,7 @@
 <template>
   <todayStarVue v-if="todayStarState.state" :data="todayStarState.close" />
+    <!-- 通用弹窗 -->
+    <publicProp v-if="$store.state.publicData.status" />
   <router-view />
 </template>
 
@@ -8,6 +10,7 @@ import { fether } from "./utils/fether";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import todayStarVue from "@/components/todayStar.vue";
+import publicProp from '@/components/publicProp.vue'
 import Mobile from "mobile-detect";
 import { ref, reactive } from "vue";
 const $route = useRoute();

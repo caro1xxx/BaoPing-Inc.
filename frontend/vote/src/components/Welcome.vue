@@ -113,7 +113,11 @@ const support = async (e) => {
           key: sercet,
         },
       });
-      if (!result) return;
+      if (!result) {
+      $store.commit('chengePublicData', '点赞失败')
+      props.data.close();
+      return;
+    };
       returnPage2();
     }
   }
