@@ -437,8 +437,6 @@ button {
       margin: 10px 0px;
       border-bottom: 0.5px solid #dddddd96;
     }
-    .user {
-    }
     .comment_content {
       margin-top: 5px;
       white-space: nowrap;
