@@ -75,6 +75,8 @@ const getStarShowDate = () => {
   else todayStarState.state = false;
 };
 
+// 保存传递过来的open_id
+
 getInitSetting();
 </script>
 
