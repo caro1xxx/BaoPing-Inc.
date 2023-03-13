@@ -11,8 +11,8 @@ class VoteUserOp:
     def checkDataOnCreate(self, open_id, wx_username, avator):
         validate = Validate()
         validate.addCheck('checkIsNotEmpty', open_id, 'openid不能为空')
-        validate.addCheck('checkIsNotEmpty', wx_username, '微信用户名不能为空')
-        validate.addCheck('checkIsNotEmpty', avator, '头像不能为空')
+        # validate.addCheck('checkIsNotEmpty', wx_username, '微信用户名不能为空')
+        # validate.addCheck('checkIsNotEmpty', avator, '头像不能为空')
         ok, msg = validate.startCheck()
         if not ok:
                 return ok, msg

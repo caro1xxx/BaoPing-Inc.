@@ -12,20 +12,19 @@ class VoteUser(APIView):
         ret = {'code': 200, 'msg': '添加成功'}
         try:
             data = json.loads(request.body).get('data', None)
-
             ok, msg = VoteUserOp().checkDataOnCreate(
-                data.get('open_id', None),
-                data.get('wx_username', None),
-                data.get('avator', None),
+                data.get('openid', None),
+                data.get('nickname', ''),
+                data.get('headimgurl', ''),
             )
             if not ok:
                 return JsonResponse({'code': 400, 'msg': msg})
-
+                
             models.VoteUser.objects.create(
-                open_id = data['open_id'],
-                wx_username = data['wx_username'],
+                open_id = data['openid'],
+                wx_username = data['nickname'],
                 create_time = getNowTimeStamp(),
-                avator = data['avator'],
+                avator = data['headimgurl'],
             ).save()
 
         except Exception as e:

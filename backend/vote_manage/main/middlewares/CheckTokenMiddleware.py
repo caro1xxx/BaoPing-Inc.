@@ -13,7 +13,17 @@ class CheckTokenMiddleware(MiddlewareMixin):
             # print('checktokenmiddleware test')
             m = str(request.method)
             pathInfo = request.path_info.replace('/', '')
-            if pathInfo in ['login', 'register', 'forgetpasswordsendemail', 'sendemailcode', 'statics', 'staticshistory', 'uploadfile'] or str(pathInfo).find('media') != -1:
+            if pathInfo in [
+                'login', 
+                'register', 
+                'forgetpasswordsendemail', 
+                'sendemailcode', 
+                'statics', 
+                'staticshistory', 
+                'uploadfile',
+                'querypaymentstatus',
+                'paymentrecord',
+                ] or str(pathInfo).find('media') != -1:
                 return None
             if m == 'GET':
                 if pathInfo in ['settings', 'alonevoteactivity', 'votetarget']:

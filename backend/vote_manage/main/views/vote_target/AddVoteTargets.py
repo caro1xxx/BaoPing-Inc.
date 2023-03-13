@@ -18,6 +18,7 @@ class AddVoteTargets(APIView):
         ret = {'code': 200, 'msg': '上传成功'}
         try:
             file = request.FILES.get('file', None)
+            voteId = request.POST.get('vote_id', None)
             fileObj = models.TempFile.objects.create(file=file)
             
             # voteTargetOp = VoteTargetOp()
@@ -42,7 +43,7 @@ class AddVoteTargets(APIView):
             # )
             taskId = TaskOp().create('批量添加选手')
             ret['task_id'] = taskId
-            addVoteTargets.delay(str(fileObj.file), taskId)
+            addVoteTargets.delay(str(fileObj.file), taskId, voteId)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
