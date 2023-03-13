@@ -1,1 +1,2 @@
-export const HOST = "http://192.168.0.147:8001";
+export const HOST = "http://123.60.38.9:8001";
+// export const HOST = "http://manage.bezos.life";
