@@ -250,6 +250,7 @@ const patchUploadTarget = () => {
   let form = new FormData();
   form.append("file", box);
   form.append("token", jsCookie.get("token"));
+  form.append("vote_id", $store.state.voteManagerUserRecordVoteid);
   fetch(`${HOST}/addvotetargets/`, {
     method: "post",
     body: form,
