@@ -146,7 +146,7 @@
         <div class="content_body_information">
           <div
             class="content_body_information_item"
-            @click="athleteConfig($event, item.pk)"
+            @click="athleteConfig($event, item, index)"
             v-for="(item, index) in informationData"
             :key="index"
           >
@@ -408,7 +408,7 @@ const informationData = reactive([]);
 const uploadImg = ref("");
 const headerImg = ref("");
 let activeRules = "";
-let informationKey = 0;
+let informationKey = {};
 let verificationCodeData = {};
 const fileData = new FormData();
 // 弹幕列表
@@ -600,7 +600,6 @@ const getInformation = async () => {
         informationData.sort((a, b) => {
           return b.count - a.count;
         });
-        console.log(informationData);
       }
     });
 };
@@ -626,7 +625,6 @@ const scrollEvent = async (e) => {
         return b.count - a.count;
       });
     }
-
   }
 }
 
@@ -691,6 +689,8 @@ const submit = async () => {
         enrollStatus.isEnrollProp = false;
         //刷新列表数据
         // getInformation();
+      } else {
+        $store.commit('chengePublicData', '报名失败')
       }
     });
 };
@@ -778,11 +778,11 @@ const getKey = () => {
       }
     });
 };
-const athleteConfig = (e, value) => {
+const athleteConfig = (e, value, index) => {
   if (e.target.className !== "content_body_information_solid") {
     enrollStatus.isAthleteConfig = true;
     // $store.commit('changeAthlete', true)
-    informationKey = value;
+    informationKey = {...value, index: index};
     for (let i = 0; i < informationData.length; i++) {
       if (informationData[i].pk === value) {
         $store.commit("changeCurrentClick", informationData[i].count);

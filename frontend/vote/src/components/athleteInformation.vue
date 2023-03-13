@@ -19,23 +19,23 @@
   </div>
   <div class="body">
     <div class="body_top">
-      <img :src="HOST2 + '/media/' + athleteInformation.avator" alt="" />
+      <img :src="HOST2 + '/media/' + props.data.avator" alt="" />
     </div>
     <div class="body_top_mask">
       <div>
-        <div class="name">{{ athleteInformation.name }}</div>
-        <div class="num">编号:{{ props.data }}</div>
+        <div class="name">{{ props.data.name }}</div>
+        <div class="num">编号:{{ props.data.pk }}</div>
       </div>
     </div>
     <div class="body_content">
       <div class="body_content_wrap">
         <div class="top">
-          <div>当前票数: {{ athleteInformation.count }}</div>
-          <div>当前排名: {{ athleteInformation.rank }}</div>
+          <div>当前票数: {{ props.data.count }}</div>
+          <div>当前排名: {{ props.data.index + 1 }}</div>
         </div>
         <div class="introduce">
           <div class="title">选手介绍</div>
-          <div class="content" id="detail">{{ athleteInformation.detail }}</div>
+          <div class="content" id="detail">{{ props.data.detail }}</div>
           <div class="more" @click="lookMore">查看更多</div>
         </div>
         <div class="comment" v-if="$store.state.settings[66].value">
@@ -93,7 +93,7 @@ const giftState = reactive({
 
 const props = defineProps({
   data: {
-    informationKey: Number,
+    informationKey: Object,
   },
 });
 
@@ -105,35 +105,6 @@ const comments = reactive({ data: [] });
 
 // 评论输入数据
 let commtentData = ref("");
-
-// 获取选手详情
-const getAthleteInformation = async () => {
-  let Arr = [];
-  let arr = [];
-  let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}`);
-  result.map((item, index) => {
-    Arr.push({ ...item.fields, pk: item.pk, model: item.model });
-  });
-  // 数组排序
-  Arr.sort((a, b) => {
-    return b.count - a.count;
-  });
-  Arr.map((item, index) => {
-    arr.push({ ...item, pk: item.pk, model: item.model, rank: index + 1 });
-  });
-  Arr.forEach((item, index) => {
-    if (item.pk === props.data) {
-      athleteInformation.avator = arr[index].avator;
-      athleteInformation.name = arr[index].name;
-      athleteInformation.detail = arr[index].detail;
-      athleteInformation.count = arr[index].count;
-      athleteInformation.pk = arr[index].pk;
-      athleteInformation.rank = arr[index].rank;
-      listIndex = index;
-    }
-  });
-};
-getAthleteInformation();
 
 const returnPage = (value) => {
   let params = {
@@ -150,16 +121,14 @@ const returnPage1 = () => {
 const returnPage2 = () => {
   let params = {
     status: false,
-    data: athleteInformation,
-    index: listIndex,
+    data: props.data,
   };
   emit("returnPage2", params);
 };
 const returnPage3 = () => {
   let params = {
     status: false,
-    data: athleteInformation,
-    index: listIndex,
+    data: props.data,
   };
   emit("returnPage3", params);
 };
@@ -214,7 +183,7 @@ const like = async () => {
         }, 100);
       }
       // 刷新支持数
-      athleteInformation.count += 1;
+      props.data.count += 1
       returnPage3();
     }
   }
@@ -227,7 +196,7 @@ const encryption = async (key) => {
 
 // 请求key
 const getKey = () => {
-  return fetch(`${HOST}/keys/?open_id=00001`)
+  return fetch(`${HOST}/keys/?open_id=heart`)
     .then((res) => res.json())
     .then((data) => {
       if (data.code === 200) {
@@ -239,7 +208,7 @@ const getKey = () => {
 // 获取选手评论
 const getUserComment = async () => {
   if ($store.state.settings[66].value === 0) return;
-  let result = await fether(`/comment/?vote_target_id=${props.data}`);
+  let result = await fether(`/comment/?vote_target_id=${props.data.pk}`);
   console.log(result);
   if (!result) return;
   comments.data = [];
@@ -250,10 +219,10 @@ const getUserComment = async () => {
 
 // 校验评论输入
 const check = async () => {
-  if (!commtentData.value) return;
+  if (!commtentData.value.value) return;
   let result = await fether("/comment/", "post", {
     data: {
-      vote_target_id: props.data,
+      vote_target_id: props.data.pk,
       vote_user_open_id: "heart",
       content: commtentData._value.value,
     },
@@ -285,7 +254,7 @@ const Assistance = () => {
 
 // 查看更多
 const lookMore = () => {
-  if (athleteInformation.detail === undefined) {
+  if (props.data.detail === undefined) {
     $store.commit('chengePublicData', '暂无更多')
   }
   let detail = document.getElementById('detail')
@@ -295,7 +264,7 @@ const lookMore = () => {
 watch(
   () => $store.state.currentClickAlht,
   (newVal) => {
-    athleteInformation.count = $store.state.currentClickAlht;
+    props.data.count = $store.state.currentClickAlht;
   }
 );
 </script>
