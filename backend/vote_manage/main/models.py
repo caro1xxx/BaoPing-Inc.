@@ -100,14 +100,11 @@ class VoteActivity(models.Model):
     vote_button_name = models.TextField(default='点赞')
     vote_unit_name = models.TextField(default='个')
     track_report = models.TextField(default='')
-    vote_voteusers = models.ManyToManyField(
-        VoteUser,
-        through='VoteRecord',
-        through_fields=('vote_activity', 'voteuser')
-    )
     # payment_voteusers = models.ManyToManyField(
     #     PaymentRecord,
     # )
+    def natural_key(self):
+        return {'name': self.name, 'vote_id': self.vote_id}
 
 class VoteTarget(models.Model):
     vote_id = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
@@ -119,6 +116,8 @@ class VoteTarget(models.Model):
         default = 'img/1.png'
     )
     status = models.IntegerField(default=0)
+    def natural_key(self):
+        return {'name': self.name, 'vote_id': self.vote_id, 'avator': self.avator}
 
 
 class Feedback(models.Model):
@@ -167,7 +166,7 @@ class VoteRecord(models.Model):
     voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE)
     vote_target = models.ForeignKey(VoteTarget, to_field='id', on_delete=models.CASCADE)
     create_time = models.IntegerField(null=False)
-    vote_activity = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
+    vote_activity = models.IntegerField(default=0)
     ip = models.TextField(default='')
     phone_model = models.TextField(default='')
     system = models.TextField(default='')   
@@ -187,6 +186,8 @@ class PaymentRecord(models.Model):
     prize_type = models.TextField(default='')
     payment_order_id = models.TextField(default='')
     payment_status = models.IntegerField(default=0)
+    # wxpay_transaction_id = models.TextField(default='')
+    # wxpay_prepay_id = models.TextField(default='')
 
 
 class Statics(models.Model):
@@ -218,8 +219,8 @@ class Gift(models.Model):
     value = models.IntegerField(default=0)
     price = models.IntegerField(default=0)
     status = models.IntegerField(default=0)
-    img = models.FileField(upload_to='img/gift', blank=True, verbose_name='礼物图标')
-
+    img = models.FileField(upload_to='img/gift', blank=True, verbose_name='礼物图标', default='img/gift/rose.png')
+    
 
 class CommentRecord(models.Model):
     vote_target = models.ForeignKey(VoteTarget, to_field='id', on_delete=models.CASCADE)
