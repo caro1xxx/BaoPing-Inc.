@@ -112,7 +112,7 @@
               :style="{ width: '20px', height: '22px' }"
               src="../assets/images/4.png"
               alt=""
-            />报名数：<span class="number">{{ informationData.length }}</span>
+            />报名数：<span class="number">{{ table.totalNum }}</span>
           </div>
         </div>
         <!-- 活动到期时间倒计时 -->
@@ -352,7 +352,7 @@
             font-size: 10px;
             text-align: center;
           "
-        >
+       >
           点击其他位置关闭
         </div>
       </div>
@@ -420,6 +420,11 @@ const enrollData = reactive({
   athletename: "",
   file: fileData,
 });
+
+// 保存
+const table = reactive({
+  totalNum: 0
+})
   // 触发到底部次数
   let buttonNum = 1
   // 选手列表最大页码
@@ -601,6 +606,7 @@ const getInformation = async () => {
     .then((res) => res.json())
     .then((data) => {
       if (data.code === 200) {
+        table.totalNum = data.votetarget_count
         athletePageNum = data.page_count
         JSON.parse(data.data).map((item) => {
           informationData.push({ ...item.fields, pk: item.pk, model: item.model });
@@ -717,15 +723,14 @@ const like = async (target, index) => {
   // 判断是否在投票时间内
   let newTime = new Date();
   // 得到开始投票时间
-  let start_time =
-    $store.state.settings[50].value >
-    parseInt((newTime.getTime() / 1000) % 86400) * 3600;
+  let start_time = $store.state.settings[50].value / 3600 + 8 > 
+  newTime.getHours()
   if (start_time) {
     alert("投票未开始");
     // 得到结束投票时间
   } else if (
-    parseInt((newTime.getTime() / 1000) % 86400) >
-    $store.state.settings[51].value
+    $store.state.settings[51].value / 3600 + 8 < 
+    newTime.getHours()
   ) {
     alert("投票已结束");
     // 在投票时间内
