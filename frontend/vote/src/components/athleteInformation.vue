@@ -36,9 +36,9 @@
         <div class="introduce">
           <div class="title">选手介绍</div>
           <div class="content" id="detail">{{ athleteInformation.detail }}</div>
-          <div class="more">查看更多</div>
+          <div class="more" @click="lookMore">查看更多</div>
         </div>
-        <div class="comment">
+        <div class="comment" v-if="$store.state.settings[66].value">
           <input type="text" ref="commtentData" v-model="commtentData.value" placeholder="请发表评论">
           <button @click="check">评论</button>
         </div>
@@ -60,7 +60,7 @@
       <div class="btn_wrap">
         <div class="home" @click="returnPage(false)">返回</div>
         <div class="like" @click="like">点赞</div>
-        <div class="pay" @click="Assistance">助力</div>
+        <div class="pay" v-if="$store.state.settings[68].value" @click="Assistance">助力</div>
       </div>
     </div>
   </div>
@@ -281,6 +281,15 @@ onMounted(() => {
 
 const Assistance = () => {
   giftState.state = true
+}
+
+// 查看更多
+const lookMore = () => {
+  if (athleteInformation.detail === undefined) {
+    $store.commit('chengePublicData', '暂无更多')
+  }
+  let detail = document.getElementById('detail')
+  detail.style.display = 'block'
 }
 
 watch(
