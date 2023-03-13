@@ -146,7 +146,7 @@
         <div class="content_body_information">
           <div
             class="content_body_information_item"
-            @click="athleteConfig($event, item.pk)"
+            @click="athleteConfig($event, item, index)"
             v-for="(item, index) in informationData"
             :key="index"
           >
@@ -408,7 +408,7 @@ const informationData = reactive([]);
 const uploadImg = ref("");
 const headerImg = ref("");
 let activeRules = "";
-let informationKey = 0;
+let informationKey = {};
 let verificationCodeData = {};
 const fileData = new FormData();
 // 弹幕列表
@@ -463,6 +463,7 @@ const welcomeState = reactive({
   img: "",
   pk: "",
   rank: "",
+  count: 0,
   close: () => {
     welcomeState.state = false;
   },
@@ -554,14 +555,15 @@ const getChild2 = (value) => {
   verificationCodeData.pk = value.data.pk;
   verificationCodeData.name = value.data.name;
   verificationCodeData.avator = value.data.avator;
-  verificationCodeData.rank = value.data.rank;
+  verificationCodeData.rank = value.data.index + 1;
   verificationCodeData.count = value.data.count;
 };
 const getChild3 = (value) => {
   enrollStatus.isVerificationCode = false;
   successData.state = true;
   successData.data = value.data;
-  informationData[value.index].count += 1;
+  successData.data.rank = value.data.index + 1
+  informationData[value.data.index].count += 1;
 };
 const downVerificationCode = () => {
   enrollStatus.isVerificationCode = false;
@@ -576,11 +578,18 @@ const getData1 = (value) => {
   verificationCodeData.pk = value.data.pk;
   verificationCodeData.name = value.data.name;
   verificationCodeData.avator = value.data.img;
+  verificationCodeData.count = value.data.count;
+  verificationCodeData.index = value.data.ranking - 1;
+  verificationCodeData.rank = value.data.ranking;
 };
 const getData2 = (value) => {
-  enrollStatus.isVerificationCode = true;
   welcomeState.state = false;
-  successData.data = value.data;
+  successData.state = true;
+  successData.data.avator = value.data.img;
+  successData.data.rank = value.data.ranking;
+  successData.data.pk = value.data.pk;
+  successData.data.count = value.data.count + 1;
+  informationData[value.data.ranking - 1].count += 1;
 };
 const downStateAdv = () => {
   $store.state.settings[11].value = false;
@@ -600,7 +609,6 @@ const getInformation = async () => {
         informationData.sort((a, b) => {
           return b.count - a.count;
         });
-        console.log(informationData);
       }
     });
 };
@@ -626,7 +634,6 @@ const scrollEvent = async (e) => {
         return b.count - a.count;
       });
     }
-
   }
 }
 
@@ -691,6 +698,8 @@ const submit = async () => {
         enrollStatus.isEnrollProp = false;
         //刷新列表数据
         // getInformation();
+      } else {
+        $store.commit('chengePublicData', '报名失败')
       }
     });
 };
@@ -778,11 +787,11 @@ const getKey = () => {
       }
     });
 };
-const athleteConfig = (e, value) => {
+const athleteConfig = (e, value, index) => {
   if (e.target.className !== "content_body_information_solid") {
     enrollStatus.isAthleteConfig = true;
     // $store.commit('changeAthlete', true)
-    informationKey = value;
+    informationKey = {...value, index: index};
     for (let i = 0; i < informationData.length; i++) {
       if (informationData[i].pk === value) {
         $store.commit("changeCurrentClick", informationData[i].count);
@@ -871,6 +880,7 @@ const getUserRecentVote = async () => {
       welcomeState.name = informationData[i].name;
       welcomeState.img = informationData[i].avator;
       welcomeState.pk = informationData[i].pk;
+      welcomeState.count = informationData[i].count;
       break;
     }
   }

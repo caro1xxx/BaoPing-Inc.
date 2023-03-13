@@ -48,6 +48,7 @@ const emit = defineEmits(["returnPage", "returnPage1"]);
 const props = defineProps({
   data: Object,
 });
+
 const returnPage = () => {
   let params = {
     status: false,
@@ -102,7 +103,7 @@ const support = async (e) => {
       const md = new Mobile(navigator.userAgent);
       let result = await fether("/support/", "post", {
         data: {
-          open_id: "wxtest6",
+          open_id: "heart",
           vote_target_id: props.data.pk,
           vote_id: $route.query.vote_id,
           phone_model: md.mobile(),
