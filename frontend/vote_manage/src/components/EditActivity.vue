@@ -96,7 +96,7 @@
       </div>
       <div class="body_body_body" v-else-if="head[2].isClick">
         <div v-for="item in voteSetting" :key="item.key" class="body_body_item">
-          <label>{{ item.label }}</label>
+          <label v-show="item.label !== '给自己投票'">{{ item.label }}</label>
           <el-input
             v-if="item.type === 'text'"
             clearable
@@ -120,7 +120,10 @@
             v-model="item.value"
             placeholder="Arbitrary time"
           />
-          <el-switch v-else-if="item.type === 'radio'" v-model="item.value" />
+          <el-switch
+            v-else-if="item.type === 'radio' && item.label !== '给自己投票'"
+            v-model="item.value"
+          />
           <div v-else-if="item.type === 'limit'" style="margin: 5px 0px">
             <el-input
               class="limit"
