@@ -1,7 +1,7 @@
 <template>
   <todayStarVue v-if="todayStarState.state" :data="todayStarState.close" />
-    <!-- 通用弹窗 -->
-    <publicProp v-if="$store.state.publicData.status" />
+  <!-- 通用弹窗 -->
+  <publicProp v-if="$store.state.publicData.status" />
   <router-view />
 </template>
 
@@ -10,7 +10,7 @@ import { fether } from "./utils/fether";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import todayStarVue from "@/components/todayStar.vue";
-import publicProp from '@/components/publicProp.vue'
+import publicProp from "@/components/publicProp.vue";
 import Mobile from "mobile-detect";
 import { ref, reactive } from "vue";
 const $route = useRoute();
@@ -52,7 +52,9 @@ const getInitSetting = async () => {
     await $store.dispatch("changeSettingsActions", map1);
     getStarShowDate();
     if ($store.state.settings[77].value === 1)
-      $router.push(`/one?vote_id=${$route.query.vote_id}`);
+      $router.push(
+        `/one?vote_id=${$route.query.vote_id}&openid=${$route.query.openid}`
+      );
     else $router.push(`/two?vote_id=${$route.query.vote_id}`);
   }
 };
@@ -74,6 +76,8 @@ const getStarShowDate = () => {
     todayStarState.state = true;
   else todayStarState.state = false;
 };
+
+// 保存传递过来的open_id
 
 getInitSetting();
 </script>

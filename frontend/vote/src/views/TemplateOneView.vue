@@ -112,7 +112,7 @@
               :style="{ width: '20px', height: '22px' }"
               src="../assets/images/4.png"
               alt=""
-            />报名数：<span class="number">{{ informationData.length }}</span>
+            />报名数：<span class="number">{{ table.totalNum }}</span>
           </div>
         </div>
         <!-- 活动到期时间倒计时 -->
@@ -146,7 +146,7 @@
         <div class="content_body_information">
           <div
             class="content_body_information_item"
-            @click="athleteConfig($event, item.pk)"
+            @click="athleteConfig($event, item, index)"
             v-for="(item, index) in informationData"
             :key="index"
           >
@@ -352,7 +352,7 @@
             font-size: 10px;
             text-align: center;
           "
-        >
+       >
           点击其他位置关闭
         </div>
       </div>
@@ -408,7 +408,7 @@ const informationData = reactive([]);
 const uploadImg = ref("");
 const headerImg = ref("");
 let activeRules = "";
-let informationKey = 0;
+let informationKey = {};
 let verificationCodeData = {};
 const fileData = new FormData();
 // 弹幕列表
@@ -420,6 +420,11 @@ const enrollData = reactive({
   athletename: "",
   file: fileData,
 });
+
+// 保存
+const table = reactive({
+  totalNum: 0
+})
   // 触发到底部次数
   let buttonNum = 1
   // 选手列表最大页码
@@ -463,6 +468,7 @@ const welcomeState = reactive({
   img: "",
   pk: "",
   rank: "",
+  count: 0,
   close: () => {
     welcomeState.state = false;
   },
@@ -554,14 +560,15 @@ const getChild2 = (value) => {
   verificationCodeData.pk = value.data.pk;
   verificationCodeData.name = value.data.name;
   verificationCodeData.avator = value.data.avator;
-  verificationCodeData.rank = value.data.rank;
+  verificationCodeData.rank = value.data.index + 1;
   verificationCodeData.count = value.data.count;
 };
 const getChild3 = (value) => {
   enrollStatus.isVerificationCode = false;
   successData.state = true;
   successData.data = value.data;
-  informationData[value.index].count += 1;
+  successData.data.rank = value.data.index + 1
+  informationData[value.data.index].count += 1;
 };
 const downVerificationCode = () => {
   enrollStatus.isVerificationCode = false;
@@ -576,11 +583,18 @@ const getData1 = (value) => {
   verificationCodeData.pk = value.data.pk;
   verificationCodeData.name = value.data.name;
   verificationCodeData.avator = value.data.img;
+  verificationCodeData.count = value.data.count;
+  verificationCodeData.index = value.data.ranking - 1;
+  verificationCodeData.rank = value.data.ranking;
 };
 const getData2 = (value) => {
-  enrollStatus.isVerificationCode = true;
   welcomeState.state = false;
-  successData.data = value.data;
+  successData.state = true;
+  successData.data.avator = value.data.img;
+  successData.data.rank = value.data.ranking;
+  successData.data.pk = value.data.pk;
+  successData.data.count = value.data.count + 1;
+  informationData[value.data.ranking - 1].count += 1;
 };
 const downStateAdv = () => {
   $store.state.settings[11].value = false;
@@ -592,6 +606,7 @@ const getInformation = async () => {
     .then((res) => res.json())
     .then((data) => {
       if (data.code === 200) {
+        table.totalNum = data.votetarget_count
         athletePageNum = data.page_count
         JSON.parse(data.data).map((item) => {
           informationData.push({ ...item.fields, pk: item.pk, model: item.model });
@@ -600,7 +615,6 @@ const getInformation = async () => {
         informationData.sort((a, b) => {
           return b.count - a.count;
         });
-        console.log(informationData);
       }
     });
 };
@@ -626,7 +640,6 @@ const scrollEvent = async (e) => {
         return b.count - a.count;
       });
     }
-
   }
 }
 
@@ -691,6 +704,8 @@ const submit = async () => {
         enrollStatus.isEnrollProp = false;
         //刷新列表数据
         // getInformation();
+      } else {
+        $store.commit('chengePublicData', '报名失败')
       }
     });
 };
@@ -708,15 +723,14 @@ const like = async (target, index) => {
   // 判断是否在投票时间内
   let newTime = new Date();
   // 得到开始投票时间
-  let start_time =
-    $store.state.settings[50].value >
-    parseInt((newTime.getTime() / 1000) % 86400) * 3600;
+  let start_time = $store.state.settings[50].value / 3600 + 8 > 
+  newTime.getHours()
   if (start_time) {
     alert("投票未开始");
     // 得到结束投票时间
   } else if (
-    parseInt((newTime.getTime() / 1000) % 86400) >
-    $store.state.settings[51].value
+    $store.state.settings[51].value / 3600 + 8 < 
+    newTime.getHours()
   ) {
     alert("投票已结束");
     // 在投票时间内
@@ -778,11 +792,11 @@ const getKey = () => {
       }
     });
 };
-const athleteConfig = (e, value) => {
+const athleteConfig = (e, value, index) => {
   if (e.target.className !== "content_body_information_solid") {
     enrollStatus.isAthleteConfig = true;
     // $store.commit('changeAthlete', true)
-    informationKey = value;
+    informationKey = {...value, index: index};
     for (let i = 0; i < informationData.length; i++) {
       if (informationData[i].pk === value) {
         $store.commit("changeCurrentClick", informationData[i].count);
@@ -871,6 +885,7 @@ const getUserRecentVote = async () => {
       welcomeState.name = informationData[i].name;
       welcomeState.img = informationData[i].avator;
       welcomeState.pk = informationData[i].pk;
+      welcomeState.count = informationData[i].count;
       break;
     }
   }

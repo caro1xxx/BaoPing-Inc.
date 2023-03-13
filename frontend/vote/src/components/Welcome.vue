@@ -48,6 +48,7 @@ const emit = defineEmits(["returnPage", "returnPage1"]);
 const props = defineProps({
   data: Object,
 });
+
 const returnPage = () => {
   let params = {
     status: false,
@@ -80,15 +81,14 @@ const support = async (e) => {
   // 判断是否在投票时间内
   let newTime = new Date();
   // 得到开始投票时间
-  let start_time =
-    $store.state.settings[50].value >
-    parseInt((newTime.getTime() / 1000) % 86400) * 3600;
+  let start_time = $store.state.settings[50].value / 3600 + 8 > 
+  newTime.getHours()
   if (start_time) {
     alert("投票未开始");
     // 得到结束投票时间
   } else if (
-    parseInt((newTime.getTime() / 1000) % 86400) >
-    $store.state.settings[51].value
+    $store.state.settings[51].value / 3600 + 8 < 
+    newTime.getHours()
   ) {
     alert("投票已结束");
     // 在投票时间内
@@ -102,7 +102,7 @@ const support = async (e) => {
       const md = new Mobile(navigator.userAgent);
       let result = await fether("/support/", "post", {
         data: {
-          open_id: "wxtest6",
+          open_id: "heart",
           vote_target_id: props.data.pk,
           vote_id: $route.query.vote_id,
           phone_model: md.mobile(),

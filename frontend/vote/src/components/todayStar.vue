@@ -39,18 +39,12 @@ const athleteName = reactive({
 // 列表数据
 const informationData =  reactive([])
 
-// 获取选手列表并筛选出与今日之星pk值相同的选手名字
-const getList = async () => {
-  let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}`);
-  result.map((item) => {
-    informationData.push({ ...item.fields, pk: item.pk, model: item.model });
-  });
-  let Name = informationData.filter(item => {
-    return item.pk === Number($store.state.settings[58].value)
-  })
-  athleteName.name = Name[0].name
+// 获取今日之星
+const getTodyStar = async () => {
+  let result = await fether(`/todaystar/?vote_id=${$route.query.vote_id}`)
+  athleteName.name = result[0].fields.name
 }
-getList()
+getTodyStar()
 </script>
 
 <style lang="scss" scoped>

@@ -16,12 +16,12 @@
             </div>
           </div>
           <div>
-            <div class="systemthing-content-title">Appid</div>
+            <div class="systemthing-content-title">wxpay_appid</div>
             <div>
               <input
                 type="text"
                 class="smalllinput"
-                v-model="officialdata.data.app_id"
+                v-model="officialdata.data.wxpay_appid"
               />
             </div>
           </div>
@@ -42,6 +42,38 @@
                 type="text"
                 class="smalllinput"
                 v-model="officialdata.data.wxpay_pos_id"
+              />
+            </div>
+          </div>
+        </div>
+        <div style="display: grid;grid-template-columns: repeat(3, 1fr)">
+          <div>
+            <div class="systemthing-content-title">wxpay_mchid</div>
+            <div>
+              <input
+                type="text"
+                class="biginput"
+                v-model="officialdata.data.wxpay_mchid"
+              />
+            </div>
+          </div>
+          <div>
+            <div class="systemthing-content-title">wxpay_app_key</div>
+            <div>
+              <input
+                type="text"
+                class="biginput"
+                v-model="officialdata.data.wxpay_app_key"
+              />
+            </div>
+          </div>
+          <div>
+            <div class="systemthing-content-title">wxpay_notify_url</div>
+            <div>
+              <input
+                type="text"
+                class="biginput"
+                v-model="officialdata.data.wxpay_notify_url"
               />
             </div>
           </div>
@@ -91,12 +123,16 @@ const $store = new useStore();
 // 公众号数据
 const officialdata = reactive({
   data: {
-    app_id: "",
     officialcount_name: "",
     region: "",
     wx_pay_apiv2_secret_key: "",
     wxpay_apiv3_secret_key: "",
     wxpay_pos_id: "",
+    wxpay_pos_id: '',
+    wxpay_mchid: '',
+    wxpay_appid: '',
+    wxpay_app_key: '',
+    wxpay_notify_url: '',
   },
 });
 
@@ -110,7 +146,6 @@ const getofficial = async () => {
   //   `/officialaccount/?token=h0iLxzKyDbZCAJg9m3Yd8BWRrsHQtEvG`
   // )
   if (result.code === 200) {
-    console.log();
     officialdata.data = { ...JSON.parse(result.data)[0].fields};
     // officialdata = {...result.data}
     // officialdata.push({ ...result.data, isMove: false });
@@ -133,7 +168,7 @@ const preserve = async () => {
     {
       token: Cookies.get("token"),
       data: {
-        app_id: officialdata.data.app_id,
+        wxpay_appid: officialdata.data.wxpay_appid,
         officialcount_name: officialdata.data.officialcount_name,
         region: officialdata.data.region,
         wxpay_apiv2_secret_key: officialdata.data.wxpay_apiv2_secret_key,
