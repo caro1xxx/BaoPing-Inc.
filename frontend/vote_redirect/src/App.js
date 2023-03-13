@@ -1,6 +1,7 @@
 import "./App.css";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
+import { generateRandomString } from "./utils/randomStr";
 import { HOST } from "./ENV";
 function App() {
   useEffect(() => {
@@ -14,7 +15,7 @@ function App() {
         if (!data.domain) return;
         window.location.href = `http://${data.domain}?vote_id=${
           window.location.search.split("=")[1]
-        }`;
+        }&openid=${generateRandomString(10)}`;
       });
   });
 
