@@ -697,6 +697,9 @@ const submit = async () => {
   } else {
     alert("请输入个人描述");
   }
+  if (headerImg._value) {
+    $store.commit('chengePublicData', '请上传图片')
+  }
   fetch(`${HOST}/votetarget/`, { method: "post", body: fileData })
     .then((res) => res.json())
     .then((data) => {
@@ -784,7 +787,7 @@ const encryption = async (key) => {
 };
 // 请求key
 const getKey = () => {
-  return fetch(`${HOST}/keys/?open_id=heart`)
+  return fetch(`${HOST}/keys/?open_id=${$store.state.open_id}`)
     .then((res) => res.json())
     .then((data) => {
       if (data.code === 200) {
@@ -870,7 +873,7 @@ const getExpireTime = async () => {
 };
 // 获取该投票用户最近一次投票时间
 const getUserRecentVote = async () => {
-  let result = await fether(`/recentvoterecord/?open_id=heart`);
+  let result = await fether(`/recentvoterecord/?open_id=${$store.state.open_id}`);
   if (result.length === 0) {
     welcomeState.state = false;
     return;
