@@ -36,10 +36,17 @@
         <div class="introduce">
           <div class="title">选手介绍</div>
           <div class="content" id="detail">{{ props.data.detail }}</div>
-          <div class="more" @click="lookMore">{{ listIndex.clickNum % 2 === 0 ? '查看更多' : '收回' }}</div>
+          <div class="more" @click="lookMore">
+            {{ listIndex.clickNum % 2 === 0 ? "查看更多" : "收回" }}
+          </div>
         </div>
         <div class="comment" v-if="$store.state.settings[66].value">
-          <input type="text" ref="commtentData" v-model="commtentData.value" placeholder="请发表评论">
+          <input
+            type="text"
+            ref="commtentData"
+            v-model="commtentData.value"
+            placeholder="请发表评论"
+          />
           <button @click="check">评论</button>
         </div>
         <div class="footer" v-if="$store.state.settings[66].value">
@@ -59,8 +66,22 @@
     <div class="btn">
       <div class="btn_wrap">
         <div class="home" @click="returnPage(false)">返回</div>
-        <div class="like" @click="like">点赞</div>
-        <div class="pay" v-if="$store.state.settings[68].value" @click="Assistance">助力</div>
+        <div
+          class="like"
+          :style="{
+            width: $store.state.settings[68].value === 0 ? '75%' : '',
+          }"
+          @click="like"
+        >
+          点赞
+        </div>
+        <div
+          class="pay"
+          v-if="$store.state.settings[68].value"
+          @click="Assistance"
+        >
+          助力
+        </div>
       </div>
     </div>
   </div>
@@ -96,14 +117,12 @@ const props = defineProps({
   },
 });
 
-
 const listIndex = reactive({
   // 支持数
   Num: props.data.count,
   // 查看更多/收回按钮点击次数
-  clickNum: 0
-})
-
+  clickNum: 0,
+});
 
 // 选手评论
 const comments = reactive({ data: [] });
@@ -189,7 +208,7 @@ const like = async () => {
       }
       // 刷新支持数
       listIndex.Num = listIndex.Num + 1;
-      props.data.count = props.data.count + 1
+      props.data.count = props.data.count + 1;
       returnPage3();
     }
   }
@@ -243,7 +262,7 @@ const check = async () => {
     // 当评论成功时清空评论
     let input = document.getElementsByTagName("input");
     input[0].value = "";
-  },1000)
+  }, 1000);
 };
 
 const downStateAdv = () => {
@@ -255,24 +274,24 @@ onMounted(() => {
 });
 
 const Assistance = () => {
-  giftState.state = true
-}
+  giftState.state = true;
+};
 
 // 查看更多
 const lookMore = () => {
-  listIndex.clickNum = listIndex.clickNum + 1
+  listIndex.clickNum = listIndex.clickNum + 1;
   if (props.data.detail === undefined) {
-    $store.commit('chengePublicData', '暂无更多')
+    $store.commit("chengePublicData", "暂无更多");
   }
-  let detail = document.getElementById('detail')
+  let detail = document.getElementById("detail");
   if (listIndex.clickNum % 2 === 0) {
-    detail.style.display = '-webkit-box'
-    detail.style.webkitLineClamp = 3
-    detail.style.overflow = 'hidden'
+    detail.style.display = "-webkit-box";
+    detail.style.webkitLineClamp = 3;
+    detail.style.overflow = "hidden";
   } else {
-    detail.style.display = 'block'
+    detail.style.display = "block";
   }
-}
+};
 
 watch(
   () => $store.state.currentClickAlht,
@@ -396,18 +415,18 @@ button {
       cursor: pointer;
     }
   }
-  .comment{
+  .comment {
     display: flex;
     margin-top: 20px;
     justify-content: space-around;
     align-items: center;
-    input{
+    input {
       width: 70%;
       height: 30px;
       border: 1px solid rgb(99, 96, 96);
       padding-left: 10px;
     }
-    button{
+    button {
       width: 70px;
       height: 40px;
       background-color: green;
