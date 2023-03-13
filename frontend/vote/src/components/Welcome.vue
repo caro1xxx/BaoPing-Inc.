@@ -48,6 +48,7 @@ const emit = defineEmits(["returnPage", "returnPage1"]);
 const props = defineProps({
   data: Object,
 });
+
 const returnPage = () => {
   let params = {
     status: false,

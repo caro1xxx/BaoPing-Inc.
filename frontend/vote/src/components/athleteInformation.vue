@@ -30,13 +30,13 @@
     <div class="body_content">
       <div class="body_content_wrap">
         <div class="top">
-          <div>当前票数: {{ props.data.count }}</div>
+          <div>当前票数: {{ listIndex.Num }}</div>
           <div>当前排名: {{ props.data.index + 1 }}</div>
         </div>
         <div class="introduce">
           <div class="title">选手介绍</div>
           <div class="content" id="detail">{{ props.data.detail }}</div>
-          <div class="more" @click="lookMore">查看更多</div>
+          <div class="more" @click="lookMore">{{ listIndex.clickNum % 2 === 0 ? '查看更多' : '收回' }}</div>
         </div>
         <div class="comment" v-if="$store.state.settings[66].value">
           <input type="text" ref="commtentData" v-model="commtentData.value" placeholder="请发表评论">
@@ -80,7 +80,6 @@ import base64 from "base-64";
 const emit = defineEmits(["returnPage"]);
 
 const $route = useRoute();
-const athleteInformation = reactive({});
 const $store = useStore();
 const videoRef = ref("");
 
@@ -97,8 +96,14 @@ const props = defineProps({
   },
 });
 
-// 保存数据所在列表索引
-let listIndex = 0;
+
+const listIndex = reactive({
+  // 支持数
+  Num: props.data.count,
+  // 查看更多/收回按钮点击次数
+  clickNum: 0
+})
+
 
 // 选手评论
 const comments = reactive({ data: [] });
@@ -165,7 +170,7 @@ const like = async () => {
       let result = await fether("/support/", "post", {
         data: {
           open_id: "heart",
-          vote_target_id: props.data,
+          vote_target_id: props.data.pk,
           vote_id: $route.query.vote_id,
           phone_model: md.mobile(),
           system: md.os(),
@@ -183,7 +188,8 @@ const like = async () => {
         }, 100);
       }
       // 刷新支持数
-      props.data.count += 1
+      listIndex.Num = listIndex.Num + 1;
+      props.data.count = props.data.count + 1
       returnPage3();
     }
   }
@@ -254,17 +260,24 @@ const Assistance = () => {
 
 // 查看更多
 const lookMore = () => {
+  listIndex.clickNum = listIndex.clickNum + 1
   if (props.data.detail === undefined) {
     $store.commit('chengePublicData', '暂无更多')
   }
   let detail = document.getElementById('detail')
-  detail.style.display = 'block'
+  if (listIndex.clickNum % 2 === 0) {
+    detail.style.display = '-webkit-box'
+    detail.style.webkitLineClamp = 3
+    detail.style.overflow = 'hidden'
+  } else {
+    detail.style.display = 'block'
+  }
 }
 
 watch(
   () => $store.state.currentClickAlht,
   (newVal) => {
-    props.data.count = $store.state.currentClickAlht;
+    listIndex.Num = $store.state.currentClickAlht;
   }
 );
 </script>

@@ -463,6 +463,7 @@ const welcomeState = reactive({
   img: "",
   pk: "",
   rank: "",
+  count: 0,
   close: () => {
     welcomeState.state = false;
   },
@@ -554,14 +555,15 @@ const getChild2 = (value) => {
   verificationCodeData.pk = value.data.pk;
   verificationCodeData.name = value.data.name;
   verificationCodeData.avator = value.data.avator;
-  verificationCodeData.rank = value.data.rank;
+  verificationCodeData.rank = value.data.index + 1;
   verificationCodeData.count = value.data.count;
 };
 const getChild3 = (value) => {
   enrollStatus.isVerificationCode = false;
   successData.state = true;
   successData.data = value.data;
-  informationData[value.index].count += 1;
+  successData.data.rank = value.data.index + 1
+  informationData[value.data.index].count += 1;
 };
 const downVerificationCode = () => {
   enrollStatus.isVerificationCode = false;
@@ -576,11 +578,18 @@ const getData1 = (value) => {
   verificationCodeData.pk = value.data.pk;
   verificationCodeData.name = value.data.name;
   verificationCodeData.avator = value.data.img;
+  verificationCodeData.count = value.data.count;
+  verificationCodeData.index = value.data.ranking - 1;
+  verificationCodeData.rank = value.data.ranking;
 };
 const getData2 = (value) => {
-  enrollStatus.isVerificationCode = true;
   welcomeState.state = false;
-  successData.data = value.data;
+  successData.state = true;
+  successData.data.avator = value.data.img;
+  successData.data.rank = value.data.ranking;
+  successData.data.pk = value.data.pk;
+  successData.data.count = value.data.count + 1;
+  informationData[value.data.ranking - 1].count += 1;
 };
 const downStateAdv = () => {
   $store.state.settings[11].value = false;
@@ -871,6 +880,7 @@ const getUserRecentVote = async () => {
       welcomeState.name = informationData[i].name;
       welcomeState.img = informationData[i].avator;
       welcomeState.pk = informationData[i].pk;
+      welcomeState.count = informationData[i].count;
       break;
     }
   }
