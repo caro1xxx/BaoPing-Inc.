@@ -10,7 +10,7 @@
     @returnPage="getData"
     @returnPage1="getData1"
     @returnPage2="getData2"
-    v-if="welcomeState.state"
+    v-if="!welcomeState.state"
   />
   <athleteInformation
     v-if="enrollStatus.isAthleteConfig"
@@ -691,11 +691,17 @@ const submit = async () => {
     fileData.append("name", enrollData.athletename);
   } else {
     alert("请输入选手名称");
+    return;
   }
   if (enrollData.describe.length) {
     fileData.append("detail", enrollData.describe);
   } else {
     alert("请输入个人描述");
+    return;
+  }
+  if (!headerImg._value) {
+    alert('请上传图片')
+    return;
   }
   if (headerImg._value) {
     $store.commit('chengePublicData', '请上传图片')
@@ -753,7 +759,7 @@ const like = async (target, index) => {
       const md = new Mobile(navigator.userAgent);
       let result = await fether("/support/", "post", {
         data: {
-          open_id: "heart",
+          open_id: `${$store.state.open_id}`,
           vote_target_id: target.pk,
           vote_id: $route.query.vote_id,
           phone_model: md.mobile(),

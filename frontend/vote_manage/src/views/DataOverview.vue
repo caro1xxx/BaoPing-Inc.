@@ -6,14 +6,14 @@
       <div class="home_top_title">
         <div class="home_top_title_font">今日</div>
         <div class="home_top_title_content">
-          ¥{{ OverviewData.today_income }}.00
+          ¥{{ OverviewData.today_income >= 1 ? `${OverviewData.today_income}:00` : OverviewData.today_income }}
         </div>
       </div>
       <div style="border-left: 0.5px solid #c5c5c565"></div>
       <div class="home_top_title">
         <div class="home_top_title_font">昨日</div>
         <div class="home_top_title_content">
-          ¥{{ OverviewData.yesterday_income }}.00
+          ¥{{ OverviewData.yesterday_income >= 1 ? `${OverviewData.yesterday_income}:00` : OverviewData.yesterday_income }}
         </div>
       </div>
     </div>

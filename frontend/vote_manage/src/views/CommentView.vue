@@ -18,7 +18,11 @@
               :model-value="scope.row.status === 1 ? true : false"
           /></template>
         </el-table-column>
-        <el-table-column prop="create_time" label="评论时间" width="100" />
+        <el-table-column prop="create_time" label="评论时间" width="100">
+          <template #default="scope">
+            <div>{{ parseStampTime(scope.row.create_time) }}</div>
+          </template>
+        </el-table-column>
         <el-table-column prop="操作" label="操作" width="100">
           <template #default="scope"
             ><div
@@ -40,6 +44,7 @@ import { fether } from "@/utils/fether";
 import jsCookie from "js-cookie";
 import { reactive } from "vue";
 import { useStore } from "vuex";
+import { parseStampTime } from '../utils/stampTime'
 const tableData = reactive([]);
 const $store = useStore();
 // 获取评论数据

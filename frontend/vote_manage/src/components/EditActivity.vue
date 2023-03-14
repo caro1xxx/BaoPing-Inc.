@@ -638,6 +638,13 @@ const saveEditData = async () => {
         data = {
           content: i.label,
           vote_id: $store.state.voteManagePopup.target,
+          create_time: timeToStamp(
+            activitySettingOptions[0].value[0]
+          ),
+          expire_time: timeToStamp(
+            activitySettingOptions[0].value[1]
+          ),
+          name: activitySettingOptions[3].value,
           vote_everyday_begin_time: timeToStamp(
             activitySettingOptions[1].value[0]
           ),
