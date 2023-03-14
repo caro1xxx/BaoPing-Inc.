@@ -187,7 +187,7 @@ const like = async () => {
       const md = new Mobile(navigator.userAgent);
       let result = await fether("/support/", "post", {
         data: {
-          open_id: "heart",
+          open_id: `${$store.state.open_id}`,
           vote_target_id: props.data.pk,
           vote_id: $route.query.vote_id,
           phone_model: md.mobile(),
@@ -220,7 +220,7 @@ const encryption = async (key) => {
 
 // 请求key
 const getKey = () => {
-  return fetch(`${HOST}/keys/?open_id=heart`)
+  return fetch(`${HOST}/keys/?open_id=${$store.state.open_id}`)
     .then((res) => res.json())
     .then((data) => {
       if (data.code === 200) {
@@ -247,7 +247,7 @@ const check = async () => {
   let result = await fether("/comment/", "post", {
     data: {
       vote_target_id: props.data.pk,
-      vote_user_open_id: "heart",
+      vote_user_open_id: `${$store.state.open_id}`,
       content: commtentData._value.value,
     },
   });

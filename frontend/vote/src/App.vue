@@ -12,6 +12,7 @@ import { useRoute, useRouter } from "vue-router";
 import todayStarVue from "@/components/todayStar.vue";
 import publicProp from "@/components/publicProp.vue";
 import Mobile from "mobile-detect";
+
 import { ref, reactive } from "vue";
 const $route = useRoute();
 const $router = useRouter();
@@ -78,6 +79,14 @@ const getStarShowDate = () => {
 };
 
 // 保存传递过来的open_id
+const getOpenId = () => {
+<<<<<<< HEAD
+  $store.commit('chenmgOpenId', $route.query.openid)
+=======
+  $store.commit('changeOpenId', $route.query.open_id)
+>>>>>>> feature-foretyTwo
+}
+getOpenId()
 
 getInitSetting();
 </script>

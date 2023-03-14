@@ -174,6 +174,9 @@ const preserve = async () => {
         wxpay_apiv2_secret_key: officialdata.data.wxpay_apiv2_secret_key,
         wxpay_apiv3_secret_key: officialdata.data.wxpay_apiv3_secret_key,
         wxpay_pos_id: officialdata.data.wxpay_pos_id,
+        wxpay_mchid: officialdata.data.wxpay_mchid,
+        wxpay_app_key: officialdata.data.wxpay_app_key,
+        wxpay_notify_url: officialdata.data.wxpay_notify_url
       },
       token: Cookies.get("token"),
       // token: 'h0iLxzKyDbZCAJg9m3Yd8BWRrsHQtEvG'
