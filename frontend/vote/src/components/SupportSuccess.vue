@@ -41,6 +41,14 @@ const props = defineProps({
 </script>
 
 <style lang="scss" scoped>
+@font-face {
+  font-family: Tsanger02;
+  src: url("../assets/font/TsangerYuYangT_W02_W02.ttf");
+}
+@font-face {
+  font-family: Tsanger03;
+  src: url("../assets/font/TsangerYuYangT_W03_W03.ttf");
+}
 .support {
   position: absolute;
   top: 0;
@@ -71,6 +79,7 @@ const props = defineProps({
   z-index: 11;
 }
 .support_body_pk {
+  font-family: Tsanger03;
   position: absolute;
   top: 20%;
   background-color: green;
@@ -93,7 +102,7 @@ const props = defineProps({
   position: absolute;
   top: 60%;
   display: flex;
-
+  font-family: Tsanger03;
   div {
     text-align: center;
     width: 150px;
@@ -124,6 +133,7 @@ const props = defineProps({
   align-items: center;
 }
 .username {
+  font-family: Tsanger03;
   position: absolute;
   top: 50%;
 }

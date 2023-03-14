@@ -240,12 +240,12 @@ const close = async (e) => {
       },
     });
     if (!result) {
-      $store.commit('chengePublicData', '点赞失败')
+      $store.commit("chengePublicData", "点赞失败");
       props.method();
       return;
-    };
+    }
     props.data.count = props.data.count + 1;
-    $store.commit('changeCurrentClick',props.data.count)
+    $store.commit("changeCurrentClick", props.data.count);
     props.method(props.data);
   } else {
     alert("验证码错误，请重新输入");
@@ -254,6 +254,14 @@ const close = async (e) => {
 </script>
 
 <style lang="scss" scoped>
+@font-face {
+  font-family: Tsanger02;
+  src: url("../assets/font/TsangerYuYangT_W02_W02.ttf");
+}
+@font-face {
+  font-family: Tsanger03;
+  src: url("../assets/font/TsangerYuYangT_W03_W03.ttf");
+}
 .body {
   position: absolute;
   top: 0px;
@@ -293,6 +301,7 @@ const close = async (e) => {
   left: 5%;
   height: 30%;
   display: flex;
+  font-family: Tsanger03;
 }
 .body_content_top_item {
   width: 100px;
@@ -347,6 +356,7 @@ const close = async (e) => {
   border: 1px solid rgba(0, 0, 0, 0.2);
 }
 .sureBotton {
+  font-family: Tsanger03;
   position: absolute;
   top: 78%;
   padding-top: 2%;
@@ -363,7 +373,9 @@ const close = async (e) => {
   color: #ffffff;
 }
 .times {
+  font-family: Tsanger02;
   position: absolute;
   top: 12%;
+  font-size: 10px;
 }
 </style>

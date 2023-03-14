@@ -668,7 +668,11 @@ const dispatchUpload = () => {
 //获取图片路径
 const showImg = () => {
   let file = uploadImg.value.files[0];
-  if (file.type !== "image/png") {
+  if (
+    file.type !== "image/png" &&
+    file.type !== "image/jpg" &&
+    file.type !== "image/jpeg"
+  ) {
     alert("请上传图片类型文件");
     return;
   }
@@ -930,12 +934,34 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+@font-face {
+  font-family: Tsanger01;
+  src: url("../assets/font/TsangerYuYangT_W01_W01.ttf");
+}
+@font-face {
+  font-family: Tsanger02;
+  src: url("../assets/font/TsangerYuYangT_W02_W02.ttf");
+}
+@font-face {
+  font-family: Tsanger03;
+  src: url("../assets/font/TsangerYuYangT_W03_W03.ttf");
+}
+@font-face {
+  font-family: Tsanger04;
+  src: url("../assets/font/TsangerYuYangT_W04_W04.ttf");
+}
+@font-face {
+  font-family: Tsanger05;
+  src: url("../assets/font/TsangerYuYangT_W05_W05.ttf");
+}
+
 .body {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   user-select: none;
+  font-family: Tsanger01;
 }
 .content {
   flex: 1;
@@ -968,6 +994,7 @@ onMounted(() => {
   justify-content: center;
   color: #ffffff;
   user-select: none;
+  font-family: Tsanger05;
 }
 .content_body_persennum {
   display: flex;
@@ -981,6 +1008,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   font-size: 10px;
+  font-family: Tsanger03;
   img {
     margin-right: 5px;
   }
@@ -1053,6 +1081,7 @@ button {
     line-height: 20px;
     background-color: green;
     text-align: center;
+    font-family: Tsanger04;
     color: #ffffff;
   }
   .content_body_information_delta {
@@ -1141,6 +1170,7 @@ button {
     left: 20%;
     z-index: 5;
     font-size: 20px;
+    font-family: Tsanger03;
   }
 }
 .content_body_information_content {
@@ -1154,6 +1184,7 @@ button {
   flex-direction: column;
   justify-content: space-around;
   margin-left: 10px;
+  font-family: Tsanger02;
   .count {
     color: red;
     font-size: 20px;
@@ -1184,6 +1215,7 @@ button {
       color: #ffffff;
       line-height: 40px;
       background-color: rgb(143, 85, 235);
+      font-family: Tsanger04;
     }
   }
 }
@@ -1218,6 +1250,7 @@ button {
 }
 // 弹窗样式
 .enroll_prop {
+  font-family: Tsanger03;
   position: absolute;
   top: 0px;
   right: 0;
@@ -1234,6 +1267,7 @@ button {
   width: 80%;
 }
 .enroll_prop_form_wrrap {
+  padding: 10px;
   background-color: #ffffff;
   border-radius: 10px 10px 0px 0px;
 }
@@ -1285,8 +1319,8 @@ button {
   padding: 10px;
   border-radius: 0px 0px 10px 10px;
   button {
-    width: 20%;
-    height: 30px;
+    width: 30%;
+    line-height: 30px;
     margin-right: 10px;
   }
 }
@@ -1374,6 +1408,7 @@ button {
   border-radius: 10px;
   display: flex;
   align-items: center;
+  font-family: Tsanger02;
   //颜色渐变
   background-image: linear-gradient(
     to right,

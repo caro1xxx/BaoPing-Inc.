@@ -43,6 +43,7 @@
         <div class="comment" v-if="$store.state.settings[66].value">
           <input
             type="text"
+            class="comment_input"
             ref="commtentData"
             v-model="commtentData.value"
             placeholder="请发表评论"
@@ -73,7 +74,7 @@
           }"
           @click="like"
         >
-          点赞
+          {{ $store.state.settings[94].value }}
         </div>
         <div
           class="pay"
@@ -313,6 +314,26 @@ watch(
 </script>
 
 <style lang="scss" scoped>
+@font-face {
+  font-family: Tsanger01;
+  src: url("../assets/font/TsangerYuYangT_W01_W01.ttf");
+}
+@font-face {
+  font-family: Tsanger02;
+  src: url("../assets/font/TsangerYuYangT_W02_W02.ttf");
+}
+@font-face {
+  font-family: Tsanger03;
+  src: url("../assets/font/TsangerYuYangT_W03_W03.ttf");
+}
+@font-face {
+  font-family: Tsanger04;
+  src: url("../assets/font/TsangerYuYangT_W04_W04.ttf");
+}
+@font-face {
+  font-family: Tsanger05;
+  src: url("../assets/font/TsangerYuYangT_W05_W05.ttf");
+}
 .body {
   height: 100%;
 }
@@ -367,6 +388,7 @@ button {
     font-weight: bold;
     color: white;
     padding: 0px 10px;
+    font-family: Tsanger04;
   }
   .num {
     font-size: 15px;
@@ -375,6 +397,7 @@ button {
     padding: 5px 10px;
     margin-top: 10px;
     text-align: center;
+    font-family: Tsanger03;
   }
 }
 .body_content {
@@ -395,6 +418,7 @@ button {
   height: calc(60vh);
   overflow: scroll;
   .top {
+    font-family: Tsanger03;
     display: flex;
     font-size: 15px;
     color: black;
@@ -404,11 +428,13 @@ button {
   }
   .introduce {
     margin-top: 20px;
+    font-family: Tsanger03;
     .title {
       font-size: 15px;
       font-weight: bold;
     }
     .content {
+      font-family: Tsanger02;
       margin-top: 10px;
       font-size: 10px;
       display: -webkit-box;
@@ -427,6 +453,7 @@ button {
     }
   }
   .comment {
+    font-family: Tsanger03;
     display: flex;
     margin-top: 20px;
     justify-content: space-around;
@@ -434,7 +461,7 @@ button {
     input {
       width: 70%;
       height: 30px;
-      border: 1px solid rgb(99, 96, 96);
+      border: 0.5px solid rgb(206, 206, 206);
       padding-left: 10px;
     }
     button {
@@ -443,15 +470,17 @@ button {
       background-color: green;
       color: #fff;
       font-size: 15px;
-      border-radius: 10px;
+      border-radius: 5px;
       text-align: center;
       line-height: 30px;
     }
   }
   .footer {
+    font-family: Tsanger02;
     margin: 20px 0px;
     .title {
       font-size: 15px;
+      font-family: Tsanger03;
       font-weight: bold;
     }
     .item {
@@ -459,6 +488,7 @@ button {
       border-bottom: 0.5px solid #dddddd96;
     }
     .comment_content {
+      font-family: Tsanger01;
       margin-top: 5px;
       white-space: nowrap;
       overflow: hidden;

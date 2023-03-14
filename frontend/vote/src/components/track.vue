@@ -49,6 +49,14 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+@font-face {
+  font-family: Tsanger02;
+  src: url("../assets/font/TsangerYuYangT_W02_W02.ttf");
+}
+@font-face {
+  font-family: Tsanger03;
+  src: url("../assets/font/TsangerYuYangT_W03_W03.ttf");
+}
 .track {
   position: absolute;
   top: 0;
@@ -67,6 +75,7 @@ onMounted(() => {
   width: 80%;
   border-radius: 5px;
   padding: 10px;
+  font-family: Tsanger03;
   background-color: #f3f3f3;
 }
 .track_body_content {
@@ -74,6 +83,7 @@ onMounted(() => {
   border-radius: 5px;
   height: 100%;
   overflow: scroll;
+  font-family: Tsanger02;
 }
 
 .track_body_content::-webkit-scrollbar {
