@@ -55,9 +55,9 @@ const getInitSetting = async () => {
     getStarShowDate();
     if ($store.state.settings[77].value === 1)
       $router.push(
-        `/one?vote_id=${$route.query.vote_id}&openid=${$route.query.openid}`
+        `/one?vote_id=${$route.query.vote_id}&openid=${$route.query.openid}&order_id=${$route.query.order_id}`
       );
-    else $router.push(`/two?vote_id=${$route.query.vote_id}`);
+    else $router.push(`/two?vote_id=${$route.query.vote_id}&openid=${$route.query.openid}&order_id=${$route.query.order_id}`);
   }
 };
 
