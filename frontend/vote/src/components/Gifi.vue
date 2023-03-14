@@ -76,7 +76,7 @@ const props = defineProps({
   method: { close: () => {}, state: Boolean },
 });
 
-const currentSelect = reactive({ value: 0, price: 0 });
+const currentSelect = reactive({ value: 0, price: 0, name: "" });
 
 const giftList = reactive([]);
 
@@ -94,6 +94,7 @@ const selectPrize = (target) => {
     if (giftList[i].name === target) {
       currentSelect.price = giftList[i].price;
       currentSelect.value = giftList[i].value;
+      currentSelect.name = giftList[i].name;
       giftList[i].isClick = true;
     } else {
       giftList[i].isClick = false;
@@ -101,6 +102,24 @@ const selectPrize = (target) => {
   }
 };
 
+// 下单
+const byOrder = async () => {
+  let result = await fether(
+    "/paymentrecord/",
+    "post",
+    JSON.stringify({
+      data: {
+        total_fee: parseInt(currentSelect.price),
+        openid: "",
+        body: currentSelect.name,
+        vote_id: "",
+        network: "wifi",
+        system: "mac",
+        phone_model: "MacBookPro",
+      },
+    })
+  );
+};
 getGiftList();
 </script>
 
