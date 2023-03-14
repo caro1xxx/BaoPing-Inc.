@@ -293,7 +293,7 @@ const lookMore = () => {
 // 判断是否有order_id
 const isOrderId = () => {
   if ($route.query.order_id) {
-    fetch(`${HOST2}/query/querypaymentstatus/?order_id=${$route.query.order_id}`)
+    fetch(`${HOST2}/api/query/querypaymentstatus/?order_id=${$route.query.order_id}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.code === 200) {
@@ -305,7 +305,6 @@ const isOrderId = () => {
   }
 }
 isOrderId()
-
 watch(
   () => $store.state.currentClickAlht,
   (newVal) => {

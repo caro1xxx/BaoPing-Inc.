@@ -12,7 +12,7 @@ class CheckTokenMiddleware(MiddlewareMixin):
         try:
             # print('checktokenmiddleware test')
             m = str(request.method)
-            pathInfo = request.path_info.replace('/', '')
+            pathInfo = request.path_info.replace('/', '').replace('api', '')
             if pathInfo in [
                 'login', 
                 'register', 

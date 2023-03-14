@@ -111,7 +111,7 @@ const selectPrize = (target) => {
 const byOrder = async () => {
   if (!currentSelect.price) return;
   const md = new Mobile(navigator.userAgent);
-  fetch(`${HOST2}/paymentrecord/`, {
+  fetch(`${HOST2}/api/paymentrecord/`, {
     method: "post",
     body: JSON.stringify({
       data: {

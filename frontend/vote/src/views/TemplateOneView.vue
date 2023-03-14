@@ -680,7 +680,7 @@ const showImg = () => {
   reads.readAsDataURL(file);
   const fileData1 = new FormData();
   fileData1.append("file", file);
-  fetch(`${HOST2}/uploadfile/`, { method: "post", body: fileData1 })
+  fetch(`${HOST2}/api/uploadfile/`, { method: "post", body: fileData1 })
     .then((res) => res.json())
     .then((data) => {
       if (data.code === 200) {
@@ -897,6 +897,7 @@ const getUserRecentVote = async () => {
   let result = await fether(
     `/recentvoterecord/?open_id=${$store.state.open_id}`
   );
+  console.log(result[0]);
   if (result.length === 0) {
     welcomeState.state = false;
     return;
