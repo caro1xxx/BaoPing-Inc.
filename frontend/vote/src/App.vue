@@ -50,6 +50,7 @@ const getInitSetting = async () => {
   if (!map1[69].value && !isEnv()) {
     return;
   } else {
+    getOpenId();
     await $store.dispatch("changeSettingsActions", map1);
     getStarShowDate();
     if ($store.state.settings[77].value === 1)
@@ -80,9 +81,8 @@ const getStarShowDate = () => {
 
 // 保存传递过来的open_id
 const getOpenId = () => {
-  $store.commit("chenmgOpenId", $route.query.openid);
+  $store.commit("changeOpenId", $route.query.openid);
 };
-getOpenId();
 
 getInitSetting();
 </script>

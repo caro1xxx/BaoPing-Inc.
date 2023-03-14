@@ -10,7 +10,7 @@
     @returnPage="getData"
     @returnPage1="getData1"
     @returnPage2="getData2"
-    v-if="!welcomeState.state"
+    v-if="welcomeState.state"
   />
   <athleteInformation
     v-if="enrollStatus.isAthleteConfig"
@@ -352,7 +352,7 @@
             font-size: 10px;
             text-align: center;
           "
-       >
+        >
           点击其他位置关闭
         </div>
       </div>
@@ -423,12 +423,12 @@ const enrollData = reactive({
 
 // 保存
 const table = reactive({
-  totalNum: 0
-})
-  // 触发到底部次数
-  let buttonNum = 1
-  // 选手列表最大页码
-  let athletePageNum = 0
+  totalNum: 0,
+});
+// 触发到底部次数
+let buttonNum = 1;
+// 选手列表最大页码
+let athletePageNum = 0;
 // 状态
 const enrollStatus = reactive({
   isEnrollProp: false,
@@ -567,7 +567,7 @@ const getChild3 = (value) => {
   enrollStatus.isVerificationCode = false;
   successData.state = true;
   successData.data = value.data;
-  successData.data.rank = value.data.index + 1
+  successData.data.rank = value.data.index + 1;
   informationData[value.data.index].count += 1;
 };
 const downVerificationCode = () => {
@@ -602,14 +602,20 @@ const downStateAdv = () => {
 };
 //获取选手列表
 const getInformation = async () => {
-  fetch(`${HOST}/votetarget/?vote_id=${$route.query.vote_id}`, { method: "get" })
+  fetch(`${HOST}/votetarget/?vote_id=${$route.query.vote_id}`, {
+    method: "get",
+  })
     .then((res) => res.json())
     .then((data) => {
       if (data.code === 200) {
-        table.totalNum = data.votetarget_count
-        athletePageNum = data.page_count
+        table.totalNum = data.votetarget_count;
+        athletePageNum = data.page_count;
         JSON.parse(data.data).map((item) => {
-          informationData.push({ ...item.fields, pk: item.pk, model: item.model });
+          informationData.push({
+            ...item.fields,
+            pk: item.pk,
+            model: item.model,
+          });
         });
         // 数组排序
         informationData.sort((a, b) => {
@@ -629,19 +635,29 @@ const scrollEvent = async (e) => {
   // 滚动条高度
   // console.log(e.currentTarget.scrollHeight);
   // 快要滚动到底部时发送请求
-  if (Math.ceil(e.currentTarget.scrollTop + e.currentTarget.clientHeight) >= e.currentTarget.scrollHeight) {   //容差：20px
-    buttonNum+=1;
-    if (buttonNum <= athletePageNum) {  
-      let result = await fether(`/votetarget/?vote_id=${$route.query.vote_id}&page_num=${buttonNum}`);
+  if (
+    Math.ceil(e.currentTarget.scrollTop + e.currentTarget.clientHeight) >=
+    e.currentTarget.scrollHeight
+  ) {
+    //容差：20px
+    buttonNum += 1;
+    if (buttonNum <= athletePageNum) {
+      let result = await fether(
+        `/votetarget/?vote_id=${$route.query.vote_id}&page_num=${buttonNum}`
+      );
       result.map((item) => {
-        informationData.push({ ...item.fields, pk: item.pk, model: item.model });
+        informationData.push({
+          ...item.fields,
+          pk: item.pk,
+          model: item.model,
+        });
       });
       informationData.sort((a, b) => {
         return b.count - a.count;
       });
     }
   }
-}
+};
 
 // 点击按钮分发到file click事件
 const dispatchUpload = () => {
@@ -700,11 +716,11 @@ const submit = async () => {
     return;
   }
   if (!headerImg._value) {
-    alert('请上传图片')
+    alert("请上传图片");
     return;
   }
   if (headerImg._value) {
-    $store.commit('chengePublicData', '请上传图片')
+    $store.commit("chengePublicData", "请上传图片");
   }
   fetch(`${HOST}/votetarget/`, { method: "post", body: fileData })
     .then((res) => res.json())
@@ -714,7 +730,7 @@ const submit = async () => {
         //刷新列表数据
         // getInformation();
       } else {
-        $store.commit('chengePublicData', '报名失败')
+        $store.commit("chengePublicData", "报名失败");
       }
     });
 };
@@ -732,15 +748,12 @@ const like = async (target, index) => {
   // 判断是否在投票时间内
   let newTime = new Date();
   // 得到开始投票时间
-  let start_time = $store.state.settings[50].value / 3600 + 8 > 
-  newTime.getHours()
+  let start_time =
+    $store.state.settings[50].value / 3600 + 8 > newTime.getHours();
   if (start_time) {
     alert("投票未开始");
     // 得到结束投票时间
-  } else if (
-    $store.state.settings[51].value / 3600 + 8 < 
-    newTime.getHours()
-  ) {
+  } else if ($store.state.settings[51].value / 3600 + 8 < newTime.getHours()) {
     alert("投票已结束");
     // 在投票时间内
   } else {
@@ -769,9 +782,9 @@ const like = async (target, index) => {
         },
       });
       if (!result) {
-        $store.commit('chengePublicData', '点赞失败')
+        $store.commit("chengePublicData", "点赞失败");
         return;
-      };
+      }
       // 开启二维码弹幕
       if ($store.state.settings[26].value) {
         enrollStatus.isOpenQscode = true;
@@ -805,7 +818,7 @@ const athleteConfig = (e, value, index) => {
   if (e.target.className !== "content_body_information_solid") {
     enrollStatus.isAthleteConfig = true;
     // $store.commit('changeAthlete', true)
-    informationKey = {...value, index: index};
+    informationKey = { ...value, index: index };
     for (let i = 0; i < informationData.length; i++) {
       if (informationData[i].pk === value) {
         $store.commit("changeCurrentClick", informationData[i].count);
@@ -879,7 +892,9 @@ const getExpireTime = async () => {
 };
 // 获取该投票用户最近一次投票时间
 const getUserRecentVote = async () => {
-  let result = await fether(`/recentvoterecord/?open_id=${$store.state.open_id}`);
+  let result = await fether(
+    `/recentvoterecord/?open_id=${$store.state.open_id}`
+  );
   if (result.length === 0) {
     welcomeState.state = false;
     return;
