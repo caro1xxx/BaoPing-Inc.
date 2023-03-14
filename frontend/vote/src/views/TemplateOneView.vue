@@ -621,6 +621,7 @@ const getInformation = async () => {
         informationData.sort((a, b) => {
           return b.count - a.count;
         });
+        console.log(informationData);
       }
     });
 };
@@ -920,7 +921,7 @@ const getUserRecentVote = async () => {
 const openFeedback = () => {
   feedbackState.state = true;
   feedbackState.data.vote_id = $route.query.vote_id;
-  feedbackState.data.vote_user_openid = "heart";
+  feedbackState.data.vote_user_openid = `${store.state.open_id}`;
 };
 onMounted(() => {
   getExpireTime();

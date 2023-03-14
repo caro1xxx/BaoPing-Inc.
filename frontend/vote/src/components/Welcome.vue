@@ -28,8 +28,8 @@
         <div class="encourage">冠军宝座仍被觊觎,不可松懈,坚持住</div>
         <div class="hint">点击任意位置关闭弹窗</div>
         <div class="sustain_person">
-          <div v-for="item in 5">
-            <img src="../assets/images/1.png" alt="">
+          <div v-for="item in personList">
+            <img :src="item" alt="">
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@ import base64 from "base-64";
 import { isNetWork } from "../utils/network";
 import Mobile from "mobile-detect";
 import { useRoute } from "vue-router";
-import { defineEmits } from "vue";
+import { defineEmits, reactive} from "vue";
 const $route = useRoute();
 const $store = useStore();
 const emit = defineEmits(["returnPage", "returnPage1"]);
@@ -142,6 +142,17 @@ const getKey = () => {
       }
     });
 };
+// 存储支持今日之星的人
+const personList = reactive([])
+// 获取支持今日之星的人
+const getPerson = async () => {
+  let result = await fether(`/recentfivevoterecord/?vote_id=${$route.query.vote_id}&vote_target_id=${props.data.pk}`)
+  console.log(result);
+  result.map(item => {
+    personList.push(item.fields.voteuser.avator)
+  })
+}
+getPerson()
 </script>
 
 <style lang="scss" scoped>
@@ -224,13 +235,13 @@ const getKey = () => {
       top: 100%;
     }
     .sustain_person{
-      height: 30px;
+      height: 35px;
       position: absolute;
-      top: 110%;
+      top: 105%;
       display: flex;
       img{
-        width: 30px;
-        height: 30px;
+        width: 35px;
+        height: 35px;
         border-radius: 50%;
       }
     }
