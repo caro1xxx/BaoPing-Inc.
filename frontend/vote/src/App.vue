@@ -78,6 +78,10 @@ const getStarShowDate = () => {
 };
 
 // 保存传递过来的open_id
+const getOpenId = () => {
+  $store.commit('changeOpenId', $route.query.open_id)
+}
+getOpenId()
 
 getInitSetting();
 </script>

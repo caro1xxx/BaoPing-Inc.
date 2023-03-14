@@ -9,7 +9,8 @@ export default createStore({
     publicData: {
       status: false,
       value: ''
-    }
+    },
+    open_id: '',
   },
   getters: {
   },
@@ -28,6 +29,9 @@ export default createStore({
       } else {
         state.publicData.status = false;
       }
+    },
+    changeOpenId(state, payload) {
+      state.open_id = payload
     }
   },
   actions: {
