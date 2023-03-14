@@ -44,7 +44,9 @@ class StaticsOp:
         if isSameDay(updateTime, nowTime):
             addIncome = self.queryTimedeltaIncome(updateTime, nowTime)
             staticsObj.today_income += addIncome
+            # print(1, addIncome)
         else:
+            # print(2)
             staticsObj.today_income = self.queryTodayIncome(nowTime)
             staticsObj.yesterday_income = self.queryYesterdayIncome(nowTime)
         staticsObj.update_time = nowTime    

@@ -38,7 +38,8 @@ class Domain(APIView):
             # 验证数据
             validate = Validate()
             validate.addCheck('checkIsNotEmpty', domain, '域名不能为空')
-            validate.addCheck('checkIsDomain', domain, '域名格式错误')
+            validate.addCheck('checkIsNotEmpty', domain, '域名不能为空')
+            # validate.addCheck('checkIsDomain', domain, '域名格式错误')
             validate.addCheck('checkIsNotEmpty', expireTime, '过期时间不能为空')
             validate.addCheck('checkIsNumber', expireTime, '过期时间格式错误')
             ok, msg = validate.startCheck()

@@ -40,7 +40,7 @@ def sendEmail(email):
     return True, '发送验证码成功'
 
 @shared_task
-def addVoteTargets(filename, taskId):
+def addVoteTargets(filename, taskId, voteId):
     message = 'success'
     try:
         path = str(settings.MEDIA_ROOT) + '/' + str(filename)
@@ -53,22 +53,21 @@ def addVoteTargets(filename, taskId):
                 isFirst = False
                 continue
             tmp = {}
-            tmp['vote_id'] = row[0].value 
-            tmp['name'] = row[1].value 
-            tmp['detail'] = row[2].value 
-            tmp['count'] = row[3].value 
-            tmp['status'] = row[4].value 
+            tmp['name'] = row[0].value 
+            tmp['detail'] = row[1].value 
+            tmp['count'] = row[2].value 
+            tmp['status'] = row[3].value 
             data.append(tmp)
         
         voteTargetOp = VoteTargetOp()
         voteTargetList = []
         for voteTarget in data:
-            ok, msg = voteTargetOp.checkDataOnCreateMany(voteTarget['name'], voteTarget['detail'], voteTarget['vote_id'], voteTarget['count'], voteTarget['status'])
+            ok, msg = voteTargetOp.checkDataOnCreateMany(voteTarget['name'], voteTarget['detail'], voteId, voteTarget['count'], voteTarget['status'])
             if ok:
                 voteTargetList.append(models.VoteTarget(
                     name = voteTarget['name'],
                     detail = voteTarget['detail'],
-                    vote_id_id = voteTarget['vote_id'],
+                    vote_id_id = voteId,
                     count = voteTarget['count'],
                     status = voteTarget['status'],
                 ))

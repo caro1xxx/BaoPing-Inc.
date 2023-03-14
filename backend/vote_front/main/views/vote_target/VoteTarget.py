@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from django.core import serializers
 from django.http import JsonResponse
 from main import models
-from django.db.models import F
+from django.db.models import F, Q
 from main.views.support.SupportOp import SupportOp
 from main.tools import getNowTimeStamp, getIp
 import json
@@ -18,12 +18,16 @@ class VoteTarget(APIView):
             if voteId is None:
                 return JsonResponse({'code': 400, 'msg': '参数错误'})
             
-            voteTargetObj = models.VoteTarget.objects.filter(vote_id=voteId)
+            voteTargetObj = models.VoteTarget.objects.filter(
+                Q(vote_id=voteId) &
+                Q(status=1) 
+            )
             if voteTargetObj is None:
                 return JsonResponse({'code': 400, 'msg': 'not found'})
 
             data = voteTargetObj
             data, ret['page_count'] = myPaginator(data, 5, request.GET.get('page_num', 1))
+            ret['votetarget_count'] = voteTargetObj.count()
             ret['data'] = serializers.serialize('json', data)
 
         except Exception as e:

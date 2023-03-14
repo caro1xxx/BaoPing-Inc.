@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.files import File
-from vote_manage import settings
 
 # Create your models here.
 
@@ -96,10 +95,10 @@ class VoteActivity(models.Model):
     temp_file = models.FileField(upload_to='temp', blank=True, verbose_name='临时文件')
     bottom_copyright = models.TextField(default='')
     officialcount_qrcode = models.FileField(upload_to='qr', blank=True, verbose_name='公众号二维码')
-    popup = models.TextField(default='')
+    popup = models.TextField(default='[]')
     vote_button_name = models.TextField(default='点赞')
     vote_unit_name = models.TextField(default='个')
-    track_report = models.TextField(default='')
+    track_report = models.TextField(default='[]')
     # payment_voteusers = models.ManyToManyField(
     #     PaymentRecord,
     # )
@@ -149,13 +148,20 @@ class Logs(models.Model):
 
 
 class OfficialAccount(models.Model):
-    officialcount_name = models.TextField()
-    app_id = models.TextField()
-    region = models.TextField()
-    wxpay_pos_id = models.TextField()
-    wxpay_apiv2_secret_key = models.TextField()
-    wxpay_apiv3_secret_key = models.TextField()
+    officialcount_name = models.TextField(default='')
+    region = models.TextField(default='')
+    wxpay_pos_id = models.TextField(default='')
+    wxpay_apiv2_secret_key = models.TextField(default='')
+    wxpay_apiv3_secret_key = models.TextField(default='')
     qr_img = models.FileField(upload_to='img/offcial_account_qr/', blank=True, verbose_name='公众号二维码')
+    access_token_value = models.TextField(default='', verbose_name='基础accesstoken')
+    access_token_expire_time = models.IntegerField(default=0)
+    wxpay_mchid = models.TextField(default='')
+    wxpay_appid = models.TextField(default='')
+    wxpay_app_key = models.TextField(default='')
+    wxpay_notify_url = models.TextField(default='')
+    access_token_advanced_value = models.TextField(default='', verbose_name='高级accesstoken')
+    access_token_advanced_expire_time = models.IntegerField(default=0)
 
 
 class Active(models.Model):
@@ -176,7 +182,7 @@ class VoteRecord(models.Model):
 class PaymentRecord(models.Model):
     voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE)
     vote_activity = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     create_time = models.IntegerField(null=False)
     ip = models.TextField(default='')
     phone_number = models.TextField(default='')
@@ -186,19 +192,20 @@ class PaymentRecord(models.Model):
     prize_type = models.TextField(default='')
     payment_order_id = models.TextField(default='')
     payment_status = models.IntegerField(default=0)
+    support_count = models.IntegerField(default=1)
     # wxpay_transaction_id = models.TextField(default='')
     # wxpay_prepay_id = models.TextField(default='')
 
 
 class Statics(models.Model):
-    today_income = models.IntegerField(default=0)
-    yesterday_income = models.IntegerField(default=0)
+    today_income = models.DecimalField(max_digits=10, decimal_places=2)
+    yesterday_income = models.DecimalField(max_digits=10, decimal_places=2)
     update_time = models.IntegerField(default=0)
 
 
 class StaticsHistory(models.Model):
-    day_income = models.IntegerField(default=0)
-    day_time = models.IntegerField(default=0)
+    day_income = models.DecimalField(max_digits=10, decimal_places=2)
+    day_time = models.DecimalField(max_digits=10, decimal_places=2)
     create_time = models.IntegerField(default=0)
 
 

@@ -1,5 +1,7 @@
 from django.db import models
+from django.core.files import File
 
+# Create your models here.
 
 class User(models.Model):
     name = models.CharField(max_length=50)
@@ -29,7 +31,7 @@ class Domain(models.Model):
 
 
 class VoteUser(models.Model):
-    open_id = models.CharField(unique=True, max_length=128)
+    open_id = models.CharField(unique=True, max_length=128, db_index=True)
     wx_username = models.TextField()
     create_time = models.IntegerField(null=False)
     avator = models.TextField(default='')
@@ -76,7 +78,7 @@ class VoteActivity(models.Model):
     auto_comment_everyday_end_time = models.IntegerField(default=0)
     auto_comment_space_minute = models.IntegerField(default=0)
     auto_comment_everyday_count_strict = models.IntegerField(default=0)
-    template_id = models.IntegerField(default=0)
+    template_id = models.IntegerField(default=1)
     description = models.TextField(default='')
     enterprises = models.TextField(default='')
     prize = models.TextField(default='')
@@ -89,22 +91,19 @@ class VoteActivity(models.Model):
     video_adv = models.FileField(upload_to='video', blank=True, verbose_name='视频广告')
     target_video_adv = models.FileField(upload_to='vedio', blank=True, verbose_name='视频广告')
     bottom_support_text = models.TextField(default='')
-    carousel_list = models.TextField(default='')
+    carousel_list = models.TextField(default='[]')
     temp_file = models.FileField(upload_to='temp', blank=True, verbose_name='临时文件')
     bottom_copyright = models.TextField(default='')
-    officialcount_qrcode = models.FileField(upload_to='pr', blank=True, verbose_name='公众号二维码')
-    popup = models.TextField(default='')
+    officialcount_qrcode = models.FileField(upload_to='qr', blank=True, verbose_name='公众号二维码')
+    popup = models.TextField(default='[]')
     vote_button_name = models.TextField(default='点赞')
     vote_unit_name = models.TextField(default='个')
-    track_report = models.TextField(default='')
-    vote_voteusers = models.ManyToManyField(
-        VoteUser,
-        through='VoteRecord',
-        through_fields=('vote_activity', 'voteuser')
-    )
+    track_report = models.TextField(default='[]')
     # payment_voteusers = models.ManyToManyField(
     #     PaymentRecord,
     # )
+    def natural_key(self):
+        return {'name': self.name, 'vote_id': self.vote_id}
 
 class VoteTarget(models.Model):
     vote_id = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
@@ -116,6 +115,8 @@ class VoteTarget(models.Model):
         default = 'img/1.png'
     )
     status = models.IntegerField(default=0)
+    def natural_key(self):
+        return {'name': self.name, 'vote_id': self.vote_id, 'avator': self.avator}
 
 
 class Feedback(models.Model):
@@ -126,18 +127,52 @@ class Feedback(models.Model):
 
 
 class ApplyPrize(models.Model):
-    voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE)
+    voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE, related_name='voteuser')
     name = models.CharField(max_length=8)
     phone_number = models.CharField(max_length=11)
     create_time = models.IntegerField()
     status = models.IntegerField(default=False)
+    vote_activity = models.IntegerField(db_index=True, default=0)
+
+
+class Token(models.Model):
+    value = models.CharField(max_length=32,unique=True)
+    expire_time = models.IntegerField()
+
+
+class Logs(models.Model):
+    who = models.CharField(max_length=20)
+    action = models.TextField(max_length=20)
+    target = models.TextField(max_length=20, null=False)
+    create_time = models.IntegerField(null=False)
+
+
+class OfficialAccount(models.Model):
+    officialcount_name = models.TextField(default='')
+    region = models.TextField(default='')
+    wxpay_pos_id = models.TextField(default='')
+    wxpay_apiv2_secret_key = models.TextField(default='')
+    wxpay_apiv3_secret_key = models.TextField(default='')
+    qr_img = models.FileField(upload_to='img/offcial_account_qr/', blank=True, verbose_name='公众号二维码')
+    access_token_value = models.TextField(default='', verbose_name='基础accesstoken')
+    access_token_expire_time = models.IntegerField(default=0)
+    wxpay_mchid = models.TextField(default='')
+    wxpay_appid = models.TextField(default='')
+    wxpay_app_key = models.TextField(default='')
+    wxpay_notify_url = models.TextField(default='')
+    access_token_advanced_value = models.TextField(default='', verbose_name='高级accesstoken')
+    access_token_advanced_expire_time = models.IntegerField(default=0)
+
+
+class Active(models.Model):
+    domain_list = models.CharField(max_length=100)
 
 
 class VoteRecord(models.Model):
     voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE)
     vote_target = models.ForeignKey(VoteTarget, to_field='id', on_delete=models.CASCADE)
     create_time = models.IntegerField(null=False)
-    vote_activity = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
+    vote_activity = models.IntegerField(default=0)
     ip = models.TextField(default='')
     phone_model = models.TextField(default='')
     system = models.TextField(default='')   
@@ -147,7 +182,7 @@ class VoteRecord(models.Model):
 class PaymentRecord(models.Model):
     voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE)
     vote_activity = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     create_time = models.IntegerField(null=False)
     ip = models.TextField(default='')
     phone_number = models.TextField(default='')
@@ -157,7 +192,27 @@ class PaymentRecord(models.Model):
     prize_type = models.TextField(default='')
     payment_order_id = models.TextField(default='')
     payment_status = models.IntegerField(default=0)
-    
+    support_count = models.IntegerField(default=1)
+    # wxpay_transaction_id = models.TextField(default='')
+    # wxpay_prepay_id = models.TextField(default='')
+
+
+class Statics(models.Model):
+    today_income = models.DecimalField(max_digits=10, decimal_places=2)
+    yesterday_income = models.DecimalField(max_digits=10, decimal_places=2)
+    update_time = models.IntegerField(default=0)
+
+
+class StaticsHistory(models.Model):
+    day_income = models.DecimalField(max_digits=10, decimal_places=2)
+    day_time = models.DecimalField(max_digits=10, decimal_places=2)
+    create_time = models.IntegerField(default=0)
+
+
+class Settings(models.Model):
+    name = models.TextField(default='')
+    value = models.TextField(default='')
+
 
 class Keys(models.Model):
     value = models.CharField(default='', db_index=True, max_length=128)
@@ -166,10 +221,13 @@ class Keys(models.Model):
     has_used = models.IntegerField(default=0)
 
 
-class Settings(models.Model):
+class Gift(models.Model):
     name = models.TextField(default='')
-    value = models.TextField(default='')
-
+    value = models.IntegerField(default=0)
+    price = models.IntegerField(default=0)
+    status = models.IntegerField(default=0)
+    img = models.FileField(upload_to='img/gift', blank=True, verbose_name='礼物图标', default='img/gift/rose.png')
+    
 
 class CommentRecord(models.Model):
     vote_target = models.ForeignKey(VoteTarget, to_field='id', on_delete=models.CASCADE)
@@ -183,9 +241,27 @@ class BlackList(models.Model):
     open_id = models.TextField(default='', null=True)
     ip = models.TextField(default='', null=True)
 
-class Gift(models.Model):
+
+class TempFile(models.Model):
+    file = models.FileField(upload_to='temp', blank=True, verbose_name='临时文件')
+
+
+class AutoComment(models.Model):
+    vote_id = models.TextField(default='')
+    vote_target_id = models.TextField(default='')
+    begin_time = models.IntegerField(default=0)
+    end_time = models.IntegerField(default=0)
+    day_begin_time = models.IntegerField(default=0)
+    day_end_time = models.IntegerField(default=0)
+    space = models.IntegerField(default=0)
+    day_count_strict = models.IntegerField(default=0)
+    update_time = models.IntegerField(default=0)
+    day_vote_count = models.IntegerField(default=0)
+
+
+class Task(models.Model):
+    task_id = models.CharField(default='null', max_length=6, db_index=True)
     name = models.TextField(default='')
-    value = models.IntegerField(default=0)
-    price = models.IntegerField(default=0)
-    status = models.IntegerField(default=0)
-    img = models.FileField(upload_to='img/gift', blank=True, verbose_name='礼物图标')
+    status = models.TextField(default='')
+    msg = models.TextField(default='')
+    create_time = models.IntegerField(default=0)

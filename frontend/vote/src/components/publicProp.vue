@@ -1,15 +1,24 @@
 <!-- 通用弹窗 -->
 <template>
-    <div class="body" @click="downProp">
-      <div class="body_content">
-        <div class="body_content_wrap">
-          <div class="body_content_detail">
-            {{ $store.state.publicData.value }}
-          </div>
+  <div class="body" @click="downProp">
+    <div class="body_content">
+      <div class="body_content_wrap">
+        <div class="body_content_detail">
+          {{ $store.state.publicData.value }}
         </div>
-        <div style="color: #ffffff;margin-top: 10px;font-size: 10px;text-align: center;">点击其他位置关闭</div>
+      </div>
+      <div
+        style="
+          color: #ffffff;
+          margin-top: 10px;
+          font-size: 10px;
+          text-align: center;
+        "
+      >
+        点击其他位置关闭
       </div>
     </div>
+  </div>
 </template>
 
 <script setup>
@@ -23,12 +32,12 @@ const props = defineProps({
 
 // 关闭弹窗
 const downProp = () => {
-  $store.commit('chengePublicData')
-}
+  $store.commit("chengePublicData");
+};
 </script>
 
 <style lang="scss" scoped>
-.body{
+.body {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -41,14 +50,16 @@ const downProp = () => {
   align-items: center;
   z-index: 10;
 }
-.body_content{
-    width: 60%;
-  }
-  .body_content_wrap{
+.body_content {
+  width: 60%;
+  border-radius: 5px;
+}
+.body_content_wrap {
+  border-radius: 5px;
   padding: 10px;
   background-color: #f3f3f3;
 }
-.body_content_detail{
+.body_content_detail {
   background-color: #fff;
   padding: 10px 0px;
   text-align: center;

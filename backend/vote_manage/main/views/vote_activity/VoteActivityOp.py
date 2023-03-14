@@ -132,12 +132,15 @@ class VoteActivityOp:
 
     def updateActivityData(self, data):
         voteActivityObj = models.VoteActivity.objects.filter(vote_id=data.get('vote_id', None)).first()
+        voteActivityObj.create_time = data.get('create_time', None)
+        voteActivityObj.expire_time = data.get('expire_time', None)
         voteActivityObj.vote_everyday_begin_time = data.get('vote_everyday_begin_time', None)
         voteActivityObj.vote_everyday_end_time = data.get('vote_everyday_end_time', None)
         voteActivityObj.vote_enroll_begin_time = data.get('vote_enroll_begin_time', None)
         voteActivityObj.vote_enroll_end_time = data.get('vote_enroll_end_time', None)
         voteActivityObj.allowed_vote_region = data.get('allowed_vote_region', None)
         voteActivityObj.visit_count = data.get('visit_count', None)
+        voteActivityObj.name = data.get('name', None)
         voteActivityObj.visit_count_multiple = data.get('visit_count_multiple', None)
         voteActivityObj.save()
 

@@ -17,15 +17,21 @@ class GetDomain(APIView):
             if voteId is None:
                 return JsonResponse({'code': 400, 'msg': '参数错误'})
             
-            domainObj = models.domain.objects.filter(status=1, vote_id=voteId).all().order_by('visit_count').first()
-            if domainObj is None:
+            # domainObj = models.domain.objects.filter(status=1, vote_id=voteId).all().order_by('visit_count').first()
+            # if domainObj is None:
+            #     return JsonResponse({'code': 400, 'msg': 'not found'})
+
+            voteObj = models.VoteActivity.objects.filter(vote_id=voteId).order_by('visit_count').first()
+            if voteObj is None:
                 return JsonResponse({'code': 400, 'msg': 'not found'})
-            
+
+            domainObj = models.domain.objects.filter(domain_name=voteObj.domain_id).first()
             DomainOp().addVisitCount(domainObj)
-            ret['domain'] = domainObj.domain_name
+            ret['domain'] = voteObj.domain_id 
 
         except Exception as e:
-            return JsonResponse({'code': 500, 'msg': 'Timeout'})
+            # return JsonResponse({'code': 500, 'msg': 'Timeout'})
+            return JsonResponse({'code': 500, 'msg': 'Timeout', 'err': str(e)})
         return JsonResponse(ret)
 
     def post(self, request, *args, **kwargs):

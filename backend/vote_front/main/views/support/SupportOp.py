@@ -40,7 +40,7 @@ class SupportOp:
 
         user_vote_count_day = models.VoteRecord.objects.filter(
             Q(voteuser_id = data['open_id']) &
-            Q(vote_activity_id = data['vote_id']) &
+            Q(vote_activity = data['vote_id']) &
             Q(create_time__gte = todayBeginTime) &
             Q(create_time__lt = nowTime)
         ).aggregate(cnt=Count('create_time'))['cnt']
@@ -49,7 +49,7 @@ class SupportOp:
 
         user_vote_count_hour = models.VoteRecord.objects.filter(
             Q(voteuser_id = data['open_id']) &
-            Q(vote_activity_id = data['vote_id']) &
+            Q(vote_activity = data['vote_id']) &
             Q(create_time__gte = lastHourTime) &
             Q(create_time__lt = nowTime)
         ).aggregate(cnt=Count('create_time'))['cnt']
@@ -81,15 +81,15 @@ class SupportOp:
     
     def create(self, data, request):
         models.VoteRecord.objects.create(
-                voteuser_id = data['open_id'],
-                vote_target_id = data['vote_target_id'],
-                create_time = getNowTimeStamp(),
-                vote_activity_id = data['vote_id'],
-                ip = data['ip'],
-                phone_model = data['phone_model'],
-                system = data['system'],
-                network = data['network'],
-        ).save()
+            voteuser_id = data['open_id'],
+            vote_target_id = data['vote_target_id'],
+            create_time = getNowTimeStamp(),
+            vote_activity = data['vote_id'],
+            ip = data['ip'],
+            phone_model = data['phone_model'],
+            system = data['system'],
+            network = data['network'],
+        )
         models.VoteTarget.objects.filter(pk=data['vote_target_id']).update(
-                count = F('count') + 1
+            count = F('count') + 1
         )
