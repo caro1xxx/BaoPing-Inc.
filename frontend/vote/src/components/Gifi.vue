@@ -108,7 +108,7 @@ const selectPrize = (target) => {
 // 下单
 const byOrder = async () => {
   if (!currentSelect.price) return;
-  fetch(`${HOST2}/paymentrecord/`, {
+  fetch(`${HOST2}/api/paymentrecord/`, {
     method: "post",
     body: JSON.stringify({
       data: {
