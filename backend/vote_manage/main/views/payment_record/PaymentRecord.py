@@ -56,7 +56,6 @@ class PaymentRecord(APIView):
                 update_time = getNowTimeStamp(),
             )
 
-            models.VoteTarget.objects.filter(pk=data['vote_target_id']).update(count = F('count') + support)
             ret['order_id'] = orderId
 
         except Exception as e:
@@ -93,10 +92,11 @@ class PaymentRecord(APIView):
                     network = paymentRecordObj.network,
                     count = paymentRecordObj.support_count
                 )
+                models.VoteTarget.objects.filter(pk=paymentRecordObj.vote_target).update(count = F('count') + paymentRecordObj.support_count)
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
 
     def delete(self, request, *args, **kwargs):
