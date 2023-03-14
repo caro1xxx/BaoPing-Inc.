@@ -27,6 +27,11 @@
         </div>
         <div class="encourage">冠军宝座仍被觊觎,不可松懈,坚持住</div>
         <div class="hint">点击任意位置关闭弹窗</div>
+        <div class="sustain_person">
+          <div v-for="item in 5">
+            <img src="../assets/images/1.png" alt="">
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -217,6 +222,17 @@ const getKey = () => {
       position: absolute;
       font-size: 10px;
       top: 100%;
+    }
+    .sustain_person{
+      height: 30px;
+      position: absolute;
+      top: 110%;
+      display: flex;
+      img{
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+      }
     }
   }
 }

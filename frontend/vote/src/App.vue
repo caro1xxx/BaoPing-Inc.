@@ -80,11 +80,7 @@ const getStarShowDate = () => {
 
 // 保存传递过来的open_id
 const getOpenId = () => {
-<<<<<<< HEAD
   $store.commit('chenmgOpenId', $route.query.openid)
-=======
-  $store.commit('changeOpenId', $route.query.open_id)
->>>>>>> feature-foretyTwo
 }
 getOpenId()
 

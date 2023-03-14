@@ -30,11 +30,7 @@ export default createStore({
         state.publicData.status = false;
       }
     },
-<<<<<<< HEAD
     chenmgOpenId(state, payload) {
-=======
-    changeOpenId(state, payload) {
->>>>>>> feature-foretyTwo
       state.open_id = payload
     }
   },
