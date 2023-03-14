@@ -4,19 +4,11 @@
     <div class="home_title">支付记录</div>
     <div class="home_body">
       <el-table :data="payNotesData" class="home_body_table">
-        <el-table-column prop="id" label="活动">
-          <template #default="scope">
-            <span>{{ scope.$index }}</span>
-          </template>
-        </el-table-column>
+        <el-table-column prop="vote_id" label="活动ID" />
         <el-table-column prop="open_id" label="openid(用户名)" />
         <el-table-column prop="price" label="金额" />
         <el-table-column prop="prize_type" label="礼物类型" />
-        <el-table-column prop="status" label="票数">
-          <template #default="scope">
-            <div>1</div>
-          </template>
-        </el-table-column>
+        <el-table-column prop="support_count" label="票数" />
         <el-table-column prop="payment_order_id" label="支付订单号" />
         <el-table-column prop="create_time" label="支付时间">
           <template #default="scope">
@@ -64,6 +56,7 @@ const isAxiosStatus = async (data, status) => {
         pk: item.pk,
         wx_username: item.fields.voteuser.wx_username,
         open_id: item.fields.voteuser.open_id,
+        vote_id: item.fields.vote_activity.vote_id
       });
     });
   } else {
@@ -81,15 +74,7 @@ const getPayNotesData = async () => {
   await $store.dispatch("NoticifyActions", true);
   let result = await fether(`/paymentrecord/?token=${Cookies.get("token")}`);
   if (result.code === 200) {
-    let Arr = [];
-    Arr = JSON.parse(result.data);
-    Arr.map((item) => {
-      payNotesData.push({
-        ...item.fields,
-        pk: item.pk,
-        wx_username: item.fields.voteuser.wx_username,
-      });
-    });
+    console.log(JSON.parse(result.data));
     isAxiosStatus(result, true);
     // 关闭加载loading
     $store.commit("noticifyLoading", false);

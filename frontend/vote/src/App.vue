@@ -12,6 +12,7 @@ import { useRoute, useRouter } from "vue-router";
 import todayStarVue from "@/components/todayStar.vue";
 import publicProp from "@/components/publicProp.vue";
 import Mobile from "mobile-detect";
+
 import { ref, reactive } from "vue";
 const $route = useRoute();
 const $router = useRouter();
@@ -49,6 +50,7 @@ const getInitSetting = async () => {
   if (!map1[69].value && !isEnv()) {
     return;
   } else {
+    getOpenId();
     await $store.dispatch("changeSettingsActions", map1);
     getStarShowDate();
     if ($store.state.settings[77].value === 1)
@@ -78,6 +80,10 @@ const getStarShowDate = () => {
 };
 
 // 保存传递过来的open_id
+const getOpenId = () => {
+  $store.commit('changeOpenId', $route.query.openid)
+}
+
 
 getInitSetting();
 </script>

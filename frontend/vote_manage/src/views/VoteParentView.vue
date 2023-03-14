@@ -9,7 +9,7 @@
             <span>#{{ scope.$index }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="open_id" label="用户名" />
+        <el-table-column prop="wx_username" label="用户名" />
         <el-table-column prop="avator" label="头像">
           <template #default="scope">
             <img

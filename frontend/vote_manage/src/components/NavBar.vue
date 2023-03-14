@@ -269,7 +269,7 @@ const goPage = (index) => {
           },
           {
             name: "评论管理",
-            description: "审核评论已经操作评论",
+            description: "审核评论以及操作评论",
             path: "/message/comment",
           },
         ],
