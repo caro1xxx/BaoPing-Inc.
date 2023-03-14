@@ -7,12 +7,11 @@ from main.tools import *
 from main.views.Common import Common
 
 
-class QueryPaymentStatus(APIView):
+class QueryPayment(APIView):
     def get(self, request, *args, **kwargs):
         ret = {'code': 200, 'msg': 'ok'}
         try:
             payment_order_id = request.GET.get('order_id', None)
-            print(request.GET)
 
             if payment_order_id is None:
                 return JsonResponse({'code': 400, 'msg': '参数错误'})
@@ -21,9 +20,8 @@ class QueryPaymentStatus(APIView):
             if paymentRecordObj is None:
                 return JsonResponse({'code': 400, 'msg': '该订单不存在'})
             
-            # ret['status'] = 
-            print(paymentRecordObj.payment_status)
-            ret['code'] = 400 if paymentRecordObj.payment_status != 1 else ret['code']
+            ret['data'] = serializers.serialize('json', [paymentRecordObj])
+
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
             # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}

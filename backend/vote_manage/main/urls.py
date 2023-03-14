@@ -9,7 +9,7 @@ from main.views.vote_activity import VoteActivity, AloneVoteActivity, UploadFile
 from main.views.domain import Domain
 from main.views.applyprize import ApplyPrize
 from main.views.vote_record import VoteRecord
-from main.views.payment_record import PaymentRecord
+from main.views.payment_record import PaymentRecord, QueryPayment, QueryPaymentStatus
 from main.views.voteuser import Voteuser, Comment
 from main.views.statics import Statics, StaticsHistory
 from main.views.settings import Settings
@@ -50,7 +50,8 @@ urlpatterns = [
     url(r'^comment/$', Comment.Comment.as_view()),
     url(r'^uploadfile/$', UploadFile.UploadFile.as_view()),
     url(r'^updatetargetstatus/$', UpdateVoteTargetStatus.UpdateVoteTargetStatus.as_view()),
+    url(r'^querypayment/$', QueryPayment.QueryPayment.as_view()),
+    url(r'^query/querypaymentstatus/$', QueryPaymentStatus.QueryPaymentStatus.as_view()),
     url(r'^task/$', Task.Task.as_view()),
-    url(r'^test/$', TestView.TestView.as_view()),
     url(r'$', Request404.Request404.as_view())
 ]

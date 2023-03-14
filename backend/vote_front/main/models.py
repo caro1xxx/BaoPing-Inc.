@@ -18,7 +18,7 @@ class User(models.Model):
     status = models.IntegerField(default=1)
 
     def natural_key(self):
-        return {'name': self.name, 'username': self.username}
+        return {'name': self.name, 'username': self.username, 'avator': self.avator}
 
 
 class Domain(models.Model):
@@ -116,7 +116,7 @@ class VoteTarget(models.Model):
     )
     status = models.IntegerField(default=0)
     def natural_key(self):
-        return {'name': self.name, 'vote_id': self.vote_id, 'avator': self.avator}
+        return {'name': self.name, 'avator': self.avator.name}
 
 
 class Feedback(models.Model):
@@ -177,12 +177,14 @@ class VoteRecord(models.Model):
     phone_model = models.TextField(default='')
     system = models.TextField(default='')   
     network = models.TextField(default='')
+    count = models.IntegerField(default=1)
 
 
 class PaymentRecord(models.Model):
     voteuser = models.ForeignKey(VoteUser, to_field='open_id', on_delete=models.CASCADE)
     vote_activity = models.ForeignKey(VoteActivity, to_field='vote_id', on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    vote_target = models.IntegerField(default=0)
     create_time = models.IntegerField(null=False)
     ip = models.TextField(default='')
     phone_number = models.TextField(default='')
@@ -190,9 +192,10 @@ class PaymentRecord(models.Model):
     system = models.TextField(default='')
     network = models.TextField(default='')  
     prize_type = models.TextField(default='')
-    payment_order_id = models.TextField(default='')
+    payment_order_id = models.CharField(default='', max_length=64, db_index=True)
     payment_status = models.IntegerField(default=0)
     support_count = models.IntegerField(default=1)
+    update_time = models.IntegerField(default=0)
     # wxpay_transaction_id = models.TextField(default='')
     # wxpay_prepay_id = models.TextField(default='')
 

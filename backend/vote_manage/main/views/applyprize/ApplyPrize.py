@@ -23,8 +23,8 @@ class ApplyPrize(APIView):
             ret['data'], ret['page_count'] = Common().getData(request, 'ApplyPrize', desc_order=True)
 
         except Exception as e:
-            # ret = {'code': 500, 'msg':  'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            ret = {'code': 500, 'msg':  'Timeout'}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
     
 

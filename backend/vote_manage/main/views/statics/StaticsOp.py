@@ -6,8 +6,8 @@ from main.tools import getTodayBeginTimeStamp, getNowTimeStamp, isSameDay
 class StaticsOp:
     def queryTimedeltaIncome(self, beginTime, endTime):
         sumIncome = models.PaymentRecord.objects.filter(
-            create_time__gte = beginTime,
-            create_time__lt = endTime,
+            update_time__gte = beginTime,
+            update_time__lt = endTime,
             payment_status = 1
         ).aggregate(sum_income=Sum('price'))
         return sumIncome['sum_income'] if sumIncome['sum_income'] else 0
@@ -44,9 +44,7 @@ class StaticsOp:
         if isSameDay(updateTime, nowTime):
             addIncome = self.queryTimedeltaIncome(updateTime, nowTime)
             staticsObj.today_income += addIncome
-            # print(1, addIncome)
         else:
-            # print(2)
             staticsObj.today_income = self.queryTodayIncome(nowTime)
             staticsObj.yesterday_income = self.queryYesterdayIncome(nowTime)
         staticsObj.update_time = nowTime    
