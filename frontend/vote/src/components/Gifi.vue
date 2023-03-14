@@ -39,7 +39,7 @@
             </div>
           </div>
         </div>
-        <div class="pay">
+        <div class="pay" @click="byOrder">
           <svg
             t="1678720522592"
             class="icon"
@@ -65,11 +65,14 @@
 </template>
 
 <script setup>
-import { HOST2 } from "@/ENV";
+import { HOST, HOST2 } from "@/ENV";
 import { fether } from "@/utils/fether";
 import { reactive } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { useStore } from "vuex";
+const $store = useStore();
 const $route = useRoute();
+const $router = useRouter();
 
 const props = defineProps({
   data: String,
@@ -104,21 +107,29 @@ const selectPrize = (target) => {
 
 // 下单
 const byOrder = async () => {
-  let result = await fether(
-    "/paymentrecord/",
-    "post",
-    JSON.stringify({
+  if (!currentSelect.price) return;
+  fetch(`${HOST2}/paymentrecord/`, {
+    method: "post",
+    body: JSON.stringify({
       data: {
-        total_fee: parseInt(currentSelect.price),
-        openid: "",
+        total_fee: parseInt(currentSelect.price) * 100,
+        openid: $store.state.open_id,
         body: currentSelect.name,
-        vote_id: "",
+        vote_id: props.data.vote_id,
+        vote_target_id: props.data.pk,
         network: "wifi",
         system: "mac",
         phone_model: "MacBookPro",
       },
-    })
-  );
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.code === 200) {
+        window.location.href = `http://pay.yilsfeng.cn/?order=${data.order_id}&vote_id=${props.data.vote_id}&openid=${$store.state.open_id}`;
+        return true;
+      }
+    });
 };
 getGiftList();
 </script>
