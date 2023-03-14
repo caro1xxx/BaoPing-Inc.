@@ -29,7 +29,7 @@
         <div class="hint">点击任意位置关闭弹窗</div>
         <div class="sustain_person">
           <div v-for="item in personList">
-            <img :src="item" alt="">
+            <img :src="item" alt="" />
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@ import base64 from "base-64";
 import { isNetWork } from "../utils/network";
 import Mobile from "mobile-detect";
 import { useRoute } from "vue-router";
-import { defineEmits, reactive} from "vue";
+import { defineEmits, reactive } from "vue";
 const $route = useRoute();
 const $store = useStore();
 const emit = defineEmits(["returnPage", "returnPage1"]);
@@ -86,15 +86,12 @@ const support = async (e) => {
   // 判断是否在投票时间内
   let newTime = new Date();
   // 得到开始投票时间
-  let start_time = $store.state.settings[50].value / 3600 + 8 > 
-  newTime.getHours()
+  let start_time =
+    $store.state.settings[50].value / 3600 + 8 > newTime.getHours();
   if (start_time) {
     alert("投票未开始");
     // 得到结束投票时间
-  } else if (
-    $store.state.settings[51].value / 3600 + 8 < 
-    newTime.getHours()
-  ) {
+  } else if ($store.state.settings[51].value / 3600 + 8 < newTime.getHours()) {
     alert("投票已结束");
     // 在投票时间内
   } else {
@@ -117,10 +114,10 @@ const support = async (e) => {
         },
       });
       if (!result) {
-        $store.commit('chengePublicData', '点赞失败')
+        $store.commit("chengePublicData", "点赞失败");
         props.data.close();
         return;
-      };
+      }
       if ($store.state.settings[26].value) {
         returnPage();
       }
@@ -143,19 +140,33 @@ const getKey = () => {
     });
 };
 // 存储支持今日之星的人
-const personList = reactive([])
+const personList = reactive([]);
 // 获取支持今日之星的人
 const getPerson = async () => {
-  let result = await fether(`/recentfivevoterecord/?vote_id=${$route.query.vote_id}&vote_target_id=${props.data.pk}`)
+  let result = await fether(
+    `/recentfivevoterecord/?vote_id=${$route.query.vote_id}&vote_target_id=${props.data.pk}`
+  );
   console.log(result);
-  result.map(item => {
-    personList.push(item.fields.voteuser.avator)
-  })
-}
-getPerson()
+  result.map((item) => {
+    personList.push(item.fields.voteuser.avator);
+  });
+};
+getPerson();
 </script>
 
 <style lang="scss" scoped>
+@font-face {
+  font-family: Tsanger02;
+  src: url("../assets/font/TsangerYuYangT_W02_W02.ttf");
+}
+@font-face {
+  font-family: Tsanger03;
+  src: url("../assets/font/TsangerYuYangT_W03_W03.ttf");
+}
+@font-face {
+  font-family: Tsanger04;
+  src: url("../assets/font/TsangerYuYangT_W04_W04.ttf");
+}
 .welcome {
   position: absolute;
   top: 0;
@@ -200,11 +211,13 @@ getPerson()
       position: absolute;
       top: 25%;
       width: 60%;
+      font-family: Tsanger03;
     }
     .di {
       font-size: 30px;
       position: absolute;
       top: 35%;
+      font-family: Tsanger04;
     }
     .avaotr {
       width: 100px;
@@ -213,11 +226,13 @@ getPerson()
       top: 48%;
     }
     .username {
+      font-family: Tsanger02;
       font-weight: bold;
       position: absolute;
       top: 70%;
     }
     .suddenSupport {
+      font-family: Tsanger04;
       font-weight: bold;
       font-size: 20px;
       color: #444444;
@@ -234,12 +249,12 @@ getPerson()
       font-size: 10px;
       top: 100%;
     }
-    .sustain_person{
+    .sustain_person {
       height: 35px;
       position: absolute;
       top: 105%;
       display: flex;
-      img{
+      img {
         width: 35px;
         height: 35px;
         border-radius: 50%;

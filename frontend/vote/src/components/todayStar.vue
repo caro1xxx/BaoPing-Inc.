@@ -33,21 +33,29 @@ const props = defineProps({
 
 // 存储今日之星名字
 const athleteName = reactive({
-  name: ''
-})
+  name: "",
+});
 
 // 列表数据
-const informationData =  reactive([])
+const informationData = reactive([]);
 
 // 获取今日之星
 const getTodyStar = async () => {
-  let result = await fether(`/todaystar/?vote_id=${$route.query.vote_id}`)
-  athleteName.name = result[0].fields.name
-}
-getTodyStar()
+  let result = await fether(`/todaystar/?vote_id=${$route.query.vote_id}`);
+  athleteName.name = result[0].fields.name;
+};
+getTodyStar();
 </script>
 
 <style lang="scss" scoped>
+@font-face {
+  font-family: Tsanger02;
+  src: url("../assets/font/TsangerYuYangT_W02_W02.ttf");
+}
+@font-face {
+  font-family: Tsanger03;
+  src: url("../assets/font/TsangerYuYangT_W03_W03.ttf");
+}
 .star {
   position: absolute;
   top: 0;
@@ -85,12 +93,14 @@ getTodyStar()
   position: relative;
 }
 .title {
+  font-family: Tsanger02;
   color: white;
   position: absolute;
   top: 4%;
   font-size: 15px;
 }
 .gongxi {
+  font-family: Tsanger03;
   font-size: 20px;
   font-weight: bold;
   position: absolute;
@@ -98,6 +108,7 @@ getTodyStar()
   color: white;
 }
 .value {
+  font-family: Tsanger03;
   font-weight: bold;
   font-size: 25px;
   position: absolute;
@@ -105,6 +116,7 @@ getTodyStar()
   color: white;
 }
 .star_title {
+  font-family: Tsanger02;
   font-weight: bold;
   font-size: 20px;
   position: absolute;

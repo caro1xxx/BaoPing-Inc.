@@ -70,6 +70,8 @@ import { fether } from "@/utils/fether";
 import { reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
+import Mobile from "mobile-detect";
+import { isNetWork } from "../utils/network";
 const $store = useStore();
 const $route = useRoute();
 const $router = useRouter();
@@ -108,6 +110,7 @@ const selectPrize = (target) => {
 // 下单
 const byOrder = async () => {
   if (!currentSelect.price) return;
+  const md = new Mobile(navigator.userAgent);
   fetch(`${HOST2}/paymentrecord/`, {
     method: "post",
     body: JSON.stringify({
@@ -117,9 +120,9 @@ const byOrder = async () => {
         body: currentSelect.name,
         vote_id: props.data.vote_id,
         vote_target_id: props.data.pk,
-        network: "wifi",
-        system: "mac",
-        phone_model: "MacBookPro",
+        phone_model: md.mobile(),
+        system: md.os(),
+        network: isNetWork(),
       },
     }),
   })
