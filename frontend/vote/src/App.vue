@@ -9,6 +9,7 @@
 import { fether } from "./utils/fether";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
+import { onMounted } from "vue";
 import todayStarVue from "@/components/todayStar.vue";
 import publicProp from "@/components/publicProp.vue";
 import Mobile from "mobile-detect";
@@ -57,7 +58,10 @@ const getInitSetting = async () => {
       $router.push(
         `/one?vote_id=${$route.query.vote_id}&openid=${$route.query.openid}&order_id=${$route.query.order_id}`
       );
-    else $router.push(`/two?vote_id=${$route.query.vote_id}&openid=${$route.query.openid}&order_id=${$route.query.order_id}`);
+    else
+      $router.push(
+        `/two?vote_id=${$route.query.vote_id}&openid=${$route.query.openid}&order_id=${$route.query.order_id}`
+      );
   }
 };
 
@@ -81,11 +85,16 @@ const getStarShowDate = () => {
 
 // 保存传递过来的open_id
 const getOpenId = () => {
-  $store.commit('changeOpenId', $route.query.openid)
-}
-
+  $store.commit("changeOpenId", $route.query.openid);
+};
 
 getInitSetting();
+
+onMounted(() => {
+  document.addEventListener("WeixinJSBridgeReady", function onBridgeReady() {
+    WeixinJSBridge.call("hideOptionMenu");
+  });
+});
 </script>
 
 <style lang="scss" scoped>
