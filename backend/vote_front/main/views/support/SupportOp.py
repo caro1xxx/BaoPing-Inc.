@@ -89,6 +89,7 @@ class SupportOp:
             phone_model = data['phone_model'],
             system = data['system'],
             network = data['network'],
+            count = 1,
         )
         models.VoteTarget.objects.filter(pk=data['vote_target_id']).update(
             count = F('count') + 1

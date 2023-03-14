@@ -15,8 +15,9 @@ class RecentVoteRecord(APIView):
             
             if open_id is None:
                 return JsonResponse({'code': 400, 'msg': '参数错误'})
+
             voteRecordObj = models.VoteRecord.objects.filter(voteuser_id=open_id).order_by('-create_time').first()
-            ret['data'] = serializers.serialize('json', [voteRecordObj])
+            ret['data'] = serializers.serialize('json', [voteRecordObj]) if voteRecordObj else '[]'
             
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}

@@ -19,5 +19,5 @@ class Task(APIView):
             ret['data'], ret['page_count'] = Common().getData(request, 'Task', maxsize=20, desc_order=True)
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)

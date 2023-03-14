@@ -3,6 +3,7 @@ from main.views.support import Support
 from main.views.voteuser import VoteUser, Comment, RecentVoteRecord, Feedback
 from main.views.Request404 import Request404
 from main.views.vote_target import VoteTarget
+from main.views.vote_target.RecentVoteRecord import RecentFiveVoteRecord
 from main.views.vote_activity import AloneVoteActivity, TodayStar
 from main.views.keys import Keys
 from main.views.gift import Gift
@@ -24,6 +25,7 @@ urlpatterns = [
     url(r'^comment/$', Comment.Comment.as_view()),
     url(r'^feedback/$', Feedback.Feedback.as_view()),
     url(r'^gift/$', Gift.Gift.as_view()),
+    url(r'^recentfivevoterecord/$', RecentFiveVoteRecord.as_view()),
     url(r'^todaystar/$', TodayStar.TodayStar.as_view()),
     url(r'$', Request404.as_view())
 ]

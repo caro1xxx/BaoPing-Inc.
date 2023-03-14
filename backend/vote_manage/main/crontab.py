@@ -14,13 +14,14 @@ def updateStaticHistory():
         nowTimeStr = getTimeStr(nowTime)
         yesterdayBeginTime = getTodayBeginTimeStamp(nowTime - 10)
 
-        staticsOp = StaticsOp()
-        yesterdayIncome =  staticsOp.queryYesterdayIncome(nowTime)
-        models.StaticsHistory.objects.create(
-            day_income = yesterdayIncome,
-            day_time = yesterdayBeginTime,
-            create_time = nowTime
-        ).save()
+        if models.StaticsHistory.objects.filter(day_time=yesterdayBeginTime).first() is None:
+            staticsOp = StaticsOp()
+            yesterdayIncome =  staticsOp.queryYesterdayIncome(nowTime)
+            models.StaticsHistory.objects.create(
+                day_income = yesterdayIncome,
+                day_time = yesterdayBeginTime,
+                create_time = nowTime
+            ).save()
         print('{} 更新统计历史成功\n'.format(nowTimeStr))
     except Exception as e:  
         print('{} 更新统计历史失败 {}\n'.format(nowTimeStr, str(e)))
@@ -88,4 +89,11 @@ def autoComment():
     except Exception as e:
         print('{} autocomment失败 {}\n'.format(nowTimeStr, str(e)))
     
-
+def clearTempFiles():
+    try:
+        nowTime = getNowTimeStamp()
+        nowTimeStr = getTimeStr(nowTime)
+        models.TempFile.objects.all().delete()
+        print('{} 清除临时文件成功\n'.format(nowTimeStr))
+    except Exception as e:
+        print('{} 清除临时文件失败 {}\n'.format(nowTimeStr, str(e)))

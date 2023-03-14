@@ -32,7 +32,7 @@ class OfficialAccount(APIView):
             ret['data'] = serializers.serialize('json', [accountObj])
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
     
     def put(self, request, *args, **kwargs):
@@ -77,5 +77,5 @@ class OfficialAccount(APIView):
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)

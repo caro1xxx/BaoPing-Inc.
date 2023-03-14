@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from django.core import serializers
 from django.http import JsonResponse
+from django.db.models import F
 from main import models
 import json
 from main.tools import *
@@ -43,7 +44,7 @@ class PaymentRecord(APIView):
                 vote_activity_id = data['vote_id'],
                 price = data['total_fee'] / 100,
                 create_time = getNowTimeStamp(),
-                ip = data['spbill_create_ip'],
+                ip = getIp(request),
                 phone_model = data['phone_model'],
                 system = data['system'],
                 network = data['network'],
@@ -51,12 +52,16 @@ class PaymentRecord(APIView):
                 payment_order_id = orderId,
                 payment_status = 0,
                 support_count = support,
+                vote_target = data['vote_target_id'],
+                update_time = getNowTimeStamp(),
             )
+
+            models.VoteTarget.objects.filter(pk=data['vote_target_id']).update(count = F('count') + support)
             ret['order_id'] = orderId
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
 
     def put(self, request, *args, **kwargs):
@@ -73,11 +78,25 @@ class PaymentRecord(APIView):
                 return JsonResponse({'code': 400, 'msg': '该订单不存在'})
 
             paymentRecordObj.payment_status = data.get('status', 0)
+            paymentRecordObj.update_time = getNowTimeStamp()
             paymentRecordObj.save()
+
+            if data.get('status', 0) in ['1', 1]:
+                models.VoteRecord.objects.create(
+                    voteuser_id = paymentRecordObj.voteuser_id,
+                    vote_target_id = paymentRecordObj.vote_target,
+                    create_time = getNowTimeStamp(),
+                    vote_activity = paymentRecordObj.vote_activity_id,
+                    ip = paymentRecordObj.ip,
+                    phone_model = paymentRecordObj.phone_model,
+                    system = paymentRecordObj.system,
+                    network = paymentRecordObj.network,
+                    count = paymentRecordObj.support_count
+                )
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'error': str(e)}
         return JsonResponse(ret)
 
     def delete(self, request, *args, **kwargs):

@@ -10,16 +10,6 @@ from main.views.task.TaskOp import TaskOp
 
 
 @shared_task
-def myTask():
-    print('task test')
-    models.Keys.objects.create(
-        value = 'test',
-        expire_time = '123412321',
-        has_used = 1,
-        user_agent_id = 'wxtest6'
-    )
-
-@shared_task
 def sendEmail(email):
     try:
         code = generateCode6()

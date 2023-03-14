@@ -21,8 +21,9 @@ class CheckTokenMiddleware(MiddlewareMixin):
                 'statics', 
                 'staticshistory', 
                 'uploadfile',
-                'querypaymentstatus',
+                'querypayment',
                 'paymentrecord',
+                'queryquerypaymentstatus',
                 ] or str(pathInfo).find('media') != -1:
                 return None
             if m == 'GET':

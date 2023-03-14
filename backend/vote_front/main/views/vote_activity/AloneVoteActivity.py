@@ -25,5 +25,5 @@ class AloneVoteActivity(APIView):
 
         except Exception as e:
             ret = {'code': 500, 'msg': 'Timeout'}
-            ret = {'code': 500, 'msg': 'Timeout', 'msg': str(e)}
+            # ret = {'code': 500, 'msg': 'Timeout', 'msg': str(e)}
         return JsonResponse(ret)

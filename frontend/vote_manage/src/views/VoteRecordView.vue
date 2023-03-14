@@ -11,11 +11,7 @@
         </el-table-column>
         <el-table-column prop="voteuser" label="用户名" />
         <el-table-column prop="vote_target" label="投票目标" />
-        <el-table-column prop="vote_name" label="票数">
-          <template #default="scope">
-            <div>1</div>
-          </template>
-        </el-table-column>
+        <el-table-column prop="count" label="票数" />
         <el-table-column prop="ip" label="ip" />
         <el-table-column prop="phone_model" label="手机型号" />
         <el-table-column prop="system" label="系统" />
@@ -59,7 +55,6 @@ const getVoteData = async () => {
         wx_username: item.fields.voteuser.wx_username,
       });
     });
-    console.log(voteNotesData);
   } else {
     // 请求发送错误
     await $store.dispatch("refreshErroActions");
