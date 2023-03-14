@@ -707,21 +707,18 @@ const submit = async () => {
   if (enrollData.athletename.length) {
     fileData.append("name", enrollData.athletename);
   } else {
-    alert("请输入选手名称");
+    $store.commit("chengePublicData", "请输入选手名称");
     return;
   }
   if (enrollData.describe.length) {
     fileData.append("detail", enrollData.describe);
   } else {
-    alert("请输入个人描述");
+    $store.commit("chengePublicData", "请输入个人描述");
     return;
   }
   if (!headerImg._value) {
-    alert("请上传图片");
-    return;
-  }
-  if (headerImg._value) {
     $store.commit("chengePublicData", "请上传图片");
+    return;
   }
   fetch(`${HOST}/votetarget/`, { method: "post", body: fileData })
     .then((res) => res.json())
