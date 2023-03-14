@@ -162,15 +162,12 @@ const like = async () => {
   // 判断是否在投票时间内
   let newTime = new Date();
   // 得到开始投票时间
-  let start_time = $store.state.settings[50].value / 3600 + 8 > 
-  newTime.getHours()
+  let start_time =
+    $store.state.settings[50].value / 3600 + 8 > newTime.getHours();
   if (start_time) {
     alert("投票未开始");
     // 得到结束投票时间
-  } else if (
-    $store.state.settings[51].value / 3600 + 8 < 
-    newTime.getHours()
-  ) {
+  } else if ($store.state.settings[51].value / 3600 + 8 < newTime.getHours()) {
     alert("投票已结束");
     // 在投票时间内
   } else {
