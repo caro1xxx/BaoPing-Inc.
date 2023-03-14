@@ -921,7 +921,7 @@ const getUserRecentVote = async () => {
 const openFeedback = () => {
   feedbackState.state = true;
   feedbackState.data.vote_id = $route.query.vote_id;
-  feedbackState.data.vote_user_openid = `${store.state.open_id}`;
+  feedbackState.data.vote_user_openid = `${$store.state.open_id}`;
 };
 onMounted(() => {
   getExpireTime();
